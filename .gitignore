@@ -1,0 +1,15 @@
+node_modules/
+.venv/
+*.log
+*.bak
+*.h1bak
+*.nukebak
+*.finalbak
+*.fullbak
+*.font-bak
+.env
+.env.*
+dist/
+*.db
+*.sqlite
+.pm2/
