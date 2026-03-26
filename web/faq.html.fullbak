@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ — AgoraIQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Mono:wght@400;500&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* === FORCE H1 STYLE === */
+/* === ACCENT LAST WORD === */
+h1 .accent { color: #FCD535 !important; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Albert Sans', sans-serif !important;
+}
+h1 {
+  font-family: 'Albert Sans', sans-serif !important;
+  font-weight: 900 !important;
+  font-size: clamp(34px, 4.5vw, 48px) !important;
+  letter-spacing: -2px !important;
+  text-transform: uppercase !important;
+  color: #EFBF04 !important;
+  line-height: 1.08 !important;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08090d;--surface:#0e1017;--surface2:#161822;--border:#1e2230;
+  --cyan:#00d4ff;--cyan-dim:rgba(0,212,255,.12);--cyan-glow:rgba(0,212,255,.25);
+  --green:#22c55e;--red:#ef4444;--amber:#f59e0b;--purple:#a78bfa;
+  --text:#e4e7ef;--text2:#8b92a8;--text3:#5b6178;
+  --syne:'Syne',sans-serif;--mono:'DM Mono',monospace;--sans:'Albert Sans',sans-serif;
+}
+html{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{min-height:100vh}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:100}
+.brand{display:flex;align-items:center;gap:8px;text-decoration:none}
+.brand-mark{width:28px;height:28px;background:linear-gradient(135deg,#55d0ff,#1a6eff);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);flex-shrink:0}
+.brand-text{font-family:var(--syne,'Syne',sans-serif);font-weight:800;font-size:18px;color:#fff;letter-spacing:-.02em}
+.brand-iq{color:var(--cyan,#00d4ff)}
+.topbar nav{display:flex;gap:20px}
+.topbar nav a{color:var(--text2);text-decoration:none;font-size:13px;font-family:var(--mono);transition:color .2s}
+.topbar nav a:hover,.topbar nav a.active{color:var(--cyan)}
+
+.container{max-width:760px;margin:0 auto;padding:40px 24px 80px}
+h1{/* inherited from styles.css */ font-weight:800;font-size:32px;margin-bottom:8px;background:linear-gradient(135deg,#fff 40%,var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.lead{color:var(--text2);font-size:16px;margin-bottom:32px;line-height:1.6}
+.breadcrumb{font-size:13px;color:var(--text3);margin-bottom:24px}
+.breadcrumb a{color:var(--text2);text-decoration:none}
+.breadcrumb a:hover{color:var(--cyan)}
+
+/* ── filter tabs ─────────────────────────────────────────────────── */
+.filter-tabs{display:flex;gap:8px;margin-bottom:32px;flex-wrap:wrap}
+.filter-tab{padding:6px 14px;border-radius:20px;font-size:12px;font-family:var(--mono);border:1px solid var(--border);color:var(--text2);background:transparent;cursor:pointer;transition:all .15s}
+.filter-tab:hover{border-color:var(--cyan);color:var(--cyan)}
+.filter-tab.active{background:var(--cyan-dim);border-color:var(--cyan);color:var(--cyan)}
+
+/* ── search ──────────────────────────────────────────────────────── */
+.search-bar{margin-bottom:24px}
+.search-bar input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px 12px 40px;color:var(--text);font-family:var(--sans);font-size:14px;transition:border-color .2s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%235b6178' stroke-width='2'%3E%3Ccircle cx='7' cy='7' r='5'/%3E%3Cpath d='M11 11l3 3'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:14px center}
+.search-bar input:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 2px var(--cyan-dim)}
+.search-bar input::placeholder{color:var(--text3)}
+
+/* ── FAQ items ───────────────────────────────────────────────────── */
+.faq-list{display:flex;flex-direction:column;gap:8px}
+.faq-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .2s}
+.faq-item:hover{border-color:rgba(0,212,255,.15)}
+.faq-q{padding:16px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.faq-q-text{font-family:var(--sans);font-weight:600;font-size:15px;color:#fff;flex:1}
+.faq-q .arrow{color:var(--text3);transition:transform .2s;font-size:14px;flex-shrink:0;margin-top:3px}
+.faq-item.open .faq-q .arrow{transform:rotate(180deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.faq-item.open .faq-a{max-height:1000px}
+.faq-a-inner{padding:0 20px 20px;border-top:1px solid var(--border);color:var(--text2);line-height:1.7;font-size:14px}
+.faq-a-inner p{margin:12px 0}
+.faq-a-inner p:first-child{margin-top:16px}
+.faq-a-inner strong{color:var(--text)}
+.faq-a-inner a{color:var(--cyan);text-decoration:none}
+.faq-a-inner .code{font-family:var(--mono);font-size:13px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:1px 6px;color:var(--cyan)}
+.faq-a-inner ul{margin:8px 0 8px 20px}
+.faq-a-inner li{margin-bottom:4px}
+
+.faq-category{font-family:var(--syne);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin:32px 0 12px;padding-top:20px;border-top:1px solid var(--border)}
+.faq-category:first-of-type{border-top:none;margin-top:0}
+
+.no-results{text-align:center;padding:40px;color:var(--text3);display:none}
+.count{font-size:13px;color:var(--text3);margin-bottom:16px}
+
+@media(max-width:768px){
+  .container{padding:24px 16px 60px}
+  h1{font-size:26px}
+  .filter-tabs{gap:6px}
+}
+
+.legal-footer{background:var(--surface,#0e1017);border-top:1px solid var(--border,#1e2230);padding:32px 24px;margin-top:48px;text-align:center;font-size:12px;font-family:var(--sans,'Albert Sans',sans-serif);color:var(--text2,#8b92a8)}
+.footer-inner{max-width:860px;margin:0 auto}
+.footer-brand{font-family:var(--syne,'Syne',sans-serif);font-weight:800;font-size:16px;color:var(--cyan,#00d4ff);margin-bottom:12px}
+.footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-bottom:12px}
+.footer-links a{color:var(--text2,#8b92a8);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--cyan,#00d4ff)}
+.footer-copy{margin-bottom:8px}
+.footer-warn{font-size:11px;color:var(--text2,#8b92a8);opacity:.7;max-width:640px;margin:0 auto;line-height:1.5}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="/" class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">Agora<span class="brand-iq">IQ</span></span></a>
+  <nav>
+    <a href="signals.html">Signals</a>
+    <a href="watchlist.html">Watchlist</a><a href="help.html">Help</a>
+    <a href="kb.html">Knowledge Base</a>
+    <a href="faq.html" class="active">FAQ</a>
+  </nav>
+</div>
+
+<div class="container">
+  <div class="breadcrumb"><a href="watchlist.html">Watchlist</a><a href="help.html">Help</a> → FAQ</div>
+  <h1>Frequently Asked <span class="accent">Questions</span></h1>
+  <p class="lead">Quick answers to common questions about AgoraIQ.</p>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search questions...">
+  </div>
+
+  <div class="filter-tabs" id="filterTabs">
+    <button class="filter-tab active" data-cat="all">All</button>
+    <button class="filter-tab" data-cat="general">General</button>
+    <button class="filter-tab" data-cat="signals">Signals</button>
+    <button class="filter-tab" data-cat="tracking">Tracking</button>
+    <button class="filter-tab" data-cat="billing">Billing</button>
+    <button class="filter-tab" data-cat="bot">Telegram</button>
+    <button class="filter-tab" data-cat="technical">Technical</button>
+  </div>
+
+  <div class="count" id="countLabel"></div>
+
+  <div class="faq-list" id="faqList">
+
+    <!-- ═══ GENERAL ══════════════════════════════════════════════ -->
+    <div class="faq-category" data-cat="general">General</div>
+
+    <div class="faq-item" data-cat="general">
+      <div class="faq-q"><span class="faq-q-text">What is AgoraIQ?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>AgoraIQ is a crypto signal intelligence platform. It tracks and verifies trading signals from Telegram and Discord providers, scores providers by real performance (not marketing), and gives you tools to monitor the market and track your own trading ideas — all powered by live market data from Binance and Kraken.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="general">
+      <div class="faq-q"><span class="faq-q-text">Is AgoraIQ a trading bot? Does it execute trades?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p><strong>No.</strong> AgoraIQ does not connect to your exchange and never executes trades. It is an analytics and intelligence platform. You receive signals and market data, but all trading decisions and execution are yours.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="general">
+      <div class="faq-q"><span class="faq-q-text">Do I need to link my exchange account?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>No. AgoraIQ uses public market data feeds from Binance and Kraken to track prices, volumes, and open interest. You never provide exchange API keys or credentials.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="general">
+      <div class="faq-q"><span class="faq-q-text">What markets does AgoraIQ cover?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>Currently, AgoraIQ covers crypto perpetual futures on Binance and Kraken. This includes all major pairs (BTC, ETH, SOL, BNB, XRP, etc.) and many altcoin pairs. All signals use USDT-denominated pairs in XXXUSDT format.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="general">
+      <div class="faq-q"><span class="faq-q-text">Who runs AgoraIQ?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>AgoraIQ is operated by ChatLogic Insights LTD, registered in London. The platform is developed and maintained by a small team focused on signal intelligence and transparent performance verification.</p>
+      </div></div>
+    </div>
+
+    <!-- ═══ SIGNALS ══════════════════════════════════════════════ -->
+    <div class="faq-category" data-cat="signals">Signals</div>
+
+    <div class="faq-item" data-cat="signals">
+      <div class="faq-q"><span class="faq-q-text">Where do signals come from?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>Signals come from three sources:</p>
+        <ul>
+          <li><strong>Market scanner</strong> — AgoraIQ's automated scanner detects breakout conditions by analyzing volume, open interest, funding rates, and momentum every 5 minutes.</li>
+          <li><strong>Signal providers</strong> — Verified Telegram and Discord providers whose signals are automatically scraped, parsed, and tracked.</li>
+          <li><strong>User submissions</strong> — Your own trading ideas submitted via the Track page or <span class="code">/track</span> bot command.</li>
+        </ul>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="signals">
+      <div class="faq-q"><span class="faq-q-text">What does the confidence score mean?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>Confidence is a 0–100 score reflecting how many confluence factors support the signal. For scanner signals, it combines volume spike magnitude, OI trend, funding rate, and momentum. Higher means more factors are aligned. It is <strong>not</strong> a probability — a 70 score doesn't mean 70% chance of success.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="signals">
+      <div class="faq-q"><span class="faq-q-text">Why can't I see stop loss and targets on the free plan?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>The free plan shows 1 recent signal preview with stripped view — symbol and direction only. Full details (entry price, TP levels, stop loss, AI scores) are available on Pro and Elite plans. This gating is enforced server-side — the API itself returns stripped data for free accounts.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="signals">
+      <div class="faq-q"><span class="faq-q-text">How quickly do signals resolve?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>It depends entirely on market conditions. Some signals hit TP or SL within hours; others take days. Signals that don't resolve within 7 days are automatically marked as EXPIRED. The average resolution time is visible on the <a href="proof.html">Proof</a> page.</p>
+      </div></div>
+    </div>
+
+    <!-- ═══ TRACKING ═════════════════════════════════════════════ -->
+    <div class="faq-category" data-cat="tracking">Signal Tracking</div>
+
+    <div class="faq-item" data-cat="tracking">
+      <div class="faq-q"><span class="faq-q-text">How do I submit a signal to track?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>Two ways:</p>
+        <ul>
+          <li><strong>Web:</strong> Go to <a href="track.html">Track</a>, paste your signal text, click "Submit &amp; Track."</li>
+          <li><strong>Telegram:</strong> Type <span class="code">/track</span>, then paste your signal when prompted.</li>
+        </ul>
+        <p>The parser accepts most common formats. At minimum you need a symbol and direction (e.g., "BTCUSDT LONG"). Adding entry, TP, and SL gives you full tracking.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="tracking">
+      <div class="faq-q"><span class="faq-q-text">How is PnL calculated?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>PnL is calculated as a decimal ratio relative to entry price. For a LONG signal: <strong>(exit − entry) / entry</strong>. For SHORT: <strong>(entry − exit) / entry</strong>. So 0.032 means +3.2%. This does not account for leverage — it's the raw price movement.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="tracking">
+      <div class="faq-q"><span class="faq-q-text">Can I cancel a tracked signal?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>Yes. Only OPEN signals can be cancelled. Use the Cancel button on the <a href="track.html">Track</a> page, or <span class="code">/cancel_signal ID</span> in Telegram. Cancelled signals do not count toward your win rate. The cancellation is logged with full audit details.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="tracking">
+      <div class="faq-q"><span class="faq-q-text">What are the tracking limits per plan?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>Free: no tracking. Pro: signal status updates and basic tracking. Elite: full signal lifecycle tracking with AI score breakdown, win rate, expectancy, duration, drawdown analytics, and provider rankings. Elite also includes advanced scanner filters and narrative/whale/regime overlays.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="tracking">
+      <div class="faq-q"><span class="faq-q-text">My signal shows "partial" parse status. What does that mean?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>The parser recognized signal-like content (symbol, direction keywords) but couldn't extract all fields (entry, TP, SL). The signal is still accepted and tracked, but resolution depends on having at least one target or stop loss. Try reformatting with explicit labels like "Entry: 65000" and "TP1: 67000".</p>
+      </div></div>
+    </div>
+
+    <!-- ═══ BILLING ══════════════════════════════════════════════ -->
+    <div class="faq-category" data-cat="billing">Billing &amp; Plans</div>
+
+    <div class="faq-item" data-cat="billing">
+      <div class="faq-q"><span class="faq-q-text">How do I upgrade my plan?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>From the <a href="pricing.html">Pricing</a> page, click "Upgrade to Pro" or "Go Elite." Toggle monthly or yearly billing — yearly saves up to 34%. You'll be redirected to Stripe's secure checkout. In Telegram, use <span class="code">/upgrade pro</span> or <span class="code">/upgrade elite</span> to get a checkout link.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="billing">
+      <div class="faq-q"><span class="faq-q-text">Can I cancel anytime?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>Yes. Cancel from Stripe's customer portal (accessible via <a href="pricing.html">Pricing</a> page → "Manage Subscription" or <span class="code">/billing</span> in Telegram). No lock-in, no cancellation fees. You keep full access until the end of your current billing period.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="billing">
+      <div class="faq-q"><span class="faq-q-text">What happens if my payment fails?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>You get a 3-day grace period. During this time, you keep full access to your plan. Stripe will retry the charge automatically. If payment still fails after the grace period, your account downgrades to Free. Update your card via <span class="code">/billing</span> or the Pricing page to fix it.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="billing">
+      <div class="faq-q"><span class="faq-q-text">Do you offer refunds?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>We don't offer partial-month refunds. When you cancel, you keep access for the remainder of the billing period you've already paid for. If you believe you were charged in error, contact support and we'll review on a case-by-case basis.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="billing">
+      <div class="faq-q"><span class="faq-q-text">What payment methods are accepted?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>All major credit and debit cards (Visa, Mastercard, Amex, Discover) via Stripe. Your card details are processed entirely by Stripe and never touch AgoraIQ's servers. AgoraIQ is PCI-compliant through Stripe's certification.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="billing">
+      <div class="faq-q"><span class="faq-q-text">Can I switch between Pro and Elite?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>Yes. To upgrade from Pro to Elite, go through the normal checkout flow for Elite. Stripe will prorate the charge. To downgrade from Elite to Pro, cancel your current subscription via the billing portal, wait for it to expire, then subscribe to Pro. You can also switch between monthly and yearly billing through the portal.</p>
+      </div></div>
+    </div>
+
+    <!-- ═══ BOT ═══════════════════════════════════════════════════ -->
+    <div class="faq-category" data-cat="bot">Telegram Bot</div>
+
+    <div class="faq-item" data-cat="bot">
+      <div class="faq-q"><span class="faq-q-text">How do I connect my Telegram?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>Open <a href="https://t.me/agoraiq_breakout_bot">@agoraiq_breakout_bot</a> in Telegram and type <span class="code">/connect</span>. The bot sends you a one-time link. Open it in your browser while logged into AgoraIQ. Once claimed, your accounts are linked.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="bot">
+      <div class="faq-q"><span class="faq-q-text">Why does the bot say "link your account first"?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>Some commands require authentication. Use <span class="code">/connect</span> to link your Telegram to your AgoraIQ account. Public commands like <span class="code">/signals</span>, <span class="code">/market</span>, and <span class="code">/proof</span> work without linking.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="bot">
+      <div class="faq-q"><span class="faq-q-text">The bot is not responding. What should I do?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>The bot has a 3-second rate limit per user to prevent spam. If you send commands too quickly, some will be silently dropped. Wait a few seconds and try again. If the bot is completely unresponsive for more than a few minutes, the service may be restarting — try again shortly.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="bot">
+      <div class="faq-q"><span class="faq-q-text">How do I disconnect my Telegram?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>Type <span class="code">/disconnect</span> in the bot. This removes your encrypted token from the bot's store and clears your Telegram ID from the AgoraIQ database. You'll stop receiving push notifications immediately.</p>
+      </div></div>
+    </div>
+
+    <!-- ═══ TECHNICAL ═════════════════════════════════════════════ -->
+    <div class="faq-category" data-cat="technical">Technical</div>
+
+    <div class="faq-item" data-cat="technical">
+      <div class="faq-q"><span class="faq-q-text">How often does the scanner update?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>The market scanner runs every 5 minutes. Scanner results are cached in a database table to ensure fast API responses. Free users see delayed data; Pro and Elite users see the latest scan results.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="technical">
+      <div class="faq-q"><span class="faq-q-text">How often are signals resolved?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>The outcome resolver runs every 6 hours via a systemd timer. It fetches current prices from Binance and Kraken (via SOCKS5 proxy for reliability) and checks each OPEN signal against its targets and stop loss. Signals hitting TP or SL are resolved immediately in that cycle.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="technical">
+      <div class="faq-q"><span class="faq-q-text">What data does AgoraIQ store about me?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>Your email, hashed password, plan tier, Telegram ID (if linked), Stripe customer ID (if subscribed), and your submitted signals. We do not store card numbers, exchange API keys, or trading history from your exchange. The bot stores your encrypted JWT token locally using Fernet encryption.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="technical">
+      <div class="faq-q"><span class="faq-q-text">Is there an API I can use programmatically?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>Elite plan includes the highest data density and fastest workflow. The API uses the same endpoints as the web app — authenticate with your JWT token in the <span class="code">Authorization: Bearer</span> header and call any <span class="code">/api/v1/*</span> endpoint. Elite also unlocks narrative, whale, and regime overlays, and early access to new modules.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item" data-cat="technical">
+      <div class="faq-q"><span class="faq-q-text">How is provider performance verified?</span><span class="arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>Every provider signal is parsed, stored, and tracked against the same live market data as all other signals. Outcomes are determined objectively — did price hit TP or SL? Provider win rates and average returns are calculated from this data, not self-reported by providers. The <a href="proof.html">Proof</a> engine makes all resolved signals publicly auditable.</p>
+      </div></div>
+    </div>
+
+  </div><!-- /faqList -->
+
+  <div class="no-results" id="noResults">No questions match your search.</div>
+
+  <p style="margin-top:48px;color:var(--text3);font-size:13px;text-align:center">
+    <a href="help.html" style="color:var(--text2);text-decoration:none">← Help Center</a>
+    &nbsp;·&nbsp;
+    <a href="kb.html" style="color:var(--text2);text-decoration:none">Knowledge Base</a>
+    &nbsp;·&nbsp;
+    <span style="color:var(--text3)">Still stuck? Use <span style="font-family:var(--mono);color:var(--cyan)">/support</span> in Telegram</span>
+  </p>
+</div>
+
+<script>
+(function() {
+  "use strict";
+
+  var items = document.querySelectorAll(".faq-item");
+  var categories = document.querySelectorAll(".faq-category");
+  var tabs = document.querySelectorAll(".filter-tab");
+  var searchInput = document.getElementById("searchInput");
+  var noResults = document.getElementById("noResults");
+  var countLabel = document.getElementById("countLabel");
+
+  var activeCat = "all";
+
+  // Toggle FAQ items
+  for (var i = 0; i < items.length; i++) {
+    items[i].querySelector(".faq-q").addEventListener("click", (function(item) {
+      return function() { item.classList.toggle("open"); };
+    })(items[i]));
+  }
+
+  // Filter tabs
+  for (var j = 0; j < tabs.length; j++) {
+    tabs[j].addEventListener("click", (function(tab) {
+      return function() {
+        for (var k = 0; k < tabs.length; k++) tabs[k].classList.remove("active");
+        tab.classList.add("active");
+        activeCat = tab.getAttribute("data-cat");
+        applyFilters();
+      };
+    })(tabs[j]));
+  }
+
+  // Search
+  searchInput.addEventListener("input", applyFilters);
+
+  function applyFilters() {
+    var q = searchInput.value.toLowerCase().trim();
+    var visibleCount = 0;
+
+    for (var i = 0; i < items.length; i++) {
+      var cat = items[i].getAttribute("data-cat");
+      var text = items[i].textContent.toLowerCase();
+      var catMatch = (activeCat === "all" || cat === activeCat);
+      var searchMatch = (!q || text.indexOf(q) !== -1);
+      var show = catMatch && searchMatch;
+      items[i].style.display = show ? "" : "none";
+      if (show) visibleCount++;
+    }
+
+    // Show/hide category headers
+    for (var j = 0; j < categories.length; j++) {
+      var catVal = categories[j].getAttribute("data-cat");
+      var catMatch2 = (activeCat === "all" || catVal === activeCat);
+
+      if (!catMatch2) { categories[j].style.display = "none"; continue; }
+
+      // Check if any items in this category are visible
+      var hasVisible = false;
+      var next = categories[j].nextElementSibling;
+      while (next && !next.classList.contains("faq-category")) {
+        if (next.classList.contains("faq-item") && next.style.display !== "none") {
+          hasVisible = true; break;
+        }
+        next = next.nextElementSibling;
+      }
+      categories[j].style.display = hasVisible ? "" : "none";
+    }
+
+    noResults.style.display = visibleCount === 0 ? "block" : "none";
+    countLabel.textContent = visibleCount + " question" + (visibleCount !== 1 ? "s" : "");
+  }
+
+  applyFilters();
+})();
+</script>
+<footer class="legal-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">Agora<span style="color:var(--cyan,#00d4ff)">IQ</span></div>
+    <div class="footer-links">
+      <a href="terms.html">Terms</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="cookies.html">Cookies</a>
+      <a href="disclaimer.html">Disclaimer</a>
+      <a href="no-financial-advice.html">No Financial Advice</a>
+    </div>
+    <div class="footer-copy">&copy; 2026 ChatLogic Insights LTD. All rights reserved.</div>
+    <div class="footer-warn">&olarr; Not for UK Persons. AgoraIQ is not authorised or regulated by the FCA. Not directed at UK persons. Nothing on this site constitutes financial advice. Past performance does not guarantee future results.</div>
+  </div>
+</footer>
+</body>
+</html>

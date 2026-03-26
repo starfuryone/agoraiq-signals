@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Help — AgoraIQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Mono:wght@400;500&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* === FORCE H1 STYLE === */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Albert Sans', sans-serif !important;
+}
+h1 {
+  font-family: 'Albert Sans', sans-serif !important;
+  font-weight: 900 !important;
+  font-size: clamp(34px, 4.5vw, 48px) !important;
+  letter-spacing: -2px !important;
+  text-transform: uppercase !important;
+  color: #e2e4ef !important;
+  line-height: 1.08 !important;
+}
+h1 .accent {
+  color: #EFBF04 !important;
+}
+
+
+h1 .accent { color: #FCD535 !important; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Albert Sans', sans-serif !important;
+}
+h1 {
+  font-family: 'Albert Sans', sans-serif !important;
+  font-weight: 900 !important;
+  font-size: clamp(34px, 4.5vw, 48px) !important;
+  letter-spacing: -2px !important;
+  text-transform: uppercase !important;
+  color: #EFBF04 !important;
+  line-height: 1.08 !important;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08090d;--surface:#0e1017;--surface2:#161822;--border:#1e2230;
+  --cyan:#00d4ff;--cyan-dim:rgba(0,212,255,.12);--cyan-glow:rgba(0,212,255,.25);
+  --green:#22c55e;--red:#ef4444;--amber:#f59e0b;--purple:#a78bfa;
+  --text:#e4e7ef;--text2:#8b92a8;--text3:#5b6178;
+  --syne:'Syne',sans-serif;--mono:'DM Mono',monospace;--sans:'Albert Sans',sans-serif;
+}
+html{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{min-height:100vh}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:100}
+.brand{display:flex;align-items:center;gap:8px;text-decoration:none}
+.brand-mark{width:28px;height:28px;background:linear-gradient(135deg,#55d0ff,#1a6eff);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);flex-shrink:0}
+.brand-text{font-family:var(--syne,'Syne',sans-serif);font-weight:800;font-size:18px;color:#fff;letter-spacing:-.02em}
+.brand-iq{color:var(--cyan,#00d4ff)}
+.topbar nav{display:flex;gap:20px}
+.topbar nav a{color:var(--text2);text-decoration:none;font-size:13px;font-family:var(--mono);transition:color .2s}
+.topbar nav a:hover,.topbar nav a.active{color:var(--cyan)}
+
+.layout{display:grid;grid-template-columns:240px 1fr;max-width:1200px;margin:0 auto;min-height:calc(100vh - 56px)}
+
+/* ── sidebar ──────────────────────────────────────────────────── */
+.sidebar{border-right:1px solid var(--border);padding:32px 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
+.sidebar-title{font-family:var(--syne);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding:0 24px;margin-bottom:12px}
+.sidebar a{display:block;padding:8px 24px;font-size:13px;color:var(--text2);text-decoration:none;transition:all .15s;border-left:2px solid transparent}
+.sidebar a:hover{color:var(--text);background:var(--surface2)}
+.sidebar a.active{color:var(--cyan);border-left-color:var(--cyan);background:var(--cyan-dim)}
+.sidebar .sep{height:1px;background:var(--border);margin:16px 24px}
+
+/* ── content ──────────────────────────────────────────────────── */
+.content{padding:40px 48px 80px;max-width:780px}
+.content h1{/* inherited from styles.css */ font-weight:800;font-size:32px;margin-bottom:8px;background:linear-gradient(135deg,#fff 40%,var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.content .lead{color:var(--text2);font-size:16px;margin-bottom:40px;line-height:1.6}
+.content h2{/* inherited from styles.css */ font-weight:700;font-size:22px;color:#fff;margin:48px 0 16px;padding-top:24px;border-top:1px solid var(--border)}
+.content h2:first-of-type{border-top:none;margin-top:0}
+.content h3{/* inherited from styles.css */ font-weight:700;font-size:16px;color:var(--cyan);margin:28px 0 12px}
+.content p{color:var(--text);line-height:1.7;margin-bottom:16px}
+.content ul,.content ol{margin:0 0 16px 24px;color:var(--text);line-height:1.7}
+.content li{margin-bottom:8px}
+.content strong{color:#fff;font-weight:600}
+.content a{color:var(--cyan);text-decoration:none;border-bottom:1px solid rgba(0,212,255,.3);transition:border-color .2s}
+.content a:hover{border-bottom-color:var(--cyan)}
+
+.code{font-family:var(--mono);font-size:13px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:2px 8px;color:var(--cyan)}
+.code-block{font-family:var(--mono);font-size:13px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 20px;margin:16px 0;color:var(--text);overflow-x:auto;line-height:1.6;white-space:pre}
+
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:24px 0}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;transition:border-color .2s,transform .2s}
+.card:hover{border-color:rgba(0,212,255,.3);transform:translateY(-2px)}
+.card-icon{font-size:24px;margin-bottom:10px}
+.card-title{font-family:var(--syne);font-weight:700;font-size:15px;color:#fff;margin-bottom:6px}
+.card-desc{font-size:13px;color:var(--text2);line-height:1.5}
+
+.callout{background:var(--surface);border-left:3px solid var(--cyan);border-radius:0 8px 8px 0;padding:16px 20px;margin:20px 0;font-size:14px;color:var(--text)}
+.callout.warn{border-left-color:var(--amber)}
+.callout.success{border-left-color:var(--green)}
+.callout strong{color:#fff}
+
+.step{display:flex;gap:16px;margin-bottom:24px;align-items:flex-start}
+.step-num{flex-shrink:0;width:32px;height:32px;background:var(--cyan-dim);color:var(--cyan);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--syne);font-weight:800;font-size:14px}
+.step-body{flex:1}
+.step-body h4{/* inherited from styles.css */ font-weight:700;font-size:15px;color:#fff;margin-bottom:4px}
+.step-body p{font-size:14px;color:var(--text2);margin:0;line-height:1.6}
+
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;font-family:var(--mono);text-transform:uppercase}
+.badge-free{background:rgba(139,146,168,.12);color:var(--text2)}
+.badge-pro{background:var(--cyan-dim);color:var(--cyan)}
+.badge-elite{background:rgba(167,139,250,.12);color:var(--purple)}
+
+@media(max-width:768px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .content{padding:24px 16px 60px}
+  .content h1{font-size:26px}
+}
+
+.legal-footer{background:var(--surface,#0e1017);border-top:1px solid var(--border,#1e2230);padding:32px 24px;margin-top:48px;text-align:center;font-size:12px;font-family:var(--sans,'Albert Sans',sans-serif);color:var(--text2,#8b92a8)}
+.footer-inner{max-width:860px;margin:0 auto}
+.footer-brand{font-family:var(--syne,'Syne',sans-serif);font-weight:800;font-size:16px;color:var(--cyan,#00d4ff);margin-bottom:12px}
+.footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-bottom:12px}
+.footer-links a{color:var(--text2,#8b92a8);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--cyan,#00d4ff)}
+.footer-copy{margin-bottom:8px}
+.footer-warn{font-size:11px;color:var(--text2,#8b92a8);opacity:.7;max-width:640px;margin:0 auto;line-height:1.5}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="/" class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">Agora<span class="brand-iq">IQ</span></span></a>
+  <nav>
+    <a href="signals.html">Signals</a>
+    <a href="signals.html">Signals</a>
+    <a href="track.html">Track</a>
+    <a href="scanner.html">Scanner</a>
+    <a href="help.html" class="active">Help</a>
+  </nav>
+</div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-title">Getting Started</div>
+    <a href="#quickstart">Quick Start</a>
+    <a href="#account">Account Setup</a>
+    <a href="#telegram">Telegram Bot</a>
+    <div class="sep"></div>
+    <div class="sidebar-title">Features</div>
+    <a href="#signals">Signals</a>
+    <a href="#tracking">Signal Tracking</a>
+    <a href="#scanner">Market Scanner</a>
+    <a href="#alerts">Smart Alerts</a>
+    <a href="#providers">Provider IQ</a>
+    <a href="#proof">Proof Engine</a>
+    <div class="sep"></div>
+    <div class="sidebar-title">Billing</div>
+    <a href="#plans">Plans &amp; Pricing</a>
+    <a href="#manage">Manage Subscription</a>
+    <div class="sep"></div>
+    <a href="kb.html">Knowledge Base →</a>
+    <a href="faq.html">FAQ →</a>
+  </aside>
+
+  <main class="content">
+    <h1>Help <span class="accent">Center</span></h1>
+    <p class="lead">Everything you need to get started with AgoraIQ — from first login to advanced signal tracking.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">🚀</div>
+        <div class="card-title">Quick Start</div>
+        <div class="card-desc">Create an account, connect Telegram, and start receiving signals in under 5 minutes.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📡</div>
+        <div class="card-title">Signal Tracking</div>
+        <div class="card-desc">Submit your own signals and let AgoraIQ track them against live market data.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔔</div>
+        <div class="card-title">Smart Alerts</div>
+        <div class="card-desc">Set custom rules to get notified when market conditions match your criteria.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">💳</div>
+        <div class="card-title">Billing</div>
+        <div class="card-desc">Upgrade, manage, or cancel your plan through Stripe's secure portal.</div>
+      </div>
+    </div>
+
+    <!-- ─── QUICK START ─────────────────────────────────────────── -->
+    <h2 id="quickstart">Quick Start Guide</h2>
+    <p>Get up and running with AgoraIQ in three steps.</p>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>Create your account</h4>
+        <p>Register at <a href="signals.html">bot.agoraiq.net</a> with your email and a strong password. You'll be on the <span class="badge badge-free">FREE</span> plan by default — no card required.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>Connect Telegram</h4>
+        <p>Open <a href="https://t.me/agoraiq_breakout_bot">@agoraiq_breakout_bot</a> in Telegram and type <span class="code">/connect</span>. Follow the one-time link to bind your Telegram to your AgoraIQ account. This enables push alerts and bot commands.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>Explore</h4>
+        <p>Use <span class="code">/signals</span> to see live breakout signals, <span class="code">/market</span> for a market overview, or visit the <a href="scanner.html">Scanner</a> on the web. Want to track your own calls? Head to <a href="track.html">Signal Tracker</a>.</p>
+      </div>
+    </div>
+
+    <!-- ─── ACCOUNT ─────────────────────────────────────────────── -->
+    <h2 id="account">Account Setup</h2>
+    <h3>Registration</h3>
+    <p>Your AgoraIQ account is identified by email. Password must be at least 8 characters. After registration you receive a JWT authentication token stored in your browser session.</p>
+
+    <h3>Authentication</h3>
+    <p>The web app authenticates via a bearer token stored in your browser. This token is used for all API calls. If you get logged out, simply sign in again from the dashboard.</p>
+
+    <h3>Telegram Linking</h3>
+    <p>Telegram linking is one-time and secure. The bot generates a unique code that you claim through the web interface — no passwords are ever exchanged via Telegram. Use <span class="code">/disconnect</span> to unlink at any time.</p>
+
+    <div class="callout">
+      <strong>Tip:</strong> After linking, use <span class="code">/status</span> in Telegram to verify your connection and see your current plan tier.
+    </div>
+
+    <!-- ─── TELEGRAM BOT ────────────────────────────────────────── -->
+    <h2 id="telegram">Telegram Bot Commands</h2>
+    <p>The AgoraIQ bot (<a href="https://t.me/agoraiq_breakout_bot">@agoraiq_breakout_bot</a>) provides full access to the platform directly from Telegram.</p>
+
+    <h3>Core Commands</h3>
+    <div class="code-block">/start          — Welcome message and overview
+/help           — Full command list
+/status         — Your connection and plan status
+/connect        — Link Telegram to AgoraIQ
+/disconnect     — Unlink Telegram</div>
+
+    <h3>Signal Commands</h3>
+    <div class="code-block">/signals        — Latest breakout signals
+/breakouts      — Current breakout candidates
+/latest         — Most recent signals feed
+/pair BTCUSDT   — Breakout data for a specific pair
+/history        — Resolved signal history
+/wins           — Winning signals only</div>
+
+    <h3>Tracking Commands</h3>
+    <div class="code-block">/track          — Submit a signal to track
+/my_signals     — Your tracked signals
+/signal_status 42 — Status of signal #42
+/cancel_signal 42 — Cancel tracked signal #42
+/my_stats       — Your personal tracking stats</div>
+
+    <h3>Market Commands</h3>
+    <div class="code-block">/market         — Market overview dashboard
+/top            — Top breakout candidates
+/momentum       — Momentum leaders
+/volume         — Volume spike leaders
+/oi             — Open interest movers
+/funding        — Funding rate extremes</div>
+
+    <h3>Alert Commands</h3>
+    <div class="code-block">/alerts         — Your active alert rules
+/addalert ETHUSDT — Create alert for a pair
+/removealert ID — Remove an alert rule
+/pausealerts    — Pause all alerts
+/resumealerts   — Resume all alerts</div>
+
+    <h3>Provider Commands</h3>
+    <div class="code-block">/providers      — Signal provider list
+/top_providers  — Top-ranked providers
+/follow ID      — Follow a provider
+/unfollow ID    — Unfollow a provider</div>
+
+    <h3>Billing Commands</h3>
+    <div class="code-block">/upgrade pro    — Checkout for Pro plan
+/upgrade elite  — Checkout for Elite plan
+/billing        — Manage your subscription
+/plan           — View current plan
+/pricing        — View pricing details</div>
+
+    <h3>Other</h3>
+    <div class="code-block">/proof          — Verified platform performance
+/stats          — Detailed performance stats
+/about          — What is AgoraIQ
+/faq            — Frequently asked questions
+/support        — Contact support
+/feedback       — Send feedback to the team</div>
+
+    <!-- ─── SIGNALS ─────────────────────────────────────────────── -->
+    <h2 id="signals">Signals</h2>
+    <p>AgoraIQ generates and aggregates trading signals from multiple sources:</p>
+    <ul>
+      <li><strong>Scanner signals</strong> — Generated by the market scanner when breakout conditions are detected (volume spikes, open interest shifts, funding rate extremes).</li>
+      <li><strong>Provider signals</strong> — Scraped from verified Telegram and Discord signal providers, then parsed and normalized.</li>
+      <li><strong>User signals</strong> — Submitted by you via <span class="code">/track</span> or the <a href="track.html">Track</a> page.</li>
+    </ul>
+
+    <p>Every signal passes through the <strong>canonical signal schema</strong>, ensuring consistency regardless of source. Each signal carries:</p>
+    <ul>
+      <li><strong>Symbol</strong> — Always in XXXUSDT format (e.g., BTCUSDT)</li>
+      <li><strong>Direction</strong> — LONG or SHORT</li>
+      <li><strong>Entry, Stop Loss, Targets</strong> — Price levels (up to 3 take-profit levels)</li>
+      <li><strong>Confidence</strong> — 0–100 score based on signal strength</li>
+      <li><strong>Status</strong> — OPEN → TP1/TP2/TP3/SL/EXPIRED/CANCELLED</li>
+    </ul>
+
+    <div class="callout">
+      <strong>Plan gating:</strong> <span class="badge badge-free">FREE</span> users see 1 recent signal preview with stripped view (symbol and direction only). <span class="badge badge-pro">PRO</span> users get real-time signals with full details: entry, SL, TP1, TP2. <span class="badge badge-elite">ELITE</span> adds AI score breakdown, provider rankings, and advanced analytics.
+    </div>
+
+    <!-- ─── TRACKING ────────────────────────────────────────────── -->
+    <h2 id="tracking">Signal Tracking</h2>
+    <p>Signal Tracking lets you submit your own trade ideas and have AgoraIQ monitor them against live market data. When price hits your targets or stop loss, the signal resolves automatically.</p>
+
+    <h3>How to submit</h3>
+    <p>From the <a href="track.html">Track</a> page or via <span class="code">/track</span> in Telegram, paste a signal in any common format:</p>
+    <div class="code-block">BTCUSDT LONG
+Entry: 65000
+TP1: 67000
+TP2: 69000
+SL: 63000</div>
+
+    <p>AgoraIQ's parser extracts the symbol, direction, entry, targets, and stop loss automatically. It handles most variations — slash-separated pairs, different field labels, leverage notation, etc.</p>
+
+    <h3>Signal lifecycle</h3>
+    <ul>
+      <li><strong>OPEN</strong> — Actively tracked. The resolver checks price against TP/SL every cycle.</li>
+      <li><strong>TP1 / TP2 / TP3</strong> — Price hit a take-profit level. PnL is calculated and recorded.</li>
+      <li><strong>SL</strong> — Price hit stop loss. Loss is recorded.</li>
+      <li><strong>EXPIRED</strong> — Signal aged out without hitting any level (default: 7 days).</li>
+      <li><strong>CANCELLED</strong> — You cancelled via <span class="code">/cancel_signal</span> or the Track page.</li>
+    </ul>
+
+    <h3>Your stats</h3>
+    <p>The <a href="track.html">Track</a> page shows your personal win rate, best/worst signals, and a monthly breakdown. In Telegram, use <span class="code">/my_stats</span> for a summary.</p>
+
+    <div class="callout warn">
+      <strong>Limits:</strong> <span class="badge badge-free">FREE</span> users cannot track signals. <span class="badge badge-pro">PRO</span> users get signal status updates and basic tracking. <span class="badge badge-elite">ELITE</span> users get full signal lifecycle tracking with AI score breakdown, win rate, expectancy, duration, and drawdown analytics.
+    </div>
+
+    <!-- ─── SCANNER ─────────────────────────────────────────────── -->
+    <h2 id="scanner">Market Scanner</h2>
+    <p>The scanner continuously monitors the crypto derivatives market, scanning every 5 minutes for:</p>
+    <ul>
+      <li><strong>Breakout candidates</strong> — Pairs approaching key resistance/support with rising volume.</li>
+      <li><strong>Volume spikes</strong> — Unusual volume activity relative to the pair's baseline.</li>
+      <li><strong>Open interest shifts</strong> — Rising or falling OI indicating position building or liquidation.</li>
+      <li><strong>Funding rate extremes</strong> — Extremely positive or negative funding rates signaling crowded trades.</li>
+      <li><strong>Momentum scores</strong> — Multi-factor momentum ranking across pairs.</li>
+    </ul>
+
+    <p>Access the scanner via the <a href="scanner.html">Scanner</a> page or through Telegram commands: <span class="code">/market</span>, <span class="code">/top</span>, <span class="code">/momentum</span>, <span class="code">/volume</span>, <span class="code">/oi</span>, <span class="code">/funding</span>.</p>
+
+    <div class="callout">
+      <strong>Note:</strong> <span class="badge badge-free">FREE</span> users see delayed scanner data. <span class="badge badge-pro">PRO</span> and <span class="badge badge-elite">ELITE</span> users get real-time updates.
+    </div>
+
+    <!-- ─── ALERTS ──────────────────────────────────────────────── -->
+    <h2 id="alerts">Smart Alerts</h2>
+    <p>Smart Alerts notify you when market conditions match rules you define. Alerts are evaluated every 10 seconds against incoming signals and scanner data.</p>
+
+    <h3>Creating alerts</h3>
+    <p>From the <a href="alerts.html">Alerts</a> page or via <span class="code">/addalert BTCUSDT</span> in Telegram. Each alert rule specifies conditions (symbol, direction, minimum confidence) and delivery channels (web notifications, Telegram push).</p>
+
+    <h3>Managing alerts</h3>
+    <ul>
+      <li><span class="code">/alerts</span> — View your active rules</li>
+      <li><span class="code">/removealert ID</span> — Delete a specific rule</li>
+      <li><span class="code">/pausealerts</span> / <span class="code">/resumealerts</span> — Bulk pause/resume</li>
+    </ul>
+
+    <div class="callout warn">
+      <strong>Limits:</strong> <span class="badge badge-pro">PRO</span> — 10 alert rules. <span class="badge badge-elite">ELITE</span> — Unlimited. <span class="badge badge-free">FREE</span> — Not available.
+    </div>
+
+    <!-- ─── PROVIDERS ───────────────────────────────────────────── -->
+    <h2 id="providers">Provider IQ</h2>
+    <p>AgoraIQ tracks signal providers from Telegram and Discord, scoring them by <strong>actual performance</strong> — not marketing claims.</p>
+
+    <p>Each provider's score is derived from:</p>
+    <ul>
+      <li>Win rate (signals that hit TP vs SL)</li>
+      <li>Average return per signal</li>
+      <li>Consistency over time (monthly performance variance)</li>
+      <li>Signal volume (more data = more reliable score)</li>
+    </ul>
+
+    <p>Follow providers you trust with <span class="code">/follow ID</span> to get priority alerts when they post new signals. The <a href="providers.html">Provider IQ</a> leaderboard shows rankings at a glance.</p>
+
+    <!-- ─── PROOF ───────────────────────────────────────────────── -->
+    <h2 id="proof">Proof Engine</h2>
+    <p>The <a href="proof.html">Proof</a> page is AgoraIQ's public performance dashboard. It shows:</p>
+    <ul>
+      <li><strong>Live engine status</strong> — Total signals tracked, resolution rate, uptime.</li>
+      <li><strong>Resolved signals table</strong> — Every completed signal with entry, exit, PnL, and duration.</li>
+      <li><strong>Monthly performance</strong> — Win rate and average return by month.</li>
+      <li><strong>Verification</strong> — Each signal outcome is independently verifiable against public exchange data.</li>
+    </ul>
+
+    <p>The proof engine is public — no login required. This is how AgoraIQ demonstrates its value transparently.</p>
+
+    <!-- ─── PLANS ───────────────────────────────────────────────── -->
+    <h2 id="plans">Plans &amp; Pricing</h2>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-title"><span class="badge badge-free">FREE</span></div>
+        <div class="card-desc" style="margin-top:8px">
+          1 recent signal preview · Stripped view · Delayed data · Basic proof · Limited scanner
+        </div>
+      </div>
+      <div class="card" style="border-color:rgba(0,212,255,.3)">
+        <div class="card-title"><span class="badge badge-pro">PRO</span> — $29/mo or $228/yr</div>
+        <div class="card-desc" style="margin-top:8px">
+          Real-time signals · Telegram bot · Instant alerts · Full signal details (entry, SL, TP1, TP2) · Signal status updates · Basic filters · Watchlist alerts · Core dashboard tools
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="badge badge-elite">ELITE</span> — $99/mo or $790/yr</div>
+        <div class="card-desc" style="margin-top:8px">
+          Everything in Pro · Signal lifecycle tracking · AI score breakdown · Provider IQ · Advanced proof analytics · Win rate, expectancy, duration, drawdown · Premium scanner &amp; filters · Priority alerts · Narrative, whale &amp; regime overlays · Early access
+        </div>
+      </div>
+    </div>
+
+    <p>Upgrade from the <a href="pricing.html">Pricing</a> page or via <span class="code">/upgrade pro</span> or <span class="code">/upgrade elite</span> in Telegram. Yearly plans save up to 34%. All payments processed securely by Stripe.</p>
+
+    <!-- ─── MANAGE ──────────────────────────────────────────────── -->
+    <h2 id="manage">Manage Subscription</h2>
+    <p>Your subscription is managed through Stripe's customer portal. Access it from:</p>
+    <ul>
+      <li>The <a href="pricing.html">Pricing</a> page (click "Manage Subscription" when logged in)</li>
+      <li>Telegram: <span class="code">/billing</span></li>
+    </ul>
+
+    <p>From the portal you can:</p>
+    <ul>
+      <li><strong>Update payment method</strong> — Switch cards, update billing info.</li>
+      <li><strong>View invoices</strong> — Download past invoices and receipts.</li>
+      <li><strong>Cancel subscription</strong> — Takes effect at end of billing period. No partial refunds, but you keep access until expiry.</li>
+      <li><strong>Reactivate</strong> — If you cancelled but the period hasn't ended, you can reactivate.</li>
+    </ul>
+
+    <div class="callout success">
+      <strong>No lock-in:</strong> Cancel anytime from Stripe's portal. You keep full access until the end of your current billing period.
+    </div>
+
+    <p style="margin-top:48px;color:var(--text2);font-size:13px;text-align:center">
+      Can't find what you need? Check the <a href="kb.html">Knowledge Base</a> or <a href="faq.html">FAQ</a>.
+    </p>
+  </main>
+</div>
+
+<script>
+(function() {
+  "use strict";
+  // Highlight active sidebar link on scroll
+  var links = document.querySelectorAll(".sidebar a[href^='#']");
+  var sections = [];
+  for (var i = 0; i < links.length; i++) {
+    var id = links[i].getAttribute("href").slice(1);
+    var sec = document.getElementById(id);
+    if (sec) sections.push({ el: sec, link: links[i] });
+  }
+
+  function onScroll() {
+    var scrollY = window.scrollY + 100;
+    var active = null;
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].el.offsetTop <= scrollY) active = sections[i];
+    }
+    for (var j = 0; j < sections.length; j++) {
+      sections[j].link.classList.remove("active");
+    }
+    if (active) active.link.classList.add("active");
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+<footer class="legal-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">Agora<span style="color:var(--cyan,#00d4ff)">IQ</span></div>
+    <div class="footer-links">
+      <a href="terms.html">Terms</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="cookies.html">Cookies</a>
+      <a href="disclaimer.html">Disclaimer</a>
+      <a href="no-financial-advice.html">No Financial Advice</a>
+    </div>
+    <div class="footer-copy">&copy; 2026 ChatLogic Insights LTD. All rights reserved.</div>
+    <div class="footer-warn">&olarr; Not for UK Persons. AgoraIQ is not authorised or regulated by the FCA. Not directed at UK persons. Nothing on this site constitutes financial advice. Past performance does not guarantee future results.</div>
+  </div>
+</footer>
+</body>
+</html>
