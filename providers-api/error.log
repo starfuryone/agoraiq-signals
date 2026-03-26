@@ -1,0 +1,7 @@
+[ai/provider-iq] HF error: 410 {"error":"https://api-inference.huggingface.co is no longer supported. Please use https://router.huggingface.co instead."}
+[ai/provider-iq] HF error: 404 {"code":404,"reason":"MODEL_NOT_FOUND","message":"model not found","metadata":{"reason":"model: meta-llama/Meta-Llama-3.1-8B-Instruct not found"}}
+[ai/provider-iq] HF error: 404 Not Found
+[ai/provider-iq] HF error: 404 Not Found
+[ai/provider-iq] HF error: 404 Not Found
+[ai/provider-iq] HF error: 404 Not Found
+[ai/provider-iq] Perplexity error: 400 {"error":{"message":"Invalid model 'llama-3.1-sonar-small-128k-online'. Permitted models can be found in the documentation at https://docs.perplexity.ai/docs/getting-started/models.","type":"invalid_m

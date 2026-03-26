@@ -1,0 +1,4 @@
+2026-03-26 06:59:43: [price] fetch failed for STOUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=STOUSDT failed, reason: Socks5 proxy rejected connection - HostUnreachable
+2026-03-26 10:15:22: [price] fetch failed for UTKUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=UTKUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
+2026-03-26 11:30:56: [price] fetch failed for CVXUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=CVXUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
+2026-03-26 11:37:19: [price] fetch failed for LITUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=LITUSDT failed, reason: Client network socket disconnected before secure TLS connection was established

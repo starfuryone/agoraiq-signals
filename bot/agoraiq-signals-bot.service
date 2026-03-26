@@ -1,0 +1,22 @@
+[Unit]
+Description=AgoraIQ Signals Telegram Bot
+After=network.target redis-server.service postgresql.service
+
+[Service]
+Type=simple
+User=agoraiq
+Group=agoraiq
+WorkingDirectory=/opt/agoraiq-signals/bot
+EnvironmentFile=/opt/agoraiq-signals/bot/.env
+ExecStart=/opt/agoraiq-signals/bot/.venv/bin/python3 bot.py
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=agoraiq-signals-bot
+NoNewPrivileges=yes
+ProtectSystem=strict
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target
