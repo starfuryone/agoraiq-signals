@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Signal Feed — AgoraIQ Signals</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Mono:wght@400;500&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@700;900&display=swap" rel="stylesheet">
 <style>
 /* === SUBTITLE STYLE === */
 .subtitle, .container > p, h1 + p {
@@ -203,7 +203,7 @@ tbody tr:hover td{background:rgba(255,255,255,.02);cursor:pointer}
 
 /* Score panel */
 .score-hero{text-align:center;padding:24px 0 20px;border-bottom:1px solid var(--border);margin-bottom:20px}
-.score-num{font-family:var(--syne);font-weight:800;font-size:64px;line-height:1;background:linear-gradient(135deg,#fff 30%,var(--cyan));-webkit-background-clip: unset;-webkit-text-fill-color: unset;margin-top:6px;text-transform:uppercase;letter-spacing:.12em;font-family:var(--mono);font-weight:500}
+.score-num{font-family:var(--syne);font-weight:800;font-size:64px;line-height:1;color:var(--cyan);-webkit-text-fill-color:var(--cyan);margin-top:6px}
 .score-rows{display:flex;flex-direction:column;gap:13px;padding-bottom:24px}
 .score-row{display:flex;align-items:center;gap:10px}
 .score-row .sname{font-size:12px;color:var(--text2);width:175px;flex-shrink:0;font-family:var(--sans)}
@@ -325,6 +325,36 @@ tbody tr:hover td{background:rgba(255,255,255,.02);cursor:pointer}
   <h1>Signal <span class="accent">Feed</span></h1>
   <p class="subtitle">Real-time AI-scored trading signals from the scanner and verified providers</p>
 
+  <div class="signal-features" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:28px;padding:20px;background:var(--surface,#0f1018);border:1px solid var(--border,#1e2030);border-radius:12px">
+    <div style="display:flex;align-items:flex-start;gap:10px">
+      <span style="font-size:20px">📡</span>
+      <div>
+        <strong style="font-size:13px;color:var(--text,#e2e4ef);display:block;margin-bottom:2px">Live Scanner</strong>
+        <span style="font-size:11px;color:var(--text2,#8b92a8);line-height:1.5">Breakout signals detected every 5 min from 500+ USDT pairs on Binance</span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:flex-start;gap:10px">
+      <span style="font-size:20px">🤖</span>
+      <div>
+        <strong style="font-size:13px;color:var(--text,#e2e4ef);display:block;margin-bottom:2px">AI Scored</strong>
+        <span style="font-size:11px;color:var(--text2,#8b92a8);line-height:1.5">Each signal scored 0–100 based on volume, momentum, and price action</span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:flex-start;gap:10px">
+      <span style="font-size:20px">🔍</span>
+      <div>
+        <strong style="font-size:13px;color:var(--text,#e2e4ef);display:block;margin-bottom:2px">Click Any Row</strong>
+        <span style="font-size:11px;color:var(--text2,#8b92a8);line-height:1.5">Tap a signal to open the detail drawer with full AI breakdown and timeline</span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:flex-start;gap:10px">
+      <span style="font-size:20px">✅</span>
+      <div>
+        <strong style="font-size:13px;color:var(--text,#e2e4ef);display:block;margin-bottom:2px">Verified Outcomes</strong>
+        <span style="font-size:11px;color:var(--text2,#8b92a8);line-height:1.5">Every signal tracked to resolution — TP hit, SL hit, or expired</span>
+      </div>
+    </div>
+  </div>
   <div class="auth-bar" id="authBar">
     <p id="authMsg">Sign in for full signal details and real-time access.</p>
     <div class="actions" id="authActions"></div>

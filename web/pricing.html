@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pricing — AgoraIQ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Mono:wght@400;500&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@700;900&display=swap" rel="stylesheet">
 <style>
 /* === SUBTITLE STYLE === */
 .subtitle, .container > p, h1 + p {
@@ -96,7 +96,8 @@ body{min-height:100vh}
 
 .container{max-width:960px;margin:0 auto;padding:48px 24px}
 .page-header{text-align:center;margin-bottom:48px}
-.page-header h1{/* inherited from styles.css */ font-weight:800;font-size:36px;margin-bottom:12px;background:linear-gradient(135deg,#fff 30%,var(--cyan));-webkit-background-clip: unset;-webkit-text-fill-color: unset;font-size:15px;max-width:480px;margin:0 auto}
+.page-header h1{text-align:center;margin-bottom:24px}
+.page-header .subtitle{max-width:720px;margin-left:auto;margin-right:auto}
 
 .current-plan{background:var(--surface);border:1px solid var(--cyan);border-radius:12px;padding:20px 24px;margin-bottom:40px;display:none;text-align:center}
 .current-plan .plan-label{font-family:var(--syne);font-weight:700;font-size:16px;color:var(--cyan);margin-bottom:4px}
@@ -161,7 +162,8 @@ body{min-height:100vh}
   .pricing-grid{grid-template-columns:1fr}
   .plan-card.featured{order:-1}
   .container{padding:32px 16px}
-  .page-header h1{font-size:28px}
+  .page-header h1{text-align:center;margin-bottom:24px}
+.page-header .subtitle{max-width:720px;margin-left:auto;margin-right:auto}
 }
 
 .legal-footer{background:var(--surface,#0e1017);border-top:1px solid var(--border,#1e2230);padding:32px 24px;margin-top:48px;text-align:center;font-size:12px;font-family:var(--sans,'Albert Sans',sans-serif);color:var(--text2,#8b92a8)}
@@ -208,7 +210,7 @@ body{min-height:100vh}
 
   <div class="page-header">
     <h1>Choose Your <span class="accent">Edge</span></h1>
-    <p>Real-time signal intelligence, verified performance, and tools that let you trade — not guess.</p>
+    <p class="subtitle">Real-time signal intelligence, verified performance, and tools that let you trade — not guess.</p>
   </div>
 
   <!-- Billing toggle -->

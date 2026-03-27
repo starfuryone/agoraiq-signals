@@ -154,3 +154,5 @@ Error: bind EADDRINUSE 127.0.0.1:4300
     at process.processTicksAndRejections (node:internal/process/task_queues:83:21)
 2026-03-26 19:30:27: [providers] column "channel" does not exist
 2026-03-26 19:30:34: [providers] column "channel" does not exist
+2026-03-26 22:51:24: [ai] HF 404: Not Found
+2026-03-26 23:12:44: [ai] HF 404: Not Found
