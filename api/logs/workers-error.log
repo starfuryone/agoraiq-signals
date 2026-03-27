@@ -2,3 +2,6 @@
 2026-03-26 10:15:22: [price] fetch failed for UTKUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=UTKUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
 2026-03-26 11:30:56: [price] fetch failed for CVXUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=CVXUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
 2026-03-26 11:37:19: [price] fetch failed for LITUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=LITUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
+2026-03-27 04:54:22: [price] Binance failed for TONUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=TONUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
+2026-03-27 09:12:23: [price] Binance failed for ACTUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=ACTUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
+2026-03-27 11:29:55: [price] Binance failed for DYDXUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=DYDXUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
