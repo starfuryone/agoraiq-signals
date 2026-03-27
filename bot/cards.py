@@ -515,3 +515,131 @@ def provider_keyboard(slug, channel=""):
         buttons.append([InlineKeyboardButton(f"📡 Open @{channel}", url=f"https://t.me/{channel}")])
     buttons.append([InlineKeyboardButton("📋 All Providers", url=f"{APP_URL}/providers.html")])
     return InlineKeyboardMarkup(buttons)
+
+
+# ═══════════════════════════════════════════════════════════════════
+#  SIGNAL FORMATTER CARD  — Pro + Elite only
+# ═══════════════════════════════════════════════════════════════════
+
+def format_card(parsed: Dict[str, Any], raw: str) -> str:
+    """Clean structured signal card from parsed result."""
+    symbol    = parsed.get("symbol") or parsed.get("pair", "?")
+    direction = parsed.get("direction") or parsed.get("side") or parsed.get("action", "?")
+    entry     = parsed.get("entry") or parsed.get("price")
+    stop      = parsed.get("stop") or parsed.get("stopLoss") or parsed.get("stop_loss")
+    targets   = parsed.get("targets") or parsed.get("takeProfits") or []
+    leverage  = parsed.get("leverage")
+    exchange  = parsed.get("exchange", "")
+    timeframe = parsed.get("timeframe") or parsed.get("tf", "")
+    conf      = parsed.get("confidence") or parsed.get("aiScore")
+
+    dir_emoji = "🟢" if str(direction).upper() in ("LONG","BUY") else "🔴"
+
+    lines = [f"✅ {_b('Formatted Signal')}"]
+    lines.append("")
+    lines.append(f"{dir_emoji} {_b(_e(f'{symbol} {str(direction).upper()}'))}")
+    lines.append("")
+
+    if entry is not None:
+        lines.append(f"💰 Entry:  {_m(_usd(entry))}")
+    if targets:
+        for i, tp in enumerate(targets[:4], 1):
+            # calculate % move from entry
+            if entry and isinstance(tp, (int,float)) and isinstance(entry, (int,float)) and entry > 0:
+                pct = ((tp - entry) / entry) * 100
+                sign = "+" if pct > 0 else ""
+                pct_str = ' \\(' + _e(f'{sign}{pct:.2f}%') + '\\)'
+            else:
+                pct_str = ""
+            lines.append(f"🎯 TP{i}:   {_m(_usd(tp))}{pct_str}")
+    if stop is not None:
+        lines.append(f"🛑 SL:    {_m(_usd(stop))}")
+        # R:R ratio
+        if entry and isinstance(stop, (int,float)) and isinstance(entry, (int,float)) and entry != stop:
+            risk = abs(entry - stop)
+            if targets and isinstance(targets[0], (int,float)):
+                reward = abs(targets[0] - entry)
+                rr = reward / risk if risk > 0 else 0
+                lines.append(f"⚖️ R:R \(TP1\): {_b(_e(f'1 : {rr:.2f}'))}")
+    if leverage:
+        lines.append(f"⚡ Leverage: {_b(_e(str(leverage)))}")
+    if exchange:
+        lines.append(f"🏦 Exchange: {_e(exchange)}")
+    if timeframe:
+        lines.append(f"⏱ Timeframe: {_e(timeframe)}")
+    lines.append("")
+    if conf is not None:
+        c = int(conf) if isinstance(conf, (int,float)) and conf > 1 else int(conf*100) if isinstance(conf, float) else conf
+        lines.append(f"🧠 AI Confidence: {_b(f'{c}%')}")
+
+    lines.append("")
+    lines.append("─────────────────────────")
+    lines.append(f"_Use /track to start tracking this signal_")
+
+    return "\n".join(lines)
+
+
+def format_card_locked() -> str:
+    lines = [
+        f"🧹 {_b('Signal Formatter')}",
+        "",
+        "Paste any messy signal and get back a clean, structured version:",
+        "→ Symbol, direction, entry, SL, TPs extracted",
+        "→ R:R ratio pre\-calculated",
+        "→ % move to each TP shown",
+        "→ Works with any format or language",
+        "",
+        f"Available on {_b('PRO')} and {_b('ELITE')} plans\.",
+        "💎 Upgrade from $19/mo",
+    ]
+    return "\n".join(lines)
+
+
+def format_card_plain(parsed, raw=""):
+    """Plain text signal card — no MarkdownV2 escaping needed."""
+    symbol    = parsed.get("symbol") or parsed.get("pair", "?")
+    direction = parsed.get("direction") or parsed.get("side") or parsed.get("action", "?")
+    entry     = parsed.get("entry") or parsed.get("price")
+    stop      = parsed.get("stop") or parsed.get("stopLoss") or parsed.get("stop_loss")
+    targets   = parsed.get("targets") or parsed.get("takeProfits") or []
+    leverage  = parsed.get("leverage")
+    exchange  = parsed.get("exchange", "")
+    timeframe = parsed.get("timeframe") or parsed.get("tf", "")
+
+    dir_emoji = "🟢" if str(direction).upper() in ("LONG","BUY") else "🔴"
+
+    def usd(val):
+        if val is None: return "—"
+        return f"${val:,.2f}" if isinstance(val, (int, float)) else str(val)
+
+    lines = ["✅ Formatted Signal", ""]
+    lines.append(f"{dir_emoji} {symbol} {str(direction).upper()}")
+    lines.append("")
+    if entry is not None:
+        lines.append(f"💰 Entry:  {usd(entry)}")
+    if targets:
+        for i, tp in enumerate(targets[:4], 1):
+            pct_str = ""
+            if entry and isinstance(tp, (int,float)) and isinstance(entry, (int,float)) and entry > 0:
+                pct = ((tp - entry) / entry) * 100
+                sign = "+" if pct > 0 else ""
+                pct_str = f" ({sign}{pct:.2f}%)"
+            lines.append(f"🎯 TP{i}:   {usd(tp)}{pct_str}")
+    if stop is not None:
+        lines.append(f"🛑 SL:    {usd(stop)}")
+        if entry and isinstance(stop, (int,float)) and isinstance(entry, (int,float)) and entry != stop:
+            risk = abs(entry - stop)
+            if targets and isinstance(targets[0], (int,float)):
+                reward = abs(targets[0] - entry)
+                rr = reward / risk if risk > 0 else 0
+                lines.append(f"⚖️ R:R (TP1): 1 : {rr:.2f}")
+    if leverage:
+        lines.append(f"⚡ Leverage: {leverage}")
+    if exchange:
+        lines.append(f"🏦 Exchange: {exchange}")
+    if timeframe:
+        lines.append(f"⏱ Timeframe: {timeframe}")
+    lines.append("")
+    lines.append("─────────────────────────")
+    lines.append("Use /track to start tracking this signal")
+    return "\n".join(lines)

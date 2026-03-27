@@ -18,6 +18,31 @@ function getPushQueue() {
 
 const router = Router();
 
+function requirePlan(...plans) {
+  return async (req, res, next) => {
+    try {
+      const { rows } = await db.query(
+        `SELECT bs.plan_tier, bs.status, bs.expires_at
+         FROM bot_subscriptions bs
+         JOIN bot_users bu ON bu.id = bs.bot_user_id
+         WHERE bu.id = $1`,
+        [req.userId]
+      );
+      const sub = rows[0];
+      if (!sub) return res.status(403).json({ error: 'No active subscription' });
+      const plan = sub.plan_tier;
+      const active = sub.status === 'active' && (!sub.expires_at || new Date() < new Date(sub.expires_at));
+      if (!active || !plans.includes(plan)) {
+        return res.status(403).json({ error: `Requires ${plans.join(' or ')} plan` });
+      }
+      next();
+    } catch (err) {
+      res.status(500).json({ error: 'Plan check failed' });
+    }
+  };
+}
+
+
 const SIGNAL_LIMITS = { free: 1, pro: 50, elite: 50 };
 
 // ─────────────────────────────────────────────────────────────────
@@ -259,6 +284,23 @@ router.get("/", optionalAuth, attachPlan, async (req, res) => {
   } catch (err) {
     console.error("[signals]", err.message);
     res.status(500).json({ error: "Internal error" });
+  }
+});
+
+
+// ── POST /api/v1/signals/format ──────────────────────────────────
+// Parse a raw signal text without tracking it. Pro + Elite only.
+router.post('/format', requireAuth, async (req, res) => {
+  const { text } = req.body;
+  if (!text || !text.trim()) return res.status(400).json({ error: 'text required' });
+
+  try {
+    const parsed = parseSignal(text);
+    if (parsed && parsed.symbol) return res.json(parsed);
+    return res.status(422).json({ error: 'could not parse signal' });
+  } catch (err) {
+    console.error('[signals/format]', err.message);
+    res.status(500).json({ error: 'parse failed' });
   }
 });
 

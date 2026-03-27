@@ -729,6 +729,26 @@ TRACK_INPUT = range(1)
 @rate_limited
 @require_link
 async def cmd_track(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> int:
+    # Auto-submit if we have a recently formatted signal
+    last_signal = ctx.user_data.pop("last_formatted_signal", None)
+    if last_signal:
+        token = store.get_token(update.effective_user.id)
+        try:
+            result = await api.signal_submit(token, last_signal)
+            sig = result if isinstance(result, dict) else {}
+            sym = sig.get("symbol", sig.get("pair", "\u2014"))
+            side = sig.get("action", sig.get("side", "\u2014"))
+            status = sig.get("parse_status", sig.get("status", "submitted"))
+            await update.message.reply_text(
+                f"\u2705 Signal submitted!\n\n"
+                f"\U0001f4ca Pair: {sym}\n"
+                f"\U0001f4cd Side: {side}\n"
+                f"\U0001f4cb Status: {status}\n\n"
+                "AgoraIQ will track this against market data.",
+            )
+            return ConversationHandler.END
+        except Exception as e:
+            log.error(f"Auto-track submit failed: {e}")
     await update.message.reply_text(
         f"📝 {bold('Submit a signal to track')}\n\n"
         "Paste your signal in this format:\n\n"
@@ -1487,11 +1507,11 @@ def main() -> None:
         app.add_handler(CommandHandler(cmd, fn))
 
     log.info("Starting AgoraIQ Breakout Bot…")
+    # /format — Signal Formatter
+    app.add_handler(CommandHandler("format", cmd_format))
     app.run_polling(drop_pending_updates=True)
 
 
-if __name__ == "__main__":
-    main()
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -1558,7 +1578,7 @@ async def cmd_provider(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
 
     if not provider:
         await update.message.reply_text(
-            f"❌ No provider found matching \`{cards._e(name_query)}\`\.\n\nUse /providers to browse all\.",
+            f"❌ No provider found matching `{cards._e(name_query)}`\.\n\nUse /providers to browse all\.",
             parse_mode="MarkdownV2",
         )
         return
@@ -1575,3 +1595,71 @@ async def cmd_provider(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
         parse_mode="MarkdownV2",
         reply_markup=cards.provider_keyboard(slug, channel),
     )
+
+
+# ═══════════════════════════════════════════════════════════════════
+#  /format  — Signal Formatter (Pro + Elite)
+#  Register in main():
+#    app.add_handler(CommandHandler("format", cmd_format))
+#    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, cmd_format_message))
+#  Add to BotCommand list:
+#    BotCommand("format", "Clean + structure any signal (Pro+)"),
+# ═══════════════════════════════════════════════════════════════════
+
+@rate_limited
+async def cmd_format(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    """
+    /format <signal text>
+    Or just send a message after /format with no args — bot will ask.
+    Pro + Elite only.
+    """
+    user = update.effective_user
+    plan = cards.get_plan(update, store)
+
+    if not cards.is_premium(plan):
+        await update.message.reply_text(
+            cards.format_card_locked(),
+            parse_mode="MarkdownV2",
+            reply_markup=cards.InlineKeyboardMarkup([[
+                cards.InlineKeyboardButton("💎 Upgrade to Pro", url=f"{LANDING}/pricing")
+            ]]),
+        )
+        return
+
+    # Get text from args or prompt
+    raw = " ".join(ctx.args).strip() if ctx.args else ""
+    if not raw:
+        await update.message.reply_text(
+            "📋 Paste your signal text and I'll clean it up\.\n\nExample:\n`/format BTCUSDT long entry 95000 sl 93000 tp1 97000 tp2 99000`",
+            parse_mode="MarkdownV2",
+        )
+        return
+
+    token = store.get_token(user.id)
+
+    try:
+        result = await api.signal_format(token, raw)
+        parsed = result if isinstance(result, dict) else {}
+
+        if not parsed.get("symbol"):
+            await update.message.reply_text(
+                "⚠️ Couldn\'t parse that signal\. Try including symbol, direction, entry, SL and TP\.",
+                parse_mode="MarkdownV2",
+            )
+            return
+
+        ctx.user_data["last_formatted_signal"] = raw
+        msg = cards.format_card_plain(parsed, raw)
+        await update.message.reply_text(
+            msg,
+            reply_markup=cards.InlineKeyboardMarkup([[
+                cards.InlineKeyboardButton("📊 Track this signal", url=f"{APP_URL}/track.html"),
+            ]]),
+        )
+
+    except Exception as e:
+        log.warning("cmd_format error: %s", e)
+        await update.message.reply_text("⚠️ Could not format signal\. Try again shortly\.", parse_mode="MarkdownV2")
+
+if __name__ == "__main__":
+    main()
