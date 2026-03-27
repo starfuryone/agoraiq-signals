@@ -113,7 +113,7 @@ def signal_card_full(s: Dict[str, Any]) -> str:
 
 
 def signal_card_locked(s: Dict[str, Any]) -> str:
-    """Teaser card for free users — shows just enough to create FOMO."""
+    """Teaser card for expired/unsubscribed users."""
     symbol = s.get("symbol", "?")
     direction = s.get("direction", s.get("action", s.get("side", "?")))
     entry = s.get("entry", s.get("price"))
@@ -140,7 +140,7 @@ def signal_card_locked(s: Dict[str, Any]) -> str:
     lines.append("  ✔ Verified provider edge")
     lines.append("  ✔ Entry, TP, SL targets")
     lines.append("")
-    lines.append(f"Upgrade to {_b('PRO')} to unlock:")
+    lines.append(f"Start your {_b('1\-day free trial')} or upgrade:")
     lines.append("→ Real\\-time breakout alerts")
     lines.append("→ Full signal details \\+ AI scoring")
     lines.append("→ Signal tracking \\+ PnL")
@@ -360,12 +360,158 @@ def proof_keyboard() -> InlineKeyboardMarkup:
 # ═══════════════════════════════════════════════════════════════════
 
 def get_plan(update, store_module) -> str:
-    """Get user's plan tier, returns 'free' if not linked."""
+    """Get user's plan tier. Returns 'expired' if trial is past expiry."""
+    import datetime
     user = store_module.get_user(update.effective_user.id)
     if not user:
-        return "free"
-    return user.get("plan_tier", "free")
+        return "no_account"
+    plan = user.get("plan_tier", "trial")
+    if plan == "trial":
+        expires = user.get("expires_at")
+        if expires:
+            try:
+                exp_dt = datetime.datetime.fromisoformat(str(expires).replace("Z", "+00:00"))
+                if datetime.datetime.now(datetime.timezone.utc) > exp_dt:
+                    return "expired"
+            except Exception:
+                pass
+    return plan
 
 
 def is_premium(plan: str) -> bool:
-    return plan in ("pro", "elite")
+    return plan in ("trial", "pro", "elite")
+
+
+# ═══════════════════════════════════════════════════════════════════
+#  PROVIDER INTELLIGENCE CARDS  — Pro + Elite only
+# ═══════════════════════════════════════════════════════════════════
+
+def provider_card(p, tg_info=None):
+    """
+    Rich provider intelligence card.
+    p         — provider row from DB / API
+    tg_info   — dict from Telegram getChat (optional)
+    """
+    name        = p.get("name", "Unknown")
+    channel     = p.get("channel", "")
+    platform    = p.get("platform", "telegram")
+    market      = p.get("market_type") or "—"
+    style       = p.get("trading_style") or "—"
+    exchange    = p.get("exchange_focus") or "—"
+    tier        = p.get("marketplace_tier", "PENDING")
+    verified    = p.get("is_verified", False)
+    description = p.get("description") or ""
+    slug        = p.get("slug") or ""
+
+    tg_members  = None
+    channel_age = None
+    if tg_info:
+        tg_members  = tg_info.get("members")
+        channel_age = tg_info.get("age_days")
+
+    stats       = p.get("stats") or {}
+    sig_count   = stats.get("signal_count") or p.get("signal_count")
+    win_rate    = stats.get("win_rate")
+    avg_rr      = stats.get("avg_rr")
+    last_signal = stats.get("last_signal_ago")
+    weekly_freq = stats.get("weekly_frequency")
+
+    tier_badge = {
+        "ELITE":    "💎 ELITE",
+        "VERIFIED": "✅ VERIFIED",
+        "BETA":     "🧪 BETA",
+        "PENDING":  "🕐 PENDING",
+    }.get(tier, tier)
+
+    lines = []
+    v_badge = " ☑️" if verified else ""
+    lines.append(f"👤 {_b(_e(name))}{v_badge}")
+    lines.append(f"🏷 {_e(tier_badge)}")
+    lines.append("")
+
+    if description:
+        lines.append(f"_{_e(description[:120])}_")
+        lines.append("")
+
+    lines.append(f"📊 {_b('Profile')}")
+    lines.append(f"  Market:    {_e(market)}")
+    lines.append(f"  Style:     {_e(style)}")
+    lines.append(f"  Exchange:  {_e(exchange)}")
+    lines.append(f"  Platform:  {_e(platform.capitalize())}")
+    lines.append("")
+
+    if tg_members is not None or channel_age is not None:
+        lines.append(f"📡 {_b('Telegram Intel')}")
+        if tg_members is not None:
+            lines.append(f"  Members:  {_b(_e(f'{tg_members:,}'))}")
+        if channel_age is not None:
+            years = channel_age // 365
+            months = (channel_age % 365) // 30
+            age_str = f"{years}y {months}m" if years else f"{months}m"
+            lines.append(f"  Age:      {_b(_e(age_str))}")
+        if channel:
+            lines.append(f"  Channel:  @{_e(channel)}")
+        lines.append("")
+
+    has_stats = any(x is not None for x in [sig_count, win_rate, avg_rr])
+    if has_stats:
+        lines.append(f"📈 {_b('Performance')}")
+        if sig_count is not None:
+            lines.append(f"  Signals:   {_b(_e(str(sig_count)))}")
+        if weekly_freq is not None:
+            lines.append(f"  Frequency: {_b(_e(f'{weekly_freq:.1f}/wk'))}")
+        if win_rate is not None:
+            lines.append(f"  Win Rate:  {_b(_pct(win_rate))}")
+        if avg_rr is not None:
+            lines.append(f"  Avg R:R:   {_b(_e(f'{avg_rr:.2f}'))}")
+        if last_signal:
+            lines.append(f"  Last Signal: {_e(last_signal)}")
+        lines.append("")
+    else:
+        lines.append(f"📈 {_b('Performance')}")
+        lines.append("  _No tracked signals yet_")
+        lines.append("")
+
+    return "\n".join(lines)
+
+
+def provider_card_locked():
+    lines = [
+        f"👤 {_b('Provider Intelligence')}",
+        "",
+        "Get deep due\-diligence on any signal provider:",
+        "→ Live Telegram member count",
+        "→ Channel age \+ posting frequency",
+        "→ Win rate \+ R:R performance",
+        "→ Market type \+ trading style",
+        "",
+        f"Available on {_b('PRO')} and {_b('ELITE')} plans\.",
+        f"💎 Upgrade from $19/mo",
+    ]
+    return "\n".join(lines)
+
+
+def provider_list_card(providers, page=1, total=0):
+    lines = [f"📋 {_b('Signal Providers')} \({_e(str(total))} total\)\n"]
+    tier_order = {"ELITE": 0, "VERIFIED": 1, "BETA": 2, "PENDING": 3}
+    sorted_p = sorted(providers, key=lambda x: tier_order.get(x.get("marketplace_tier", "PENDING"), 9))
+    for p in sorted_p[:15]:
+        name  = p.get("name", "?")
+        tier  = p.get("marketplace_tier", "PENDING")
+        mkt   = p.get("market_type") or ""
+        badge = {"ELITE": "💎", "VERIFIED": "✅", "BETA": "🧪", "PENDING": "⚪"}.get(tier, "⚪")
+        mkt_str = f" · {_e(mkt)}" if mkt else ""
+        lines.append(f"{badge} {_b(_e(name))}{mkt_str}")
+    lines.append("")
+    lines.append("Use /provider NAME for full intelligence card")
+    return "\n".join(lines)
+
+
+def provider_keyboard(slug, channel=""):
+    buttons = []
+    if slug:
+        buttons.append([InlineKeyboardButton("📊 Full Profile", url=f"{APP_URL}/providers.html?slug={slug}")])
+    if channel:
+        buttons.append([InlineKeyboardButton(f"📡 Open @{channel}", url=f"https://t.me/{channel}")])
+    buttons.append([InlineKeyboardButton("📋 All Providers", url=f"{APP_URL}/providers.html")])
+    return InlineKeyboardMarkup(buttons)

@@ -1,0 +1,27 @@
+ api/logs/error.log           |    2 [32m+[m
+ api/logs/out.log             |  128 [32m++[m
+ api/logs/workers-error.log   |    3 [32m+[m
+ api/logs/workers-out.log     | 3706 [32m++++++++++++++++++++++++++++++++++++++++++[m
+ api/src/routes/providers.js  |  300 [32m+[m[31m---[m
+ bot/api.py                   |   40 [32m+[m
+ bot/bot.py                   |   85 [32m+[m
+ bot/cards.py                 |  135 [32m++[m
+ providers-api/out.log        |    4 [32m+[m
+ web/alerts.html              |    2 [32m+[m[31m-[m
+ web/cookies.html             |    2 [32m+[m[31m-[m
+ web/disclaimer.html          |    2 [32m+[m[31m-[m
+ web/faq.html                 |    4 [32m+[m[31m-[m
+ web/help.html                |    4 [32m+[m[31m-[m
+ web/kb.html                  |    4 [32m+[m[31m-[m
+ web/no-financial-advice.html |    2 [32m+[m[31m-[m
+ web/pricing.html             |   10 [32m+[m[31m-[m
+ web/privacy.html             |    2 [32m+[m[31m-[m
+ web/proof.html               |    2 [32m+[m[31m-[m
+ web/providers.html           |    2 [32m+[m[31m-[m
+ web/scanner.html             |    2 [32m+[m[31m-[m
+ web/signals.html             |   34 [32m+[m[31m-[m
+ web/styles.css               |   16 [32m+[m[31m-[m
+ web/terms.html               |    2 [32m+[m[31m-[m
+ web/track.html               |    3 [32m+[m[31m-[m
+ web/watchlist.html           |    2 [32m+[m[31m-[m
+ 26 files changed, 4236 insertions(+), 262 deletions(-)

@@ -1325,7 +1325,7 @@ async def cmd_billing(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
         plan = status.get("plan", "free")
         sub_status = status.get("status", "none")
 
-        if plan == "free" or sub_status == "none":
+        if plan in ("free", "expired", "no_account") or sub_status == "none":
             await update.message.reply_text(
                 f"📋 {bold('Billing')}\n\n"
                 f"Plan: {bold('Free')}\n\n"
@@ -1492,3 +1492,86 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
+# ═══════════════════════════════════════════════════════════════════
+#  PROVIDER COMMANDS
+#  Register in main():
+#    app.add_handler(CommandHandler("provider",  cmd_provider))
+#    app.add_handler(CommandHandler("providers", cmd_providers))
+# ═══════════════════════════════════════════════════════════════════
+
+@rate_limited
+async def cmd_providers(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    user = update.effective_user
+    token = store.get_token(user.id)
+    try:
+        data = await api.providers_list(token)
+        providers = data if isinstance(data, list) else data.get("providers", [])
+        total = len(providers)
+        msg = cards.provider_list_card(providers, total=total)
+        await update.message.reply_text(
+            msg,
+            parse_mode="MarkdownV2",
+            reply_markup=cards.InlineKeyboardMarkup([[
+                cards.InlineKeyboardButton("🌐 Browse on Web", url=f"{APP_URL}/providers.html")
+            ]]),
+        )
+    except Exception as e:
+        log.warning("cmd_providers error: %s", e)
+        await update.message.reply_text("⚠️ Could not load providers. Try again shortly.")
+
+
+@rate_limited
+async def cmd_provider(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    user = update.effective_user
+    plan = cards.get_plan(update, store)
+
+    if not cards.is_premium(plan):
+        await update.message.reply_text(
+            cards.provider_card_locked(),
+            parse_mode="MarkdownV2",
+            reply_markup=cards.InlineKeyboardMarkup([[
+                cards.InlineKeyboardButton("💎 Upgrade to Pro", url=f"{LANDING}/pricing")
+            ]]),
+        )
+        return
+
+    name_query = " ".join(ctx.args).strip() if ctx.args else ""
+    if not name_query:
+        await update.message.reply_text(
+            "Usage: `/provider NAME`\nExample: `/provider Fat Pig Signals`",
+            parse_mode="MarkdownV2",
+        )
+        return
+
+    token = store.get_token(user.id)
+    try:
+        data = await api.provider_by_name(name_query, token)
+        provider = data if isinstance(data, dict) and "name" in data else (
+            data[0] if isinstance(data, list) and data else None
+        )
+    except Exception as e:
+        log.warning("provider lookup error: %s", e)
+        await update.message.reply_text("⚠️ Provider not found. Check the name and try again.")
+        return
+
+    if not provider:
+        await update.message.reply_text(
+            f"❌ No provider found matching \`{cards._e(name_query)}\`\.\n\nUse /providers to browse all\.",
+            parse_mode="MarkdownV2",
+        )
+        return
+
+    channel = provider.get("channel", "")
+    tg_info = {}
+    if channel and provider.get("platform", "telegram") == "telegram":
+        tg_info = await api.get_telegram_channel_info(ctx.bot, channel)
+
+    msg = cards.provider_card(provider, tg_info=tg_info)
+    slug = provider.get("slug", "")
+    await update.message.reply_text(
+        msg,
+        parse_mode="MarkdownV2",
+        reply_markup=cards.provider_keyboard(slug, channel),
+    )

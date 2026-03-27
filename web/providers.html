@@ -161,6 +161,15 @@ tr:hover td{background:var(--surface2)}
 .piq-sparkline-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);font-family:var(--mono);margin-bottom:8px}
 .piq-sparkline-svg{display:block;width:100%;overflow:visible}
 .piq-sparkline-axis{font-size:9px;fill:var(--text2);font-family:var(--mono)}
+
+.providers-gate{position:relative}
+.providers-blur{filter:blur(4px);pointer-events:none;user-select:none;opacity:.5}
+.upgrade-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(8,9,13,.92);border:1px solid rgba(0,212,255,.25);border-radius:16px;padding:36px 40px;text-align:center;z-index:10;width:90%;max-width:420px;backdrop-filter:blur(8px)}
+.upgrade-overlay h3{font-family:var(--syne,'Syne',sans-serif);font-weight:800;font-size:20px;color:#fff;margin:0 0 10px}
+.upgrade-overlay p{color:#8b90b0;font-size:14px;line-height:1.6;margin:0 0 20px}
+.upgrade-overlay .u-btn{display:inline-block;background:#00d4ff;color:#08090d;font-weight:700;font-size:14px;padding:11px 28px;border-radius:8px;text-decoration:none;transition:opacity .2s}
+.upgrade-overlay .u-btn:hover{opacity:.85}
+.upgrade-overlay .u-plan{display:inline-block;background:rgba(0,212,255,.1);color:#00d4ff;font-size:11px;font-weight:700;letter-spacing:1px;padding:3px 10px;border-radius:20px;margin-bottom:14px}
 </style>
 </head>
 <body>
@@ -169,8 +178,8 @@ tr:hover td{background:var(--surface2)}
   <h1>Provider <span class="accent">IQ</span></h1>
   <p class="subtitle" style="margin-bottom:48px">Signal providers ranked by verified performance — not marketing claims</p>
   
-  <div class="grid" id="grid"></div>
-  <div class="empty" id="empty" style="display:none">No providers tracked yet.</div>
+  <div class="providers-gate" id="providerGate"><div class="grid" id="grid"></div>
+  </div><div class="empty" id="empty" style="display:none">No providers tracked yet.</div>
 
 </div>
 <script>
@@ -179,28 +188,63 @@ tr:hover td{background:var(--surface2)}
   var API = '/api/v1';
   function el(t,c,x){var n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=String(x);return n}
 
+  function renderProviders(items, isPro) {
+    var g=document.getElementById("grid"),em=document.getElementById("empty");
+    if(!items.length){em.style.display="block";return}
+    for(var i=0;i<items.length;i++){
+      var p=items[i],c=el("div","card");
+      c.appendChild(el("div","card-sym",p.name||p.channel||"Provider #"+p.id));
+      var wr=p.winRate||p.winRate;
+      if(wr!=null){var r1=el("div","card-row");r1.appendChild(el("span",null,"Win Rate"));var v1=el("span","v g",(wr<=1?(wr*100).toFixed(1):Number(wr).toFixed(1))+"%");r1.appendChild(v1);c.appendChild(r1)}
+      var sc=p.totalSignals||p.signalCount||p.total;
+      if(sc!=null){var r2=el("div","card-row");r2.appendChild(el("span",null,"Signals"));r2.appendChild(el("span","v",String(sc)));c.appendChild(r2)}
+      var pl=p.platform||"telegram";
+      var r3=el("div","card-row");r3.appendChild(el("span",null,"Platform"));r3.appendChild(el("span","v",pl));c.appendChild(r3);
+      g.appendChild(c);
+      var aiRow=document.createElement('div');aiRow.style.cssText='padding-top:6px';
+      var aiBtn=document.createElement('button');aiBtn.className='piq-ai-btn';
+      aiBtn.innerHTML='&#9889; AI Insight';
+      (function(provider){aiBtn.addEventListener('click',function(e){e.stopPropagation();requestAiInsight(provider);});})(p);
+      aiRow.appendChild(aiBtn);c.appendChild(aiRow);
+    }
+    // If pro (not elite) — blur and show upgrade overlay
+    if(!isPro) {
+      var gate = document.getElementById("providerGate");
+      var gridEl = document.getElementById("grid");
+      gridEl.classList.add("providers-blur");
+      var overlay = document.createElement("div");
+      overlay.className = "upgrade-overlay";
+      overlay.innerHTML = '<div class="u-plan">ELITE FEATURE</div>'
+        + '<h3>Provider Intelligence</h3>'
+        + '<p>Full provider rankings, AI scoring, win rates, and verified performance data are available on the Elite plan.</p>'
+        + '<a class="u-btn" href="pricing.html">Upgrade to Elite</a>';
+      gate.appendChild(overlay);
+    }
+  }
+
   document.addEventListener("DOMContentLoaded",function(){
-    fetch(API+"/providers?limit=20").then(function(r){return r.ok?r.json():null}).then(function(d){
-      if(!d)return;var items=Array.isArray(d)?d:(d.providers||d.data||[]);
-      var g=document.getElementById("grid"),em=document.getElementById("empty");
-      if(!items.length){em.style.display="block";return}
-      for(var i=0;i<items.length;i++){
-        var p=items[i],c=el("div","card");
-        c.appendChild(el("div","card-sym",p.name||p.channel||"Provider #"+p.id));
-        var wr=p.winRate||p.winRate;
-        if(wr!=null){var r1=el("div","card-row");r1.appendChild(el("span",null,"Win Rate"));var v1=el("span","v g",(wr<=1?(wr*100).toFixed(1):Number(wr).toFixed(1))+"%");r1.appendChild(v1);c.appendChild(r1)}
-        var sc=p.totalSignals||p.signalCount||p.total;
-        if(sc!=null){var r2=el("div","card-row");r2.appendChild(el("span",null,"Signals"));r2.appendChild(el("span","v",String(sc)));c.appendChild(r2)}
-        var pl=p.platform||"telegram";
-        var r3=el("div","card-row");r3.appendChild(el("span",null,"Platform"));r3.appendChild(el("span","v",pl));c.appendChild(r3);
-        g.appendChild(c)
-        var aiRow=document.createElement('div');aiRow.style.cssText='padding-top:6px';
-        var aiBtn=document.createElement('button');aiBtn.className='piq-ai-btn';
-        aiBtn.innerHTML='&#9889; AI Insight';
-        (function(provider){aiBtn.addEventListener('click',function(e){e.stopPropagation();requestAiInsight(provider);});})(p);
-        aiRow.appendChild(aiBtn);c.appendChild(aiRow);
-      }
-    }).catch(function(){document.getElementById("empty").style.display="block"});
+    var token = localStorage.getItem("iq_token");
+    var headers = token ? {"Authorization": "Bearer " + token} : {};
+
+    // Check plan first
+    var planPromise = token
+      ? fetch(API+"/billing/status", {headers: headers}).then(function(r){return r.ok?r.json():{plan:"free"}}).catch(function(){return {plan:"free"}})
+      : Promise.resolve({plan:"free"});
+
+    planPromise.then(function(billing) {
+      var plan = billing.plan || "free";
+      var isElite = plan === "elite";
+      var isPro = plan === "pro" || isElite;
+
+      fetch(API+"/providers?limit=20", {headers: headers})
+        .then(function(r){return r.ok?r.json():null})
+        .then(function(d){
+          if(!d)return;
+          var items=Array.isArray(d)?d:(d.providers||d.data||[]);
+          renderProviders(items, isElite);
+        })
+        .catch(function(){document.getElementById("empty").style.display="block"});
+    });
   });
 
 /* ── AI Insight ── */

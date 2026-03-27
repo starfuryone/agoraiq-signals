@@ -156,3 +156,10 @@ Error: bind EADDRINUSE 127.0.0.1:4300
 2026-03-26 19:30:34: [providers] column "channel" does not exist
 2026-03-26 22:51:24: [ai] HF 404: Not Found
 2026-03-26 23:12:44: [ai] HF 404: Not Found
+2026-03-27 17:07:54: [billing/checkout] No such price: 'price_1T3QB6KLUAnhD5f0ZH6qWluL'; a similar object exists in live mode, but a test mode key was used to make this request.
+2026-03-27 18:24:07: [billing/checkout] No such price: 'price_1T3QB6KLUAnhD5f0ZH6qWluL'; a similar object exists in live mode, but a test mode key was used to make this request.
+2026-03-27 18:51:44: [billing/checkout] No such price: 'price_1TFf76Ky8M3N8YLpYKcDnfdq'
+2026-03-27 18:51:51: [billing/checkout] No such price: 'price_1TFf76Ky8M3N8YLpYKcDnfdq'
+2026-03-27 18:56:17: [billing/checkout] No such customer: 'cus_UE5s075rKlIphO'
+2026-03-27 18:56:23: [billing/checkout] No such customer: 'cus_UE5s075rKlIphO'
+2026-03-27 18:56:40: [billing/checkout] No such customer: 'cus_UE5s075rKlIphO'
