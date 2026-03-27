@@ -271,3 +271,8 @@ async def get_telegram_channel_info(bot, channel_username):
     except Exception:
         pass
     return result
+
+
+async def signal_format(token: str, raw_text: str) -> Any:
+    """POST /api/v1/signals/format — parse and structure a signal without tracking it."""
+    return await _post(f"{API_BASE}/signals/format", {"text": raw_text}, token)

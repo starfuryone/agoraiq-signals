@@ -491,3 +491,27 @@
 2026-03-27 19:56:41: GET /top → 304 (1ms)
 2026-03-27 20:04:27: GET /status → 200 (5ms)
 2026-03-27 20:04:34: GET /status → 304 (1ms)
+2026-03-27 20:08:59: [db] connected — Fri Mar 27 2026 20:08:59 GMT+0000 (Coordinated Universal Time)
+2026-03-27 20:08:59: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-03-27 20:08:59: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-03-27 20:11:40: GET /status → 200 (9ms)
+2026-03-27 20:16:32: POST /format → 401 (1ms)
+2026-03-27 20:21:11: POST /telegram-auth → 200 (28ms)
+2026-03-27 20:21:11: GET / → 200 (1ms)
+2026-03-27 20:22:44: POST /login → 401 (64ms)
+2026-03-27 20:23:15: [db] connected — Fri Mar 27 2026 20:23:15 GMT+0000 (Coordinated Universal Time)
+2026-03-27 20:23:15: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-03-27 20:23:15: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-03-27 20:24:34: POST /login → 401 (62ms)
+2026-03-27 20:26:58: POST /login → 401 (5ms)
+2026-03-27 20:32:59: [db] connected — Fri Mar 27 2026 20:32:59 GMT+0000 (Coordinated Universal Time)
+2026-03-27 20:32:59: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-03-27 20:32:59: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-03-27 20:34:03: [db] connected — Fri Mar 27 2026 20:34:03 GMT+0000 (Coordinated Universal Time)
+2026-03-27 20:34:03: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-03-27 20:34:03: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-03-27 20:34:25: POST /login → 200 (81ms)
+2026-03-27 20:42:19: [db] connected — Fri Mar 27 2026 20:42:19 GMT+0000 (Coordinated Universal Time)
+2026-03-27 20:42:19: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-03-27 20:42:19: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-03-27 20:42:45: POST /login → 401 (3ms)
