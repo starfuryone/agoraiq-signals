@@ -231,3 +231,43 @@ async def billing_portal(token: str) -> Any:
 
 async def billing_status(token: str) -> Any:
     return await _get(f"{API_BASE}/billing/status", token)
+
+
+# ═══════════════════════════════════════════════════════════════════
+#  PROVIDER API CALLS
+# ═══════════════════════════════════════════════════════════════════
+
+async def providers_list(token=None):
+    return await _get(f"{API_BASE}/providers", token)
+
+
+async def provider_by_name(name, token=None):
+    r = await _get_client().get(
+        f"{API_BASE}/providers/search",
+        params={"q": name},
+        headers=_headers(token),
+    )
+    r.raise_for_status()
+    return r.json()
+
+
+import datetime
+
+async def get_telegram_channel_info(bot, channel_username):
+    result = {}
+    if not channel_username:
+        return result
+    handle = channel_username.lstrip("@")
+    try:
+        chat = await bot.get_chat(f"@{handle}")
+        if hasattr(chat, "date") and chat.date:
+            delta = datetime.datetime.now(datetime.timezone.utc) - chat.date
+            result["age_days"] = delta.days
+    except Exception:
+        pass
+    try:
+        count = await bot.get_chat_member_count(f"@{handle}")
+        result["members"] = count
+    except Exception:
+        pass
+    return result

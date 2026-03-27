@@ -22,7 +22,7 @@ const PRICE_MAP = {
   elite: { monthly: () => process.env.STRIPE_PRICE_ELITE,      yearly: () => process.env.STRIPE_PRICE_ELITE_YEARLY },
 };
 const APP_URL = () => process.env.APP_URL || "https://bot.agoraiq.net";
-const TIER_RANK = { free: 0, pro: 1, elite: 2 };
+const TIER_RANK = { free: 0, trial: 1, pro: 2, elite: 3 };
 
 const router = Router();
 
@@ -58,7 +58,8 @@ router.post("/checkout", requireAuth, async (req, res) => {
 // ── POST /billing/portal ─────────────────────────────────────────
 router.post("/portal", requireAuth, async (req, res) => {
   try {
-    const customerId = await getStripeCustomerId(req.userId);
+    // ensureStripeCustomer creates a Stripe customer if one doesn't exist yet
+    const customerId = await ensureStripeCustomer(req.userId);
     if (!customerId) return res.status(404).json({ error: "No billing account found" });
 
     const session = await getStripe().billingPortal.sessions.create({
@@ -206,6 +207,9 @@ async function resolveEntitlement(botUserId) {
   let entitled = false, effectivePlan = "free";
 
   if (best.status === "active") { entitled = true; effectivePlan = best.plan_tier; }
+  else if (best.plan_tier === "trial" && best.expires_at && new Date() < new Date(best.expires_at)) {
+    entitled = true; effectivePlan = "trial";
+  }
   else if (best.status === "cancel_at_period_end") {
     if (best.expires_at && new Date(best.expires_at) > new Date()) {
       entitled = true; effectivePlan = best.plan_tier;
@@ -218,7 +222,7 @@ async function resolveEntitlement(botUserId) {
 
   return {
     plan: effectivePlan, status: best.status, entitled,
-    paidAccess: entitled && effectivePlan !== "free",
+    paidAccess: entitled && !["free","trial"].includes(effectivePlan),
     startedAt: best.started_at, expiresAt: best.expires_at,
     provider: best.stripe_sub_id ? "stripe" : "manual",
   };
