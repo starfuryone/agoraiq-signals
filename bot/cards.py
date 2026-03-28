@@ -145,7 +145,7 @@ def signal_card_locked(s: Dict[str, Any]) -> str:
     lines.append("→ Full signal details \\+ AI scoring")
     lines.append("→ Signal tracking \\+ PnL")
     lines.append("")
-    lines.append(f"💎 Plans from $19/mo")
+    lines.append(f"💎 Plans from $29/mo")
 
     return "\n".join(lines)
 
@@ -486,7 +486,7 @@ def provider_card_locked():
         "→ Market type \+ trading style",
         "",
         f"Available on {_b('PRO')} and {_b('ELITE')} plans\.",
-        f"💎 Upgrade from $19/mo",
+        f"💎 Upgrade from $29/mo",
     ]
     return "\n".join(lines)
 
@@ -590,7 +590,7 @@ def format_card_locked() -> str:
         "→ Works with any format or language",
         "",
         f"Available on {_b('PRO')} and {_b('ELITE')} plans\.",
-        "💎 Upgrade from $19/mo",
+        "💎 Upgrade from $29/mo",
     ]
     return "\n".join(lines)
 
