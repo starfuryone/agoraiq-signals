@@ -38,6 +38,33 @@ router.post("/checkout", requireAuth, async (req, res) => {
 
     const customerId = await ensureStripeCustomer(req.userId);
 
+    // ── Check for existing subscription to handle upgrades with proration ──
+    const existingSub = await db.query(
+      `SELECT stripe_subscription_id, plan_tier FROM bot_subscriptions
+       WHERE bot_user_id = $1 AND status = 'active' LIMIT 1`,
+      [req.userId]
+    );
+
+    if (existingSub.rows.length > 0 && TIER_RANK[plan] > TIER_RANK[existingSub.rows[0].plan_tier]) {
+      // Upgrade: update existing subscription with proration
+      const subId = existingSub.rows[0].stripe_subscription_id;
+      const sub = await getStripe().subscriptions.retrieve(subId);
+      const updated = await getStripe().subscriptions.update(subId, {
+        items: [{ id: sub.items.data[0].id, price: priceId }],
+        proration_behavior: "create_prorations",
+        metadata: { bot_user_id: String(req.userId), plan_tier: plan },
+      });
+      // Update local DB immediately
+      await db.query(
+        `UPDATE bot_subscriptions SET plan_tier = $1, stripe_price_id = $2
+         WHERE stripe_subscription_id = $3`,
+        [plan, priceId, subId]
+      );
+      await db.query(`UPDATE bot_users SET role = $1 WHERE id = $2`, [plan, req.userId]);
+      return res.json({ upgraded: true, plan, subscriptionId: subId });
+    }
+
+    // ── New subscription (no existing or downgrade) ──
     const session = await getStripe().checkout.sessions.create({
       customer: customerId,
       mode: "subscription",

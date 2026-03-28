@@ -465,7 +465,8 @@ body{min-height:100vh}
       .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
       .then(function(res) {
         if (!res.ok) { toast(res.data.error || "Checkout failed", "error"); return; }
-        if (res.data.url) { window.location.href = res.data.url; }
+        if (res.data.upgraded) { toast("Upgraded to " + res.data.plan + "! Prorated credit applied.", "ok"); setTimeout(function() { location.reload(); }, 2000); }
+        else if (res.data.url) { window.location.href = res.data.url; }
         else { toast("No checkout URL returned", "error"); }
       })
       .catch(function() { toast("Network error", "error"); })
