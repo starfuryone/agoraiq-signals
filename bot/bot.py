@@ -392,6 +392,7 @@ async def cmd_signals(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
                     lines.append(f"{e} {bold(esc(n['symbol']))} {esc(n['direction'])} @ {esc(usd(n['entry']))}")
                 else:
                     lines.append(f"{e} {bold(esc(n['symbol']))} {esc(n['direction'])} 🔒")
+            lines.append(f"\n💡 Use /track to start tracking a signal")
             await update.message.reply_text("\n".join(lines), parse_mode=ParseMode.MARKDOWN_V2)
     except Exception as e:
         await api_error(update, "signals", e)
@@ -728,6 +729,69 @@ TRACK_INPUT = range(1)
 
 @rate_limited
 @require_link
+
+
+async def track_from_format_callback(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    """One-tap track from /format result — auto-submits the stored signal."""
+    query = update.callback_query
+    await query.answer("Submitting signal...")
+    raw = ctx.user_data.pop("last_formatted_signal", None)
+    if not raw:
+        await query.message.reply_text("⚠️ Signal expired. Use /format again, then tap Track.")
+        return
+    token = store.get_token(query.from_user.id)
+    if not token:
+        ctx.user_data["last_formatted_signal"] = raw  # restore it
+        await query.message.reply_text("⚠️ You need to log in first. Use /login or /register.")
+        return
+    try:
+        result = await api.signal_submit(token, raw)
+        sig = result if isinstance(result, dict) else {}
+        sym = sig.get("symbol", sig.get("pair", "\u2014"))
+        side = sig.get("action", sig.get("side", "\u2014"))
+        status = sig.get("parse_status", sig.get("status", "submitted"))
+        await query.message.reply_text(
+            f"\u2705 Signal submitted for tracking!\n\n"
+            f"\U0001f4ca Pair: {sym}\n"
+            f"\U0001f4cd Side: {side}\n"
+            f"\U0001f4cb Status: {status}\n\n"
+            "AgoraIQ will track this against market data.",
+        )
+    except Exception as e:
+        log.error(f"Track from format failed: {e}")
+        ctx.user_data["last_formatted_signal"] = raw  # restore on failure
+        await query.message.reply_text("⚠️ Couldn\'t submit. Try /track manually.")
+
+async def track_signal_callback(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle Track Signal button — extract signal from message text and submit."""
+    query = update.callback_query
+    await query.answer("Submitting signal for tracking...")
+    token = store.get_token(query.from_user.id)
+    if not token:
+        await query.message.reply_text(
+            "\u26a0\ufe0f You need to log in first. Use /login or /register."
+        )
+        return
+    try:
+        raw = query.message.text or ""
+        if not raw:
+            await query.message.reply_text("\u26a0\ufe0f Could not read signal from message.")
+            return
+        result = await api.signal_submit(token, raw)
+        sig = result if isinstance(result, dict) else {}
+        sym = sig.get("symbol", sig.get("pair", "\u2014"))
+        side = sig.get("action", sig.get("side", "\u2014"))
+        status = sig.get("parse_status", sig.get("status", "submitted"))
+        await query.message.reply_text(
+            f"\u2705 Signal submitted for tracking!\n\n"
+            f"\U0001f4ca Pair: {sym}\n"
+            f"\U0001f4cd Side: {side}\n"
+            f"\U0001f4cb Status: {status}\n\n"
+            "AgoraIQ will track this against market data.",
+        )
+    except Exception as e:
+        log.error(f"Track callback failed: {e}")
+        await query.message.reply_text("\u26a0\ufe0f Couldn\'t submit signal. Try /track manually.")
 async def cmd_track(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> int:
     # Auto-submit if we have a recently formatted signal
     last_signal = ctx.user_data.pop("last_formatted_signal", None)
@@ -1439,6 +1503,10 @@ def main() -> None:
         fallbacks=[CommandHandler("cancel", cancel)],
     )
 
+    from telegram.ext import CallbackQueryHandler
+    app.add_handler(CallbackQueryHandler(track_from_format_callback, pattern="^track_from_format$"))
+    app.add_handler(CallbackQueryHandler(track_signal_callback, pattern="^track:"))
+    from telegram.ext import CallbackQueryHandler
     app.add_handler(track_conv)
     app.add_handler(feedback_conv)
 
@@ -1653,7 +1721,7 @@ async def cmd_format(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
         await update.message.reply_text(
             msg,
             reply_markup=cards.InlineKeyboardMarkup([[
-                cards.InlineKeyboardButton("📊 Track this signal", url=f"{APP_URL}/track.html"),
+                cards.InlineKeyboardButton("📡 Track this signal", callback_data="track_from_format"),
             ]]),
         )
 

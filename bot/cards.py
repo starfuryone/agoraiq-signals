@@ -161,6 +161,8 @@ def signal_keyboard(sig_id=None) -> InlineKeyboardMarkup:
     buttons = []
     if sig_id:
         buttons.append([InlineKeyboardButton("📊 Full Analysis", url=f"{APP_URL}/signals.html?id={sig_id}")])
+    if sig_id:
+        buttons.append([InlineKeyboardButton("📡 Track Signal", callback_data=f"track:{sig_id}")])
     buttons.append([InlineKeyboardButton("📈 Open Dashboard", url=f"{APP_URL}/dashboard.html")])
     return InlineKeyboardMarkup(buttons)
 

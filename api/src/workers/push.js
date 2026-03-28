@@ -87,7 +87,10 @@ async function handleBreakout(signal) {
       // ── ELITE: instant + priority badge ────────────────────
       const text = `⚡ <b>PRIORITY</b>\n\n` + msg.breakoutAlert(signal);
       const viewUrl = await makeAuthUrl(user.id, "signals.html");
-      const buttons = [[{ text: "📊 View Signal", url: viewUrl }]];
+      const buttons = [
+        [{ text: "📊 View Signal", url: viewUrl }],
+        [{ text: "📡 Track Signal", callback_data: `track:${signal.id}` }],
+      ];
       const result = await telegram.sendWithButtons(user.telegram_id, text, buttons);
 
       if (result.blocked) { await removeBlockedUser(user.telegram_id); blocked++; }
@@ -98,7 +101,10 @@ async function handleBreakout(signal) {
       // ── PRO: instant + full signal ─────────────────────────
       const text = msg.breakoutAlert(signal);
       const viewUrl = await makeAuthUrl(user.id, "signals.html");
-      const buttons = [[{ text: "📊 View Signal", url: viewUrl }]];
+      const buttons = [
+        [{ text: "📊 View Signal", url: viewUrl }],
+        [{ text: "📡 Track Signal", callback_data: `track:${signal.id}` }],
+      ];
       const result = await telegram.sendWithButtons(user.telegram_id, text, buttons);
 
       if (result.blocked) { await removeBlockedUser(user.telegram_id); blocked++; }
