@@ -9501,3 +9501,171 @@
 2026-03-27 21:25:05: [push:breakout] PUMPUSDT → sent=1 delayed=0 blocked=0
 2026-03-27 21:25:05: [push:breakout] NOMUSDT → sent=1 delayed=0 blocked=0
 2026-03-27 21:26:40: [push:breakout] BTCUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:51:43: ═══════════════════════════════════════════════════════
+2026-03-29 20:51:43:   AgoraIQ Workers Starting
+2026-03-29 20:51:43: ═══════════════════════════════════════════════════════
+2026-03-29 20:51:43: [db] connected
+2026-03-29 20:51:43: [redis] connected
+2026-03-29 20:51:43: [push-worker] started
+2026-03-29 20:51:43: [resolver-worker] started (every 60s)
+2026-03-29 20:51:43: [scanner-watcher] started (every 300s)
+2026-03-29 20:51:43: [daily-worker] started (every 24h)
+2026-03-29 20:51:43: 
+[workers] 4 workers running
+2026-03-29 20:51:43:   • push-alerts:     Telegram push notifications
+2026-03-29 20:51:43:   • signal-resolver: Price checking + outcome resolution
+2026-03-29 20:51:43:   • scanner-watcher: Breakout detection + alerts
+2026-03-29 20:51:43:   • daily-summary:   Morning brief
+2026-03-29 20:51:43: 
+2026-03-29 20:55:02: [scanner] BREAKOUT: BTCUSDT score=50 change=-0.6% → signal #3458
+2026-03-29 20:55:02: [scanner] BREAKOUT: ETHUSDT score=54 change=-1.1% → signal #3459
+2026-03-29 20:55:02: [scanner] BREAKOUT: BNBUSDT score=56 change=-1.4% → signal #3460
+2026-03-29 20:55:02: [scanner] BREAKOUT: ADAUSDT score=75 change=-3.9% → signal #3461
+2026-03-29 20:55:02: [scanner] BREAKOUT: XRPUSDT score=59 change=-1.8% → signal #3462
+2026-03-29 20:55:02: [scanner] BREAKOUT: TRXUSDT score=67 change=2.1% → signal #3463
+2026-03-29 20:55:02: [scanner] BREAKOUT: FETUSDT score=78 change=-5.9% → signal #3464
+2026-03-29 20:55:02: [scanner] BREAKOUT: GTOUSDT score=56 change=-8.1% → signal #3465
+2026-03-29 20:55:02: [scanner] BREAKOUT: DOGEUSDT score=56 change=-1.4% → signal #3466
+2026-03-29 20:55:02: [scanner] BREAKOUT: CHZUSDT score=71 change=-6.0% → signal #3467
+2026-03-29 20:55:02: [scanner] BREAKOUT: BCHUSDT score=92 change=-5.9% → signal #3468
+2026-03-29 20:55:02: [scanner] BREAKOUT: OGNUSDT score=62 change=7.5% → signal #3469
+2026-03-29 20:55:02: [scanner] BREAKOUT: TCTUSDT score=56 change=-6.6% → signal #3470
+2026-03-29 20:55:02: [scanner] BREAKOUT: AIONUSDT score=56 change=-10.2% → signal #3471
+2026-03-29 20:55:02: [scanner] BREAKOUT: SOLUSDT score=60 change=-1.9% → signal #3472
+2026-03-29 20:55:02: [scanner] BREAKOUT: KNCUSDT score=56 change=-7.5% → signal #3473
+2026-03-29 20:55:02: [scanner] BREAKOUT: LRCUSDT score=53 change=-5.9% → signal #3474
+2026-03-29 20:55:02: [scanner] BREAKOUT: ADADOWNUSDT score=61 change=8.4% → signal #3475
+2026-03-29 20:55:02: [scanner] BREAKOUT: SXPUSDT score=56 change=-8.3% → signal #3476
+2026-03-29 20:55:02: [scanner] BREAKOUT: NBSUSDT score=56 change=-8.8% → signal #3477
+2026-03-29 20:55:02: [scanner] BREAKOUT: DNTUSDT score=54 change=-6.0% → signal #3478
+2026-03-29 20:55:02: [scanner] BREAKOUT: LITUSDT score=53 change=5.2% → signal #3479
+2026-03-29 20:55:02: [scanner] BREAKOUT: CFXUSDT score=58 change=-7.2% → signal #3480
+2026-03-29 20:55:02: [scanner] BREAKOUT: AUTOUSDT score=56 change=-7.5% → signal #3481
+2026-03-29 20:55:02: [scanner] BREAKOUT: MIRUSDT score=56 change=-7.4% → signal #3482
+2026-03-29 20:55:02: [scanner] BREAKOUT: ERNUSDT score=56 change=5.7% → signal #3483
+2026-03-29 20:55:02: [scanner] BREAKOUT: ELFUSDT score=61 change=8.8% → signal #3484
+2026-03-29 20:55:02: [scanner] BREAKOUT: IDEXUSDT score=56 change=-9.1% → signal #3485
+2026-03-29 20:55:02: [scanner] BREAKOUT: PLAUSDT score=55 change=5.5% → signal #3486
+2026-03-29 20:55:02: [scanner] BREAKOUT: ALCXUSDT score=61 change=8.9% → signal #3487
+2026-03-29 20:55:03: [scanner] BREAKOUT: OOKIUSDT score=56 change=-24.7% → signal #3488
+2026-03-29 20:55:03: [scanner] BREAKOUT: ANCUSDT score=56 change=-7.7% → signal #3489
+2026-03-29 20:55:03: [scanner] BREAKOUT: BSWUSDT score=56 change=-8.9% → signal #3490
+2026-03-29 20:55:03: [scanner] BREAKOUT: BIFIUSDT score=62 change=6.7% → signal #3491
+2026-03-29 20:55:03: [scanner] BREAKOUT: NEBLUSDT score=56 change=-13.6% → signal #3492
+2026-03-29 20:55:03: [scanner] BREAKOUT: HIFIUSDT score=61 change=6.2% → signal #3493
+2026-03-29 20:55:03: [scanner] BREAKOUT: SUIUSDT score=83 change=-5.0% → signal #3494
+2026-03-29 20:55:03: [scanner] BREAKOUT: GFTUSDT score=56 change=-14.4% → signal #3495
+2026-03-29 20:55:03: [scanner] BREAKOUT: JTOUSDT score=51 change=-5.6% → signal #3496
+2026-03-29 20:55:03: [scanner] BREAKOUT: PIXELUSDT score=57 change=-8.6% → signal #3497
+2026-03-29 20:55:03: [scanner] BREAKOUT: PDAUSDT score=52 change=-5.8% → signal #3498
+2026-03-29 20:55:03: [scanner] BREAKOUT: TAOUSDT score=56 change=-1.4% → signal #3499
+2026-03-29 20:55:03: [scanner] BREAKOUT: OMNIUSDT score=56 change=-6.5% → signal #3500
+2026-03-29 20:55:03: [scanner] BREAKOUT: CATIUSDT score=50 change=4.7% → signal #3501
+2026-03-29 20:55:03: [scanner] BREAKOUT: LUMIAUSDT score=56 change=-15.6% → signal #3502
+2026-03-29 20:55:03: [scanner] BREAKOUT: CETUSUSDT score=57 change=-10.7% → signal #3503
+2026-03-29 20:55:03: [scanner] BREAKOUT: TUTUSDT score=50 change=-5.5% → signal #3504
+2026-03-29 20:55:03: [scanner] BREAKOUT: ONDOUSDT score=60 change=-6.1% → signal #3505
+2026-03-29 20:55:03: [scanner] BREAKOUT: KERNELUSDT score=56 change=-7.5% → signal #3506
+2026-03-29 20:55:03: [scanner] BREAKOUT: STOUSDT score=88 change=30.1% → signal #3507
+2026-03-29 20:55:03: [scanner] BREAKOUT: HUMAUSDT score=59 change=-6.7% → signal #3508
+2026-03-29 20:55:03: [scanner] BREAKOUT: SOPHUSDT score=62 change=15.5% → signal #3509
+2026-03-29 20:55:03: [scanner] BREAKOUT: LAUSDT score=62 change=6.3% → signal #3510
+2026-03-29 20:55:03: [scanner] BREAKOUT: CUSDT score=73 change=5.9% → signal #3511
+2026-03-29 20:55:03: [scanner] BREAKOUT: PROVEUSDT score=57 change=-9.0% → signal #3512
+2026-03-29 20:55:03: [scanner] BREAKOUT: OPENUSDT score=56 change=-7.3% → signal #3513
+2026-03-29 20:55:03: [scanner] BREAKOUT: NOMUSDT score=80 change=-13.2% → signal #3514
+2026-03-29 20:55:03: [scanner] BREAKOUT: ZBTUSDT score=56 change=3.9% → signal #3515
+2026-03-29 20:55:03: [scanner] BREAKOUT: KITEUSDT score=63 change=-4.3% → signal #3516
+2026-03-29 20:55:03: [scanner] BREAKOUT: 币安人生USDT score=66 change=7.1% → signal #3517
+2026-03-29 20:55:03: [scanner] BREAKOUT: SENTUSDT score=87 change=17.9% → signal #3518
+2026-03-29 20:55:03: [scanner] BREAKOUT: NIGHTUSDT score=78 change=-4.2% → signal #3519
+2026-03-29 20:55:03: [scanner] BREAKOUT: CFGUSDT score=76 change=6.7% → signal #3520
+2026-03-29 20:55:03: [scanner] BREAKOUT: KATUSDT score=81 change=-6.7% → signal #3521
+2026-03-29 20:55:03: [scanner] BREAKOUT: XAUTUSDT score=51 change=0.1% → signal #3522
+2026-03-29 20:55:03: [push:breakout] BTCUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:03: [push:breakout] ETHUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:04: [push:breakout] BNBUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:04: [push:breakout] ADAUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:04: [push:breakout] XRPUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:05: [push:breakout] TRXUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:05: [push:breakout] FETUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:05: [push:breakout] GTOUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:06: [push:breakout] DOGEUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:06: [push:breakout] CHZUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:06: [push:breakout] BCHUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:07: [push:breakout] OGNUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:07: [push:breakout] TCTUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:07: [push:breakout] AIONUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:08: [push:breakout] SOLUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:08: [push:breakout] KNCUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:08: [push:breakout] LRCUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:08: [push:breakout] ADADOWNUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:09: [push:breakout] SXPUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:09: [push:breakout] NBSUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:09: [push:breakout] DNTUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:10: [push:breakout] LITUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:10: [push:breakout] CFXUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:10: [push:breakout] AUTOUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:11: [push:breakout] MIRUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:11: [push:breakout] ERNUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:11: [push:breakout] ELFUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:12: [push:breakout] IDEXUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:12: [push:breakout] PLAUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:12: [push:breakout] ALCXUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:13: [push:breakout] OOKIUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:13: [push:breakout] ANCUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:13: [push:breakout] BSWUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:14: [push:breakout] BIFIUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:14: [push:breakout] NEBLUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:14: [push:breakout] HIFIUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:15: [push:breakout] SUIUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:15: [push:breakout] GFTUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:15: [push:breakout] JTOUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:16: [push:breakout] PIXELUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:16: [push:breakout] PDAUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:16: [push:breakout] TAOUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:16: [push:breakout] OMNIUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:17: [push:breakout] CATIUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:17: [push:breakout] LUMIAUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:17: [push:breakout] CETUSUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:18: [push:breakout] TUTUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:18: [push:breakout] ONDOUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:18: [push:breakout] KERNELUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:19: [push:breakout] STOUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:19: [push:breakout] HUMAUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:19: [push:breakout] SOPHUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:20: [push:breakout] LAUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:20: [push:breakout] CUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:20: [push:breakout] PROVEUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:21: [push:breakout] OPENUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:21: [push:breakout] NOMUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:21: [push:breakout] ZBTUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:22: [push:breakout] KITEUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:22: [push:breakout] 币安人生USDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:22: [push:breakout] SENTUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:23: [push:breakout] NIGHTUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:23: [push:breakout] CFGUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:23: [push:breakout] KATUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 20:55:24: [push:breakout] XAUTUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 21:00:02: [scanner] BREAKOUT: USDCUSDT score=50 change=0.0% → signal #3523
+2026-03-29 21:00:02: [scanner] BREAKOUT: HFTUSDT score=50 change=-5.6% → signal #3524
+2026-03-29 21:00:02: [scanner] BREAKOUT: USD1USDT score=50 change=0.0% → signal #3525
+2026-03-29 21:00:03: [push:breakout] USDCUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 21:00:03: [push:breakout] HFTUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 21:00:03: [push:breakout] USD1USDT → sent=1 delayed=0 blocked=0
+2026-03-29 21:05:02: [scanner] BREAKOUT: ZECUSDT score=50 change=0.9% → signal #3526
+2026-03-29 21:05:02: [scanner] BREAKOUT: THEUSDT score=60 change=5.9% → signal #3527
+2026-03-29 21:05:03: [push:breakout] ZECUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 21:05:03: [push:breakout] THEUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 21:10:02: [scanner] BREAKOUT: A2ZUSDT score=50 change=-5.4% → signal #3528
+2026-03-29 21:10:03: [push:breakout] A2ZUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 21:20:02: [scanner] BREAKOUT: UTKUSDT score=51 change=-5.7% → signal #3529
+2026-03-29 21:20:02: [scanner] BREAKOUT: VANAUSDT score=54 change=3.7% → signal #3530
+2026-03-29 21:20:03: [push:breakout] UTKUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 21:20:03: [push:breakout] VANAUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 21:25:02: [scanner] BREAKOUT: DIAUSDT score=53 change=5.2% → signal #3531
+2026-03-29 21:25:03: [push:breakout] DIAUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 21:35:02: [scanner] BREAKOUT: RDNTUSDT score=56 change=5.4% → signal #3532
+2026-03-29 21:35:03: [push:breakout] RDNTUSDT → sent=1 delayed=0 blocked=0
+2026-03-29 21:40:02: [scanner] BREAKOUT: OPNUSDT score=50 change=4.6% → signal #3533
+2026-03-29 21:40:03: [push:breakout] OPNUSDT → sent=1 delayed=0 blocked=0

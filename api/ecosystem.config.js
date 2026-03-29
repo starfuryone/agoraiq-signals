@@ -29,7 +29,8 @@ module.exports = {
       instances: 1,
       env: {
         NODE_ENV: "production",
-        DATABASE_URL: "postgresql://agoraiq_signals:desf19848@127.0.0.1:5432/agoraiq_signals"
+        DATABASE_URL: "postgresql://agoraiq_signals:desf19848@127.0.0.1:5432/agoraiq_signals",
+        SOCKS_PROXY_URL: "socks5://143.198.202.65:1080"
       },
       max_memory_restart: "256M",
       log_date_format: "YYYY-MM-DD HH:mm:ss",

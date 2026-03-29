@@ -327,13 +327,43 @@ async def cmd_login(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
 
 @rate_limited
 async def cmd_pricing(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    token = store.get_token(update.effective_user.id)
+    current_plan = "free"
+    if token:
+        try:
+            status = await api.billing_status(token)
+            current_plan = status.get("plan", "free")
+        except Exception:
+            pass
+
+    text = (
+        f"\U0001f48e {bold('SigPulseBot Plans')}\n\n"
+        f"Current: {bold(esc(current_plan.upper()))}\n\n"
+        f"\u26a1 {bold('Pro')} \u2014 $29/mo \\| $228/yr\n"
+        f"Full signals, alerts, scanner, /format\n\n"
+        f"\U0001f3c6 {bold('Elite')} \u2014 $99/mo \\| $790/yr\n"
+        f"Everything \\+ priority alerts \\+ API\n\n"
+        f"\u2728 Upgrades are prorated \u2014 pay only the difference"
+    )
+    buttons = []
+    if current_plan in ("free", "trial"):
+        buttons.append([
+            cards.InlineKeyboardButton("\u26a1 Pro Monthly", callback_data="upgrade:pro:monthly"),
+            cards.InlineKeyboardButton("\u26a1 Pro Yearly", callback_data="upgrade:pro:yearly"),
+        ])
+    if current_plan in ("free", "trial", "pro"):
+        buttons.append([
+            cards.InlineKeyboardButton("\U0001f3c6 Elite Monthly", callback_data="upgrade:elite:monthly"),
+            cards.InlineKeyboardButton("\U0001f3c6 Elite Yearly", callback_data="upgrade:elite:yearly"),
+        ])
+    if current_plan not in ("free", "trial"):
+        buttons.append([cards.InlineKeyboardButton("\U0001f4cb Manage Billing", callback_data="billing_portal")])
+    buttons.append([cards.InlineKeyboardButton("\U0001f310 Full Details", url=f"{LANDING}/pricing")])
+
     await update.message.reply_text(
-        f"💎 {bold('SigPulseBot Plans')}\n\n"
-        f"🆓 {bold('Free')} — Market overview, limited signals\n"
-        f"⚡ {bold('Pro')} — Full signals, alerts, scanner access\n"
-        f"🏆 {bold('Elite')} — Everything \\+ priority alerts \\+ API\n\n"
-        f"👉 {link('View pricing', LANDING + '/pricing')}",
+        text,
         parse_mode=ParseMode.MARKDOWN_V2,
+        reply_markup=cards.InlineKeyboardMarkup(buttons),
     )
 
 
@@ -729,6 +759,61 @@ TRACK_INPUT = range(1)
 
 @rate_limited
 @require_link
+
+
+
+async def upgrade_callback(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    query = update.callback_query
+    await query.answer("Processing...")
+    parts = (query.data or "").split(":")
+    if len(parts) != 3:
+        await query.message.reply_text("Invalid upgrade request.")
+        return
+    _, plan, period = parts
+    token = store.get_token(query.from_user.id)
+    if not token:
+        await query.message.reply_text("Log in first with /login")
+        return
+    try:
+        result = await api.billing_checkout(token, plan, period)
+        if result.get("upgraded"):
+            await query.message.reply_text(
+                f"\u2705 Upgraded to {plan.upper()}!\n\n"
+                "Your subscription has been updated with prorated billing.\n"
+                "New features are available immediately.",
+            )
+            return
+        url = result.get("url")
+        if url:
+            await query.message.reply_text(
+                f"\U0001f4b3 {plan.upper()} {period.capitalize()} Checkout\n\n"
+                f"Complete your subscription:\n{url}\n\n"
+                "Secure payment via Stripe.",
+            )
+        else:
+            await query.message.reply_text("Couldn't create checkout. Try again.")
+    except Exception as e:
+        log.error(f"Upgrade callback failed: {e}")
+        await query.message.reply_text("Upgrade failed. Try /upgrade manually.")
+
+
+async def billing_portal_callback(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    query = update.callback_query
+    await query.answer("Opening billing portal...")
+    token = store.get_token(query.from_user.id)
+    if not token:
+        await query.message.reply_text("Log in first with /login")
+        return
+    try:
+        result = await api.billing_portal(token)
+        url = result.get("url")
+        if url:
+            await query.message.reply_text(f"Manage your subscription:\n{url}")
+        else:
+            await query.message.reply_text("Couldn't open billing portal.")
+    except Exception as e:
+        log.error(f"Billing portal failed: {e}")
+        await query.message.reply_text("Billing portal unavailable. Try again.")
 
 
 async def track_from_format_callback(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
@@ -1187,41 +1272,90 @@ async def cmd_plan(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
 
 @rate_limited
 async def cmd_upgrade(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
-    args = ctx.args
-    plan = (args[0].lower() if args else "").strip()
+    args = ctx.args or []
+    plan = ""
+    period = "monthly"
+    for a in args:
+        a_low = a.lower().strip()
+        if a_low in ("pro", "elite"):
+            plan = a_low
+        elif a_low in ("yearly", "annual", "year"):
+            period = "yearly"
+        elif a_low in ("monthly", "month"):
+            period = "monthly"
 
-    if plan not in ("pro", "elite"):
+    if not plan:
+        token = store.get_token(update.effective_user.id)
+        current_plan = "free"
+        if token:
+            try:
+                status = await api.billing_status(token)
+                current_plan = status.get("plan", "free")
+            except Exception:
+                pass
+
+        lines_msg = [
+            f"\U0001f680 {bold('Upgrade your plan')}\n",
+            f"Current plan: {bold(esc(current_plan.upper()))}\n",
+        ]
+        if current_plan in ("free", "trial"):
+            lines_msg.append(f"\u26a1 {bold('Pro')} \u2014 $29/mo or $228/yr")
+            lines_msg.append("Full signals, alerts, scanner, /format\n")
+            lines_msg.append(f"\U0001f3c6 {bold('Elite')} \u2014 $99/mo or $790/yr")
+            lines_msg.append("Everything \\+ priority alerts \\+ API\n")
+        elif current_plan == "pro":
+            lines_msg.append(f"\U0001f3c6 {bold('Elite')} \u2014 $99/mo or $790/yr")
+            lines_msg.append("Everything \\+ priority alerts \\+ API")
+            lines_msg.append("\n\u2728 Prorated upgrade \u2014 pay only the difference\n")
+
+        buttons = []
+        if current_plan in ("free", "trial"):
+            buttons.append([
+                cards.InlineKeyboardButton("\u26a1 Pro Monthly", callback_data="upgrade:pro:monthly"),
+                cards.InlineKeyboardButton("\u26a1 Pro Yearly", callback_data="upgrade:pro:yearly"),
+            ])
+        if current_plan in ("free", "trial", "pro"):
+            buttons.append([
+                cards.InlineKeyboardButton("\U0001f3c6 Elite Monthly", callback_data="upgrade:elite:monthly"),
+                cards.InlineKeyboardButton("\U0001f3c6 Elite Yearly", callback_data="upgrade:elite:yearly"),
+            ])
+        if token:
+            buttons.append([cards.InlineKeyboardButton("\U0001f4cb Manage Billing", callback_data="billing_portal")])
+
         await update.message.reply_text(
-            f"🚀 {bold('Upgrade your plan')}\n\n"
-            f"Usage:\n"
-            f"  /upgrade pro\n"
-            f"  /upgrade elite\n\n"
-            f"Or visit {link('Pricing', LANDING + '/pricing')} for details\\.",
+            "\n".join(lines_msg),
             parse_mode=ParseMode.MARKDOWN_V2,
+            reply_markup=cards.InlineKeyboardMarkup(buttons) if buttons else None,
         )
         return
 
     token = store.get_token(update.effective_user.id)
+    if not token:
+        await update.message.reply_text("\u26a0\ufe0f Log in first with /login")
+        return
     try:
-        result = await api.billing_checkout(token, plan)
-        url = result.get("url")
-        if not url:
+        result = await api.billing_checkout(token, plan, period)
+        if result.get("upgraded"):
             await update.message.reply_text(
-                "⚠️ Couldn't create checkout session\\. Try again later\\.",
+                f"\u2705 {bold('Upgraded to ' + esc(plan.upper()) + '!')}\n\n"
+                f"Your subscription has been updated with prorated billing\\.\n"
+                f"New features are available immediately\\.",
                 parse_mode=ParseMode.MARKDOWN_V2,
             )
             return
+        url = result.get("url")
+        if not url:
+            await update.message.reply_text("\u26a0\ufe0f Couldn\'t create checkout\\. Try again\\.", parse_mode=ParseMode.MARKDOWN_V2)
+            return
         await update.message.reply_text(
-            f"💳 {bold(esc(plan.upper()) + ' Plan Checkout')}\n\n"
+            f"\U0001f4b3 {bold(esc(plan.upper()) + ' ' + esc(period.capitalize()) + ' Checkout')}\n\n"
             f"Click below to complete your subscription:\n\n"
-            f"👉 {link('Open Checkout', url)}\n\n"
+            f"\U0001f449 {link('Open Checkout', url)}\n\n"
             f"Secure payment via Stripe\\.",
             parse_mode=ParseMode.MARKDOWN_V2,
         )
     except Exception as e:
         await api_error(update, "upgrade", e)
-
-
 # ═══════════════════════════════════════════════════════════════════
 #  SUPPORT COMMANDS
 # ═══════════════════════════════════════════════════════════════════
@@ -1504,6 +1638,8 @@ def main() -> None:
     )
 
     from telegram.ext import CallbackQueryHandler
+    app.add_handler(CallbackQueryHandler(upgrade_callback, pattern="^upgrade:"))
+    app.add_handler(CallbackQueryHandler(billing_portal_callback, pattern="^billing_portal$"))
     app.add_handler(CallbackQueryHandler(track_from_format_callback, pattern="^track_from_format$"))
     app.add_handler(CallbackQueryHandler(track_signal_callback, pattern="^track:"))
     from telegram.ext import CallbackQueryHandler

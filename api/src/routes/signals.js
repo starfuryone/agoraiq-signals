@@ -43,7 +43,7 @@ function requirePlan(...plans) {
 }
 
 
-const SIGNAL_LIMITS = { free: 1, pro: 50, elite: 50 };
+const SIGNAL_LIMITS = { free: 20, pro: 50, elite: 50 };
 
 // ─────────────────────────────────────────────────────────────────
 // POST /signals/submit
@@ -272,7 +272,7 @@ router.get("/", optionalAuth, attachPlan, async (req, res) => {
       return s;
     });
 
-    const resp = { signals };
+    const resp = { signals, tier };
     if (tier === "free" && result.rowCount > limit) {
       resp.upgrade = {
         message: "Free plan shows 1 recent signal preview. Upgrade for real-time access.",
