@@ -1,64 +1,40 @@
 /**
- * Canonical Signal Schema.
+ * Canonical Signal Schema v4.
  *
- * EVERY signal in the system — scanner-generated, user-submitted,
- * provider-scraped, API-ingested — MUST pass through this.
- *
- * This is the contract between:
- *   - Scanner worker (creates signals)
- *   - Parser (normalizes raw text into signals)
- *   - API routes (reads/writes signals)
- *   - Push worker (formats signals for Telegram)
- *   - Resolver worker (checks TP/SL conditions)
- *   - Proof engine (aggregates stats)
- *   - Frontend (displays signals)
+ * Fixes from v3.1:
+ *   - safeJsonParse enforces object shape for meta, array for targets
+ *   - toPublicView explicit serializer for free tier
+ *   - toResolvedView for public history (hides premium details)
  */
-
-// ── Enums ─────────────────────────────────────────────────────────
 
 const SIGNAL_TYPES = ["breakout", "mean_reversion", "scalp", "swing", "manual"];
 const DIRECTIONS = ["LONG", "SHORT"];
 const STATUSES = ["OPEN", "TP1", "TP2", "TP3", "SL", "EXPIRED", "CANCELLED"];
-const SOURCES = ["scanner", "provider", "user", "api"];
+const SOURCES = ["scanner", "provider", "user", "api", "manual"];
 
-// ── Schema ────────────────────────────────────────────────────────
+// ── Safe JSON helpers ─────────────────────────────────────────────
 
-/**
- * @typedef {Object} Signal
- * @property {string}   id            - Unique ID (uuid or serial)
- * @property {string}   symbol        - Trading pair, always XXXUSDT (e.g. BTCUSDT)
- * @property {string}   type          - One of SIGNAL_TYPES
- * @property {string}   direction     - LONG or SHORT
- *
- * @property {number}   entry         - Entry price
- * @property {number}   stop          - Stop loss price
- * @property {number[]} targets       - Take profit levels [TP1, TP2, TP3...]
- * @property {string}   [leverage]    - e.g. "10X"
- *
- * @property {number}   confidence    - 0-100 (integer percentage)
- * @property {string}   [provider]    - Provider name/ID
- * @property {number}   [provider_id] - FK to providers table
- * @property {string}   source        - One of SOURCES
- * @property {number}   [bot_user_id]     - FK to users table (for user-submitted)
- *
- * @property {string}   status        - One of STATUSES
- * @property {number}   [result]      - Realized PnL as decimal ratio (0.032 = 3.2%)
- * @property {number}   [duration_sec]- Seconds from open to close
- * @property {number}   [current_price] - Live price (computed, not stored)
- * @property {number}   [unrealized_pnl] - Unrealized PnL (computed)
- *
- * @property {string}   created_at    - ISO 8601
- * @property {string}   [resolved_at] - ISO 8601, when status changed from OPEN
- * @property {string}   [updated_at]  - ISO 8601
- *
- * @property {Object}   [meta]        - Freeform metadata
- * @property {string}   [meta.raw_text]      - Original unparsed text
- * @property {string}   [meta.parse_status]  - parsed | partial | not_signal
- * @property {number}   [meta.volume_change] - Volume spike percentage
- * @property {string}   [meta.oi_direction]  - OI direction (rising/falling)
- * @property {number}   [meta.funding_rate]  - Funding rate at time of signal
- * @property {number}   [meta.providers_aligned] - Number of providers with same direction
- */
+function safeJsonParse(value, fallback) {
+  if (value == null) return fallback;
+  if (typeof value !== "string") return value;
+  try {
+    return JSON.parse(value);
+  } catch (e) {
+    console.warn("[signal] safeJsonParse failed:", e.message, "| starts with:", String(value).slice(0, 80));
+    return fallback;
+  }
+}
+
+/** Guarantee result is a plain object */
+function ensureObject(val) {
+  if (val && typeof val === "object" && !Array.isArray(val)) return val;
+  return {};
+}
+
+/** Guarantee result is an array */
+function ensureArray(val) {
+  return Array.isArray(val) ? val : [];
+}
 
 // ── Validate ──────────────────────────────────────────────────────
 
@@ -109,14 +85,10 @@ function validate(signal) {
     errors.push(`source must be one of ${SOURCES.join(",")}, got: ${signal.source}`);
   }
 
-  return {
-    valid: errors.length === 0,
-    errors,
-  };
+  return { valid: errors.length === 0, errors };
 }
 
 // ── Normalize ─────────────────────────────────────────────────────
-// Takes any messy input and returns a clean Signal object.
 
 function normalize(raw) {
   const signal = {
@@ -124,47 +96,34 @@ function normalize(raw) {
     symbol: normalizeSymbol(raw.symbol || raw.pair),
     type: raw.type || "manual",
     direction: normalizeDirection(raw.direction || raw.action || raw.side),
-
     entry: toNum(raw.entry || raw.price),
     stop: toNum(raw.stop || raw.stop_loss || raw.stopLoss || raw.sl),
     targets: normalizeTargets(raw.targets || raw.takeProfits || raw.tps),
     leverage: raw.leverage || null,
-
     confidence: normalizeConfidence(raw.confidence || raw.aiScore || raw.score || raw.breakoutScore),
     provider: raw.provider || raw.provider_name || null,
     provider_id: raw.provider_id || null,
     source: normalizeSource(raw.source),
     bot_user_id: raw.bot_user_id || null,
-
     status: normalizeStatus(raw.status),
     result: raw.result != null ? toNum(raw.result) : (raw.pnl != null ? toNum(raw.pnl) : null),
     duration_sec: raw.duration_sec || null,
-
     created_at: raw.created_at || new Date().toISOString(),
     resolved_at: raw.resolved_at || null,
     updated_at: raw.updated_at || null,
-
     meta: raw.meta || {},
   };
 
-  // Carry over raw_text and parse_status into meta
   if (raw.raw_text) signal.meta.raw_text = raw.raw_text;
   if (raw.parse_status) signal.meta.parse_status = raw.parse_status;
-  if (raw.volume_change || raw.volume) {
-    signal.meta.volume_change = raw.volume_change || raw.volume;
-  }
-  if (raw.oi_direction || raw.oiChange) {
-    signal.meta.oi_direction = raw.oi_direction || raw.oiChange;
-  }
-  if (raw.providers_aligned) {
-    signal.meta.providers_aligned = raw.providers_aligned;
-  }
+  if (raw.volume_change || raw.volume) signal.meta.volume_change = raw.volume_change || raw.volume;
+  if (raw.oi_direction || raw.oiChange) signal.meta.oi_direction = raw.oi_direction || raw.oiChange;
+  if (raw.providers_aligned) signal.meta.providers_aligned = raw.providers_aligned;
 
   return signal;
 }
 
 // ── To DB row ─────────────────────────────────────────────────────
-// Converts a normalized Signal to a flat object for Postgres INSERT.
 
 function toDbRow(signal) {
   return {
@@ -190,35 +149,103 @@ function toDbRow(signal) {
 }
 
 // ── From DB row ───────────────────────────────────────────────────
-// Converts a Postgres row back to a clean Signal object.
 
 function fromDbRow(row) {
+  const meta = ensureObject(safeJsonParse(row.meta, {}));
+  const targets = ensureArray(safeJsonParse(row.targets, []));
+
   return {
     id: row.id,
     symbol: row.symbol,
     type: row.type || "manual",
     direction: row.direction || row.action,
-
     entry: row.entry != null ? parseFloat(row.entry) : (row.price != null ? parseFloat(row.price) : null),
     stop: row.stop != null ? parseFloat(row.stop) : (row.stop_loss != null ? parseFloat(row.stop_loss) : null),
-    targets: typeof row.targets === "string" ? JSON.parse(row.targets) : (row.targets || []),
+    targets,
     leverage: row.leverage,
-
     confidence: row.confidence != null ? parseFloat(row.confidence) : null,
     provider: row.provider,
     provider_id: row.provider_id,
-    source: row.source || "provider",
+    source: row.source || "manual",
     bot_user_id: row.bot_user_id,
-
     status: normalizeStatus(row.status),
     result: row.result != null ? parseFloat(row.result) : (row.pnl != null ? parseFloat(row.pnl) : null),
     duration_sec: row.duration_sec,
-
     created_at: row.created_at,
     resolved_at: row.resolved_at,
     updated_at: row.updated_at,
+    meta,
+    // AI fields (from meta, exposed top-level)
+    score_breakdown: meta.ai_score_breakdown || null,
+    thesis: meta.ai_thesis || null,
+    tags: ensureArray(meta.ai_tags),
+    regime: meta.ai_regime || null,
+    risk_flags: ensureArray(meta.ai_risk_flags),
+  };
+}
 
-    meta: typeof row.meta === "string" ? JSON.parse(row.meta) : (row.meta || {}),
+// ── Free-tier serializer (explicit allow-list) ────────────────────
+
+function toPublicView(signal) {
+  return {
+    id: signal.id,
+    symbol: signal.symbol,
+    type: signal.type,
+    direction: signal.direction,
+    entry: null,
+    stop: null,
+    targets: [],
+    leverage: null,
+    confidence: null,
+    provider: signal.provider,
+    provider_id: signal.provider_id,
+    source: signal.source,
+    bot_user_id: null,
+    status: signal.status,
+    result: null,
+    duration_sec: signal.duration_sec,
+    created_at: signal.created_at,
+    resolved_at: signal.resolved_at,
+    updated_at: signal.updated_at,
+    meta: {},
+    score_breakdown: null,
+    thesis: null,
+    tags: [],
+    regime: null,
+    risk_flags: [],
+  };
+}
+
+// ── Resolved history serializer (public, marketing-safe) ──────────
+// Shows outcome and symbol but hides premium entry/SL/TP details.
+
+function toResolvedView(signal) {
+  return {
+    id: signal.id,
+    symbol: signal.symbol,
+    type: signal.type,
+    direction: signal.direction,
+    entry: null,
+    stop: null,
+    targets: [],
+    leverage: null,
+    confidence: signal.confidence,
+    provider: signal.provider,
+    provider_id: signal.provider_id,
+    source: signal.source,
+    bot_user_id: null,
+    status: signal.status,
+    result: signal.result,
+    duration_sec: signal.duration_sec,
+    created_at: signal.created_at,
+    resolved_at: signal.resolved_at,
+    updated_at: signal.updated_at,
+    meta: {},
+    score_breakdown: null,
+    thesis: null,
+    tags: ensureArray(signal.tags),
+    regime: signal.regime,
+    risk_flags: [],
   };
 }
 
@@ -235,9 +262,7 @@ function normalizeSymbol(s) {
   let sym = String(s).toUpperCase().replace(/[\/\-\s]/g, "");
   if (sym === "BTCUSD" || sym === "XBTUSD") return "BTCUSDT";
   if (sym === "ETHUSD") return "ETHUSDT";
-  // Already has USDT suffix
   if (sym.endsWith("USDT")) return sym;
-  // Bare symbol — append USDT
   if (/^[A-Z]{2,10}$/.test(sym)) return sym + "USDT";
   return sym;
 }
@@ -251,8 +276,7 @@ function normalizeDirection(d) {
 }
 
 function normalizeTargets(t) {
-  if (!t) return [];
-  if (!Array.isArray(t)) return [];
+  if (!t || !Array.isArray(t)) return [];
   return t.map(toNum).filter((n) => n !== null && n > 0).slice(0, 5);
 }
 
@@ -260,9 +284,7 @@ function normalizeConfidence(c) {
   if (c == null) return null;
   const n = toNum(c);
   if (n == null) return null;
-  // If 0-1 range, convert to 0-100
   if (n > 0 && n <= 1) return Math.round(n * 100);
-  // Clamp to 0-100
   return Math.round(Math.max(0, Math.min(100, n)));
 }
 
@@ -279,7 +301,6 @@ function normalizeSource(s) {
 function normalizeStatus(s) {
   if (!s) return "OPEN";
   const up = String(s).toUpperCase().trim();
-  // Map legacy statuses
   if (up === "ACTIVE") return "OPEN";
   if (up === "HIT_TP") return "TP1";
   if (up === "HIT_SL") return "SL";
@@ -288,12 +309,7 @@ function normalizeStatus(s) {
 }
 
 module.exports = {
-  SIGNAL_TYPES,
-  DIRECTIONS,
-  STATUSES,
-  SOURCES,
-  validate,
-  normalize,
-  toDbRow,
-  fromDbRow,
+  SIGNAL_TYPES, DIRECTIONS, STATUSES, SOURCES,
+  validate, normalize, toDbRow, fromDbRow,
+  toPublicView, toResolvedView,
 };

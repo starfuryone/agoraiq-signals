@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <style>
 /* ═══════════════════════════════════════════════════════════
    PROOF PAGE v2 — bot.agoraiq.net
@@ -566,32 +565,48 @@ button{cursor:pointer}
   padding:44px 0;border-bottom:1px solid var(--border);
 }
 .lookup-box{
-  max-width:720px;margin:0 auto;
+  max-width:680px;margin:0 auto;
   border-radius:12px;background:var(--surface);border:1px solid var(--border-hi);
   padding:28px;position:relative;
 }
+.lookup-disabled-overlay{
+  position:absolute;inset:0;border-radius:12px;
+  background:rgba(15,17,25,.4);z-index:2;
+  display:flex;align-items:center;justify-content:center;
+}
+.lookup-disabled-label{
+  padding:8px 18px;border-radius:8px;
+  background:var(--surface2);border:1px solid var(--cyan-border);
+  font-size:14px;font-weight:600;color:var(--cyan);
+  display:flex;align-items:center;gap:8px;
+}
+.lookup-disabled-label svg{width:14px;height:14px;flex-shrink:0}
 .lookup-title{
   display:flex;align-items:center;gap:10px;
   font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px;
 }
 .lookup-title svg{color:var(--cyan)}
-.lookup-desc{font-size:15px;color:var(--text-dim);margin-bottom:10px}
+.lookup-desc{font-size:15px;color:var(--text-dim);margin-bottom:18px}
+.lookup-tabs{display:flex;gap:4px;margin-bottom:14px}
+.lookup-tab{
+  padding:5px 12px;border-radius:6px;border:none;
+  font-size:14px;font-weight:600;
+  color:var(--text-muted);background:transparent;
+}
+.lookup-tab.active{color:var(--cyan);background:var(--cyan-dim)}
 .lookup-input-row{display:flex;gap:10px}
 .lookup-input{
-  flex:1;padding:10px 14px;border-radius:8px;
+  flex:1;padding:9px 14px;border-radius:8px;
   background:var(--bg);border:1px solid var(--border-hi);
-  color:var(--text);font-size:15px;font-family:var(--font-mono);
-  outline:none;transition:border-color .2s;
+  color:var(--text-muted);font-size:15px;font-family:var(--font-mono);
+  outline:none;
 }
-.lookup-input:focus{border-color:var(--cyan-border)}
 .lookup-input::placeholder{color:var(--text-muted)}
 .lookup-btn{
-  padding:10px 22px;border-radius:8px;border:none;
-  background:var(--cyan);color:#000;font-size:15px;font-weight:700;
-  cursor:pointer;flex-shrink:0;transition:background .2s;
+  padding:9px 18px;border-radius:8px;border:none;
+  background:var(--surface2);color:var(--text-muted);font-size:15px;font-weight:700;
+  cursor:default;flex-shrink:0;
 }
-.lookup-btn:hover{background:var(--cyan-hover)}
-.lookup-btn:disabled{background:var(--surface2);color:var(--text-muted);cursor:wait}
 .lookup-manual{
   margin-top:18px;padding-top:16px;border-top:1px solid var(--border);
 }
@@ -621,121 +636,7 @@ button{cursor:pointer}
   font-family:var(--font-mono);font-size:12px;
   padding:3px 8px;border-radius:4px;
   background:var(--cyan-dim);border:1px solid var(--cyan-border);
-  color:var(--cyan);cursor:pointer;transition:background .2s;
-}
-.lookup-sample-id:hover{background:rgba(0,212,255,.15)}
-
-/* ── LOOKUP RESULT PANEL ── */
-.lookup-result{
-  margin-top:20px;padding-top:20px;border-top:1px solid var(--border);
-  display:none;
-}
-.lookup-result.visible{display:block;animation:lr-enter .3s ease}
-@keyframes lr-enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-.lr-loading{
-  text-align:center;padding:24px;
-  font-size:14px;color:var(--text-muted);
-}
-.lr-loading .lr-spinner{
-  width:24px;height:24px;border-radius:50%;
-  border:2px solid var(--border-hi);border-top-color:var(--cyan);
-  animation:lr-spin .7s linear infinite;
-  margin:0 auto 10px;
-}
-@keyframes lr-spin{to{transform:rotate(360deg)}}
-
-.lr-error{
-  padding:16px;border-radius:8px;
-  background:var(--red-dim);border:1px solid rgba(255,59,92,.2);
-  color:var(--red);font-size:14px;text-align:center;
-}
-.lr-empty{
-  padding:16px;border-radius:8px;
-  background:var(--surface2);border:1px solid var(--border);
-  color:var(--text-dim);font-size:14px;text-align:center;
-}
-
-.lr-card{
-  border-radius:10px;background:var(--bg-deep);border:1px solid var(--cyan-border);
-  overflow:hidden;
-}
-.lr-card-header{
-  padding:14px 18px;display:flex;align-items:center;gap:12px;
-  border-bottom:1px solid var(--border);flex-wrap:wrap;
-}
-.lr-pair{font-size:17px;font-weight:800;color:var(--text)}
-.lr-dir{
-  font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;
-  padding:3px 9px;border-radius:4px;
-}
-.lr-dir.long{color:var(--green);background:var(--green-dim)}
-.lr-dir.short{color:var(--red);background:var(--red-dim)}
-.lr-status{
-  margin-left:auto;font-size:13px;font-weight:700;
-  padding:4px 12px;border-radius:6px;
-}
-.lr-status.win{color:var(--green);background:var(--green-dim)}
-.lr-status.partial_win{color:var(--cyan);background:var(--cyan-dim)}
-.lr-status.loss{color:var(--red);background:var(--red-dim)}
-.lr-status.expired{color:var(--text-muted);background:var(--surface2)}
-
-.lr-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
-  gap:1px;background:var(--border);
-}
-.lr-cell{padding:10px 14px;background:var(--bg-deep)}
-.lr-cell-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:2px}
-.lr-cell-val{font-size:13px;font-weight:600;color:var(--text);font-family:var(--font-mono)}
-.lr-cell-val.hash{font-size:11px;word-break:break-all;color:var(--cyan)}
-.lr-cell-val.pos{color:var(--green)}
-.lr-cell-val.neg{color:var(--red)}
-
-.lr-timeline{padding:16px 18px;border-top:1px solid var(--border)}
-.lr-timeline h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);margin-bottom:12px}
-.lr-tl{position:relative;padding-left:20px}
-.lr-tl::before{
-  content:'';position:absolute;left:4px;top:4px;bottom:4px;
-  width:1px;background:var(--cyan-border);
-}
-.lr-tl-item{
-  position:relative;padding-bottom:10px;display:flex;align-items:baseline;gap:10px;
-}
-.lr-tl-item:last-child{padding-bottom:0}
-.lr-tl-dot{
-  position:absolute;left:-20px;top:5px;
-  width:9px;height:9px;border-radius:50%;
-  border:2px solid var(--bg-deep);z-index:1;
-}
-.lr-tl-dot.capture{background:var(--cyan)}
-.lr-tl-dot.parsed{background:var(--cyan)}
-.lr-tl-dot.entry{background:var(--green)}
-.lr-tl-dot.tp{background:var(--green)}
-.lr-tl-dot.sl{background:var(--red)}
-.lr-tl-dot.closed{background:var(--gold)}
-.lr-tl-dot.archived{background:var(--gold)}
-.lr-tl-dot.edit{background:var(--amber)}
-.lr-tl-time{
-  font-family:var(--font-mono);font-size:11px;color:var(--text-muted);
-  min-width:130px;flex-shrink:0;
-}
-.lr-tl-event{font-size:13px;color:var(--text-dim)}
-.lr-tl-event strong{color:var(--text);font-weight:600}
-
-.lr-raw{margin-top:12px}
-.lr-raw summary{
-  font-size:12px;font-weight:600;color:var(--text-dim);cursor:pointer;
-  list-style:none;display:flex;align-items:center;gap:6px;
-}
-.lr-raw summary::-webkit-details-marker{display:none}
-.lr-raw summary::before{content:'▸';color:var(--cyan);font-size:10px}
-.lr-raw[open] summary::before{content:'▾'}
-.lr-raw pre{
-  margin-top:8px;font-family:var(--font-mono);font-size:11px;
-  padding:12px;border-radius:6px;
-  background:var(--surface);border:1px solid var(--border);
-  color:var(--text-dim);overflow-x:auto;line-height:1.5;
-  max-height:200px;overflow-y:auto;
+  color:var(--cyan);
 }
 
 /* ── FEATURED SIGNAL ── */
@@ -882,12 +783,6 @@ button{cursor:pointer}
 .signals-table .pnl-pos{color:var(--green);font-weight:600}
 .signals-table .pnl-neg{color:var(--red);font-weight:600}
 .signals-table .hash-link{color:var(--cyan);font-family:var(--font-mono);font-size:12px}
-.hash-btn{
-  background:var(--surface);border:1px solid var(--border);
-  color:var(--text-muted);font-family:var(--font-mono);font-size:12px;
-  padding:3px 8px;border-radius:4px;cursor:pointer;transition:all .15s;
-}
-.hash-btn:hover{border-color:var(--cyan);color:var(--cyan)}
 
 .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 
@@ -1104,63 +999,6 @@ button{cursor:pointer}
   font-size:12px;color:var(--text-muted);margin-top:6px;font-style:italic;
 }
 
-/* ── EQUITY CURVE (ported from agoraiq.net/proof) ── */
-.equity-section{
-  padding:28px 0;border-bottom:1px solid var(--border);
-}
-.equity-card{
-  max-width:var(--max-w);margin:0 auto;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:14px;padding:24px;position:relative;overflow:hidden;
-}
-.equity-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.3;
-}
-.equity-head{
-  display:flex;align-items:flex-start;justify-content:space-between;
-  flex-wrap:wrap;gap:12px;margin-bottom:18px;
-}
-.equity-head h3{
-  font-family:var(--font-head);font-weight:700;font-size:17px;
-  letter-spacing:-.3px;color:var(--text);
-}
-.equity-head h3 span{
-  display:block;font-family:var(--font-mono);font-weight:400;
-  font-size:12px;color:var(--text-muted);margin-top:3px;letter-spacing:0;
-}
-.eq-toggles{
-  display:flex;gap:2px;background:var(--bg-deep);
-  border:1px solid var(--border);border-radius:8px;padding:3px;
-}
-.eq-toggle{
-  font-family:var(--font-mono);font-size:11px;
-  padding:5px 13px;border:none;border-radius:6px;
-  background:transparent;color:var(--text-muted);
-  cursor:pointer;transition:all .2s;white-space:nowrap;
-}
-.eq-toggle:hover{color:var(--text-dim)}
-.eq-toggle.active{
-  background:var(--cyan-dim);color:var(--cyan);
-  border:1px solid rgba(0,212,255,.22);
-}
-.eq-canvas-wrap{position:relative;width:100%;height:280px}
-.eq-canvas-wrap canvas{width:100%!important;height:100%!important}
-.eq-legend{
-  display:flex;gap:16px;margin-top:12px;padding-top:12px;
-  border-top:1px solid var(--border);
-}
-.eq-legend .item{
-  display:flex;align-items:center;gap:6px;
-  font-family:var(--font-mono);font-size:11px;color:var(--text-muted);
-}
-.eq-legend .sw{width:20px;height:3px;border-radius:2px}
-@media(max-width:640px){
-  .equity-card{padding:18px 14px}
-  .eq-canvas-wrap{height:200px}
-  .equity-head{flex-direction:column}
-}
-
 /* ── Page freshness ── */
 .page-freshness{
   text-align:center;padding:12px 0;
@@ -1202,9 +1040,6 @@ button{cursor:pointer}
   .featured-header{flex-direction:column;align-items:flex-start}
   .featured-status{margin-left:0}
   .lookup-input-row{flex-direction:column}
-  .lr-grid{grid-template-columns:1fr}
-  .lr-card-header{flex-direction:column;align-items:flex-start}
-  .lr-status{margin-left:0}
   .cta-btns{flex-direction:column;align-items:center}
   .evidence-row{flex-direction:column;gap:8px;align-items:flex-start;padding-left:12px}
   .outcome-legend{flex-direction:column;gap:6px}
@@ -1292,35 +1127,14 @@ button{cursor:pointer}
         <span class="ev-label">Exchange source</span>
         <span class="ev-val" id="evExchange">Binance spot</span>
       </div>
+      <span class="ev-sep"></span>
+      <div class="evidence-item">
+        <span class="ev-label">Resolved records</span>
+        <span class="ev-val" id="evResolved">Pending</span>
+      </div>
     </div>
   </div>
 </div>
-
-<!-- ════════ CUMULATIVE R EQUITY CURVE ════════ -->
-<section class="equity-section">
-  <div class="container">
-    <div class="equity-card">
-      <div class="equity-head">
-        <h3>Cumulative R Curve
-          <span>Verified outcomes plotted over time — includes fees &amp; slippage</span>
-        </h3>
-        <div class="eq-toggles" id="eqRangeToggle">
-          <button class="eq-toggle" data-range="30">30 d</button>
-          <button class="eq-toggle active" data-range="90">90 d</button>
-          <button class="eq-toggle" data-range="all">All</button>
-        </div>
-      </div>
-      <div class="eq-canvas-wrap">
-        <canvas id="eqCurveChart"></canvas>
-      </div>
-      <div class="eq-legend">
-        <div class="item"><span class="sw" style="background:#00d4ff"></span>Cumulative R</div>
-        <div class="item"><span class="sw" style="background:rgba(247,147,26,.35)"></span>BTC (indexed)</div>
-        <div class="item"><span class="sw" style="background:rgba(98,126,234,.35)"></span>ETH (indexed)</div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- ════════ VERIFICATION STRIP ════════ -->
 <section class="verify-strip">
@@ -1535,37 +1349,43 @@ button{cursor:pointer}
   </div>
 </section>
 
-<!-- ════════ VERIFY A SIGNAL ════════ -->
+<!-- ════════ LOOKUP WIDGET ════════ -->
 <section class="lookup">
   <div class="container">
     <div class="lookup-box">
+      <div class="lookup-disabled-overlay" id="lookupOverlay">
+        <div class="lookup-disabled-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          Public lookup rolling out soon
+        </div>
+      </div>
 
       <div class="lookup-title">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        Check Any Signal
+        Verify a signal
       </div>
-      <p class="lookup-desc">Paste a signal ID or hash to confirm it was recorded at publication time and never modified. Every signal is SHA-256 hashed on ingestion — the proof is immutable.</p>
-      <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px">Tip: click any hash in the resolved table to copy and auto-fill this field.</p>
+      <p class="lookup-desc">Search by signal ID, hash, or provider + symbol to inspect the full lifecycle and audit trail.</p>
+      <div class="lookup-tabs">
+        <button class="lookup-tab active">Signal ID</button>
+        <button class="lookup-tab">Hash</button>
+        <button class="lookup-tab">Provider + Symbol</button>
+      </div>
       <div class="lookup-input-row">
-        <input type="text" class="lookup-input" id="verify-input" placeholder="Signal ID or hash prefix…" spellcheck="false"/>
-        <button class="lookup-btn" id="verifyBtn" onclick="verifySignal()">Verify</button>
+        <input type="text" class="lookup-input" placeholder="e.g. SIG-00042" disabled/>
+        <button class="lookup-btn" disabled>Verify</button>
       </div>
-      <div class="verify-helper" style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted);margin-top:8px">Click any hash in the table above to prefill · Try a signal ID like SIG-00042</div>
-
-      <!-- Result panel -->
-      <div class="lookup-result" id="lookupResult"></div>
 
       <details class="lookup-manual">
         <summary>How to verify a signal hash manually</summary>
         <div class="lookup-manual-inner">
           <p>Each signal hash is a SHA-256 digest of the raw captured payload: message text + receive timestamp + source metadata.</p>
           <pre>echo -n "${raw_payload}|${timestamp}|${source}" | sha256sum</pre>
-          <p>When you retrieve a signal via this lookup, compare the returned hash against your own SHA-256 computation of the raw payload to verify integrity.</p>
-          <p style="color:var(--text-muted);font-size:13px;margin-bottom:0">Try these sample lookups:</p>
+          <p>When public lookup is live, you'll be able to retrieve the raw payload and verify the hash with any standard tool.</p>
+          <p style="color:var(--text-muted);font-size:13px;margin-bottom:0">Sample IDs for reference:</p>
           <div class="lookup-sample-ids">
-            <span class="lookup-sample-id" onclick="prefillVerify('SIG-00042',this)">SIG-00042</span>
-            <span class="lookup-sample-id" onclick="prefillVerify('SIG-00041',this)">SIG-00041</span>
-            <span class="lookup-sample-id" onclick="prefillVerify('a3f8c1e7',this)">a3f8c1e7…</span>
+            <span class="lookup-sample-id">SIG-00042</span>
+            <span class="lookup-sample-id">SIG-00041</span>
+            <span class="lookup-sample-id">a3f8c1e7…d94e</span>
           </div>
         </div>
       </details>
@@ -1936,6 +1756,9 @@ button{cursor:pointer}
       if (data.lastHash) {
         document.getElementById('evLastHash').textContent = formatShortTime(data.lastHash);
       }
+      if (data.resolved > 0) {
+        document.getElementById('evResolved').textContent = data.resolved.toLocaleString();
+      }
       if (data.tracking) {
         document.getElementById('trackingCount').textContent =
           data.tracking + ' signal' + (data.tracking !== 1 ? 's' : '') + ' currently monitored';
@@ -1963,6 +1786,7 @@ button{cursor:pointer}
           var prefix = data.avgReturn >= 0 ? '+' : '';
           document.getElementById('kpiReturn').textContent = prefix + data.avgReturn.toFixed(2) + '%';
         }
+        document.getElementById('evResolved').textContent = data.resolved.toLocaleString();
         document.getElementById('statusResolution').textContent = data.resolved + ' resolved';
         document.getElementById('statusResolution').className = 'status-val online';
         // Swap hourglass to radar animation when archive is active
@@ -2018,7 +1842,7 @@ button{cursor:pointer}
           '<td class="' + statusClass + '">' + displayStatus + '</td>' +
           '<td class="mono ' + pnlClass + '">' + pnlPrefix + s.pnl + '%</td>' +
           '<td>' + (s.duration || '\u2014') + '</td>' +
-          '<td class="hash-link"><button class="hash-btn" title="' + (s.hash || s.id || '') + '" onclick="prefillVerify(\'' + (s.hash || s.id || '') + '\',this)">' + (s.hash ? s.hash.slice(0,10) + '\u2026' : s.id || '\u2014') + '</button></td>' +
+          '<td class="hash-link">' + (s.hash ? s.hash.slice(0,10) + '\u2026' : s.id || '\u2014') + '</td>' +
           '<td>' + (s.exchange || 'Binance') + '</td>';
         tbody.appendChild(tr);
       });
@@ -2054,183 +1878,20 @@ button{cursor:pointer}
     } catch(e) { return isoStr; }
   }
 
-  /* ══════════════════════════════════════════════════════════
-     SIGNAL VERIFICATION — ported from agoraiq.net/proof
-     Unified ?q= param, prefillVerify from table hash buttons
-     ══════════════════════════════════════════════════════════ */
-
-  // Enter key triggers verify
-  document.getElementById('verify-input').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') verifySignal();
-  });
-
-  /* prefillVerify — click any hash in table to copy + autofill + scroll */
-  window.prefillVerify = function(hash, el) {
-    // Copy to clipboard
-    navigator.clipboard.writeText(hash).catch(function(){});
-    // Flash the button green
-    if (el) {
-      var orig = el.textContent;
-      el.textContent = '\u2713';
-      el.style.color = 'var(--green)';
-      el.style.borderColor = 'var(--green)';
-      setTimeout(function() {
-        el.textContent = orig;
-        el.style.color = '';
-        el.style.borderColor = '';
-      }, 1200);
+  /* ── Enable lookup when API is ready ── */
+  window.enableLookup = function() {
+    var overlay = document.getElementById('lookupOverlay');
+    if (overlay) overlay.style.display = 'none';
+    var input = document.querySelector('.lookup-input');
+    var btn = document.querySelector('.lookup-btn');
+    if (input) input.disabled = false;
+    if (btn) {
+      btn.disabled = false;
+      btn.style.background = 'var(--cyan)';
+      btn.style.color = '#000';
+      btn.style.cursor = 'pointer';
     }
-    // Fill the input and scroll to verify box
-    var input = document.getElementById('verify-input');
-    input.value = hash;
-    input.focus();
-    document.querySelector('.lookup-box').scrollIntoView({behavior:'smooth', block:'center'});
   };
-
-  /* verifySignal — unified query, auto-detect response format */
-  window.verifySignal = function() {
-    var input = document.getElementById('verify-input').value.trim();
-    var panel = document.getElementById('lookupResult');
-    var btn = document.getElementById('verifyBtn');
-
-    if (!input) {
-      panel.innerHTML = '<div style="color:var(--amber);font-family:var(--font-mono);font-size:13px;margin-top:12px">Enter a signal ID or hash prefix</div>';
-      panel.classList.add('visible');
-      return;
-    }
-
-    // Show loading
-    panel.innerHTML = '<div class="lr-loading"><div class="lr-spinner"></div>Checking\u2026</div>';
-    panel.classList.add('visible');
-    btn.disabled = true;
-
-    fetch('/api/proof/verify?q=' + encodeURIComponent(input))
-      .then(function(res) {
-        btn.disabled = false;
-        if (res.status === 404) {
-          panel.innerHTML = '<div class="lr-empty">No match found. Check the ID or hash and try again.</div>';
-          return null;
-        }
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        return res.json();
-      })
-      .then(function(data) {
-        if (!data) return;
-
-        // Auto-detect response format:
-        // Simple response from agoraiq.net: { found: true/false, recordedAt, hash }
-        // Rich response from bot.agoraiq.net: { id, symbol, direction, status, timeline, ... }
-        if (data.found === false) {
-          panel.innerHTML = '<div class="lr-empty">No match found. Check the ID or hash and try again.</div>';
-        } else if (data.found === true && !data.symbol) {
-          // Simple verify response — show inline confirmation
-          var hashShort = (data.hash || '').length > 16 ? data.hash.slice(0, 16) + '\u2026' : (data.hash || '\u2014');
-          panel.innerHTML = '<div style="padding:14px;border-radius:8px;background:var(--green-dim);border:1px solid rgba(0,230,118,.2);color:var(--green);font-family:var(--font-mono);font-size:13px">' +
-            '\u2713 Verified \u2014 Signal recorded ' + fmtDateShort(data.recordedAt) + ' \u00B7 Hash: ' + esc(hashShort) + '</div>';
-        } else {
-          // Rich response — render full signal card
-          renderLookupResult(data);
-        }
-      })
-      .catch(function(err) {
-        btn.disabled = false;
-        panel.innerHTML = '<div class="lr-error">Verification service unavailable right now. Try again shortly.</div>';
-      });
-  };
-
-  function fmtDateShort(d) {
-    if (!d) return '\u2014';
-    try {
-      var dt = new Date(d);
-      if (isNaN(dt.getTime())) return d;
-      var mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      return mo[dt.getUTCMonth()] + ' ' + dt.getUTCDate() + ' ' +
-        String(dt.getUTCHours()).padStart(2,'0') + ':' + String(dt.getUTCMinutes()).padStart(2,'0') + ' UTC';
-    } catch(e) { return d; }
-  }
-
-  /* renderLookupResult — rich signal card with timeline + raw payload */
-  function renderLookupResult(s) {
-    var panel = document.getElementById('lookupResult');
-    var statusLabels = {win:'Win',partial_win:'Partial win',loss:'Loss',expired:'Expired',ambiguous:'Ambiguous',open:'Open',unfilled:'Unfilled',HIT_TP:'TP Hit',HIT_SL:'Stopped',ACTIVE:'Active',PENDING:'Active',EXPIRED:'Expired'};
-    var statusDisplay = statusLabels[s.status] || s.status || 'Tracking';
-    var statusClass = s.status || 'open';
-    var dirClass = (s.direction || s.dir || '').toLowerCase() === 'short' ? 'short' : 'long';
-    var dirArrow = dirClass === 'long' ? '\u2B06' : '\u2B07';
-    var pnlVal = s.pnlPct !== undefined ? s.pnlPct : s.pnl;
-    var pnlClass = (pnlVal || 0) >= 0 ? 'pos' : 'neg';
-    var pnlPrefix = (pnlVal || 0) >= 0 ? '+' : '';
-
-    var html = '<div class="lr-card">';
-
-    // Header
-    html += '<div class="lr-card-header">';
-    html += '<span class="lr-pair">' + esc(s.symbol || s.pair || '\u2014') + '</span>';
-    html += '<span class="lr-dir ' + dirClass + '">' + dirArrow + ' ' + esc((s.direction || s.dir || '').toUpperCase()) + '</span>';
-    if (s.status) html += '<span class="lr-status ' + statusClass + '">' + esc(statusDisplay) + '</span>';
-    html += '</div>';
-
-    // Data grid
-    html += '<div class="lr-grid">';
-    html += cell('Provider', s.provider || s.providerName);
-    html += cell('Entry', s.entry);
-    html += cell('Stop-loss', s.stop_loss || s.sl);
-    html += cell('Target 1', s.tp1 || s.tp);
-    html += cell('Target 2', s.tp2);
-    html += cell('Received', s.received_at || s.received || s.createdAt || s.date);
-    html += cell('Exchange', s.exchange || 'Binance');
-    html += cell('AI Score', s.ai_score ? s.ai_score + ' / 100' : null);
-    if (pnlVal !== undefined && pnlVal !== null) {
-      html += '<div class="lr-cell"><div class="lr-cell-label">Net result</div><div class="lr-cell-val ' + pnlClass + '">' + pnlPrefix + pnlVal + '%</div></div>';
-    }
-    if (s.rMultiple !== undefined || s.rMult !== undefined) {
-      var rVal = s.rMultiple || s.rMult;
-      html += '<div class="lr-cell"><div class="lr-cell-label">R-Multiple</div><div class="lr-cell-val ' + ((rVal||0) >= 0 ? 'pos' : 'neg') + '">' + ((rVal||0) >= 0 ? '+' : '') + (rVal||0).toFixed(2) + 'R</div></div>';
-    }
-    html += cell('Duration', s.duration);
-    html += '<div class="lr-cell"><div class="lr-cell-label">Signal hash</div><div class="lr-cell-val hash">' + esc(s.hash || s.signalHash || '\u2014') + '</div></div>';
-    html += '<div class="lr-cell"><div class="lr-cell-label">Signal ID</div><div class="lr-cell-val hash">' + esc(s.id || '\u2014') + '</div></div>';
-    html += '</div>';
-
-    // Timeline
-    if (s.timeline && s.timeline.length) {
-      html += '<div class="lr-timeline"><h4>Signal lifecycle</h4><div class="lr-tl">';
-      s.timeline.forEach(function(ev) {
-        var dotClass = ev.type || 'capture';
-        html += '<div class="lr-tl-item">';
-        html += '<div class="lr-tl-dot ' + esc(dotClass) + '"></div>';
-        html += '<span class="lr-tl-time">' + esc(ev.time || '') + '</span>';
-        html += '<span class="lr-tl-event"><strong>' + esc(ev.label || '') + '</strong>';
-        if (ev.detail) html += ' \u2014 ' + esc(ev.detail);
-        html += '</span></div>';
-      });
-      html += '</div></div>';
-    }
-
-    // Raw payload
-    if (s.raw_payload) {
-      html += '<div class="lr-timeline"><details class="lr-raw"><summary>View raw captured payload</summary>';
-      html += '<pre>' + esc(typeof s.raw_payload === 'string' ? s.raw_payload : JSON.stringify(s.raw_payload, null, 2)) + '</pre>';
-      html += '</details></div>';
-    }
-
-    html += '</div>';
-    panel.innerHTML = html;
-    panel.classList.add('visible');
-    panel.scrollIntoView({behavior:'smooth', block:'nearest'});
-  }
-
-  function cell(label, val) {
-    if (val === undefined || val === null) val = '\u2014';
-    return '<div class="lr-cell"><div class="lr-cell-label">' + esc(label) + '</div><div class="lr-cell-val">' + esc(String(val)) + '</div></div>';
-  }
-
-  function esc(str) {
-    if (!str) return '';
-    var d = document.createElement('div');
-    d.textContent = str;
-    return d.innerHTML;
-  }
 
   /* ══════════════════════════════════════════════════════════
      CHARTS — All hidden until API data exists
@@ -2586,170 +2247,6 @@ button{cursor:pointer}
     if (monthlyDataAll) renderMonthly();
   });
 
-})();
-</script>
-
-<!-- ── Equity Curve Chart (ported from agoraiq.net/proof) ── -->
-<script>
-(function(){
-  Chart.defaults.font.family="'JetBrains Mono',monospace";
-  Chart.defaults.font.size=11;
-  Chart.defaults.color='rgba(255,255,255,.3)';
-  Chart.defaults.plugins.tooltip.backgroundColor='#141822';
-  Chart.defaults.plugins.tooltip.borderColor='rgba(0,212,255,.2)';
-  Chart.defaults.plugins.tooltip.borderWidth=1;
-  Chart.defaults.plugins.tooltip.padding=10;
-  Chart.defaults.plugins.tooltip.cornerRadius=8;
-  Chart.defaults.plugins.tooltip.titleFont={family:"'Albert Sans',sans-serif",weight:'600',size:12};
-  Chart.defaults.plugins.tooltip.bodyFont={family:"'JetBrains Mono',monospace",size:11};
-  Chart.defaults.plugins.legend.display=false;
-
-  var GRID='rgba(255,255,255,.035)',TICK='rgba(255,255,255,.22)';
-  var CYAN='#00d4ff',BTC='rgba(247,147,26,.35)',ETH='rgba(98,126,234,.35)';
-
-  var eqDates=[],eqR=[],eqBtc=[],eqEth=[];
-  var chart;
-
-  /* Load real data from API, fallback to generated placeholder */
-  async function loadEquityCurveData() {
-    try {
-      var res = await fetch('/api/proof/equity-curve');
-      if (res.ok) {
-        var data = await res.json();
-        if (data && data.dates && data.dates.length > 10) {
-          eqDates = data.dates;
-          eqR = data.cumR;
-          eqBtc = data.btcIndexed || data.dates.map(function(){ return 0; });
-          eqEth = data.ethIndexed || data.dates.map(function(){ return 0; });
-          buildChart('90');
-          return;
-        }
-      }
-    } catch(e) {}
-
-    /* Fallback — generate placeholder data to show the chart is functional */
-    var now = new Date(), r = 0, b = 0, e = 0;
-    for (var i = 180; i >= 0; i--) {
-      var d = new Date(now);
-      d.setDate(d.getDate() - i);
-      eqDates.push(d.toISOString().slice(0, 10));
-      r += (Math.random() - .38) * .55;
-      b += (Math.random() - .46) * .35;
-      e += (Math.random() - .48) * .42;
-      eqR.push(+(r.toFixed(2)));
-      eqBtc.push(+(b.toFixed(2)));
-      eqEth.push(+(e.toFixed(2)));
-    }
-    buildChart('90');
-  }
-
-  function buildChart(range) {
-    var ctx = document.getElementById('eqCurveChart').getContext('2d');
-    if (chart) chart.destroy();
-
-    var start = 0;
-    if (range === '30') start = Math.max(0, eqDates.length - 30);
-    if (range === '90') start = Math.max(0, eqDates.length - 90);
-
-    var labels = eqDates.slice(start);
-    var primary = eqR.slice(start);
-    var btcS = eqBtc.slice(start);
-    var ethS = eqEth.slice(start);
-
-    chart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            label: 'Cumulative R',
-            data: primary,
-            borderColor: CYAN,
-            borderWidth: 2,
-            backgroundColor: function(c) {
-              var g = c.chart.ctx.createLinearGradient(0, 0, 0, c.chart.height);
-              g.addColorStop(0, 'rgba(0,212,255,.12)');
-              g.addColorStop(1, 'rgba(0,212,255,0)');
-              return g;
-            },
-            fill: true,
-            tension: .35,
-            pointRadius: 0,
-            pointHitRadius: 8
-          },
-          {
-            label: 'BTC',
-            data: btcS,
-            borderColor: BTC,
-            borderWidth: 1.5,
-            borderDash: [4, 3],
-            fill: false,
-            tension: .35,
-            pointRadius: 0
-          },
-          {
-            label: 'ETH',
-            data: ethS,
-            borderColor: ETH,
-            borderWidth: 1.5,
-            borderDash: [4, 3],
-            fill: false,
-            tension: .35,
-            pointRadius: 0
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: { mode: 'index', intersect: false },
-        scales: {
-          x: {
-            type: 'category',
-            grid: { color: GRID, drawTicks: false },
-            ticks: {
-              color: TICK,
-              maxTicksLimit: 7,
-              callback: function(v) {
-                var d = this.getLabelForValue(v);
-                return d ? d.slice(5) : '';
-              }
-            },
-            border: { display: false }
-          },
-          y: {
-            grid: { color: GRID, drawTicks: false },
-            ticks: {
-              color: TICK,
-              callback: function(v) { return v.toFixed(1) + ' R'; }
-            },
-            border: { display: false }
-          }
-        },
-        plugins: {
-          tooltip: {
-            callbacks: {
-              label: function(t) {
-                return t.dataset.label + ': ' + t.raw.toFixed(2) + ' R';
-              }
-            }
-          }
-        }
-      }
-    });
-  }
-
-  /* Range toggle handler */
-  document.getElementById('eqRangeToggle').addEventListener('click', function(ev) {
-    var btn = ev.target.closest('.eq-toggle');
-    if (!btn) return;
-    document.querySelectorAll('#eqRangeToggle .eq-toggle').forEach(function(b) { b.classList.remove('active'); });
-    btn.classList.add('active');
-    buildChart(btn.getAttribute('data-range'));
-  });
-
-  /* Init */
-  loadEquityCurveData();
 })();
 </script>
 

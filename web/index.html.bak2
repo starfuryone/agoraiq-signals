@@ -843,7 +843,7 @@ body::before{
       <a href="#features">Features</a>
       <a href="#methodology">Methodology</a>
       <a href="#pricing">Pricing</a>
-      <a href="/proof.html">Live Proof</a>
+      <a href="https://agoraiq.net/proof">Live Proof</a>
       <a href="https://t.me/sigpulsebot" class="nav-cta">Open Bot →</a>
     </nav>
     <button class="hamburger" onclick="document.getElementById('mob').classList.toggle('open')" aria-label="Menu">
@@ -855,7 +855,7 @@ body::before{
   <a href="#features" onclick="document.getElementById('mob').classList.remove('open')">Features</a>
   <a href="#methodology" onclick="document.getElementById('mob').classList.remove('open')">Methodology</a>
   <a href="#pricing" onclick="document.getElementById('mob').classList.remove('open')">Pricing</a>
-  <a href="/proof.html">Live Proof</a>
+  <a href="https://agoraiq.net/proof">Live Proof</a>
   <a href="https://t.me/sigpulsebot" class="nav-cta">Open Bot →</a>
 </div>
 
@@ -866,7 +866,7 @@ body::before{
   <div class="hero-content">
     <div class="hero-badge fade-up">
       <span class="pulse"></span>
-      Signal Verification Engine · <a href="/proof.html" style="color:var(--gold);text-decoration:underline;text-underline-offset:2px">Live Proof →</a>
+      Signal Verification Engine · <a href="https://agoraiq.net/proof" style="color:var(--gold);text-decoration:underline;text-underline-offset:2px">Live Proof →</a>
     </div>
     <h1 class="fade-up fade-up-d1" style="text-transform:uppercase">Stop Following Signal Hype.<br/><em>See What Actually Wins.</em></h1>
     <p class="hero-sub fade-up fade-up-d2">AIQ Signals parses, scores, and verifies crypto signals against live exchange data — so you can judge providers by outcomes, not screenshots.</p>
@@ -908,7 +908,7 @@ body::before{
     <div class="verify-module fade-up fade-up-d4">
       <div class="verify-header">
         <h3>How Verification Works</h3>
-        <a href="/proof.html">See live proof dashboard →</a>
+        <a href="https://agoraiq.net/proof">See live proof dashboard →</a>
       </div>
       <div class="verify-steps">
         <div class="verify-step">
@@ -1025,7 +1025,7 @@ body::before{
             <div class="line"><span class="hl-dim">Confidence:</span> <span class="hl-amber">strong provider history</span> <span class="hl-dim">·</span> <span class="hl-amber">clean format</span> <span class="hl-dim">·</span> <span class="hl-amber">favorable R:R</span></div>
           </div>
           <div class="terminal-cta">
-            <a href="/proof.html">View on Proof Dashboard →</a>
+            <a href="https://agoraiq.net/proof">View on Proof Dashboard →</a>
             <span>SHA-256: 7a3f...e91d</span>
           </div>
         </div>
@@ -1159,7 +1159,7 @@ body::before{
   <div class="container">
     <div class="section-label"><span class="dot"></span> Example Signal</div>
     <div class="section-title">What a resolved signal looks like.</div>
-    <p class="section-sub">This is an illustrative example of how a completed signal is structured — parsed, tracked, and resolved. Live records are on the <a href="/proof.html" style="color:var(--gold)">proof dashboard</a>.</p>
+    <p class="section-sub">This is an illustrative example of how a completed signal is structured — parsed, tracked, and resolved. Live records are on the <a href="https://agoraiq.net/proof" style="color:var(--gold)">proof dashboard</a>.</p>
     <div class="signal-layout">
       <div class="signal-card">
         <div class="signal-header">
@@ -1231,7 +1231,7 @@ body::before{
           </div>
         </div>
         <div class="signal-proof-link">
-          <a href="/proof.html">View on Proof Dashboard →</a>
+          <a href="https://agoraiq.net/proof">View on Proof Dashboard →</a>
           <span>Hash: 4e2b...c87a</span>
         </div>
       </div>
@@ -1309,7 +1309,7 @@ body::before{
       </div>
     </div>
     <div class="method-cta">
-      Tracked signals, outcomes, and hashes are published to the <a href="/proof.html">live proof dashboard →</a>
+      Tracked signals, outcomes, and hashes are published to the <a href="https://agoraiq.net/proof">live proof dashboard →</a>
     </div>
   </div>
 </section>
@@ -1418,7 +1418,7 @@ body::before{
     <h2>Don't take our word for it.<br/><em>Check the proof.</em></h2>
     <p>Tracked signals are published to the public proof dashboard with their full audit trail. Then open the bot and see it work in real time.</p>
     <div class="final-actions">
-      <a href="/proof.html" class="btn btn-gold">See Live Proof Dashboard →</a>
+      <a href="https://agoraiq.net/proof" class="btn btn-gold">See Live Proof Dashboard →</a>
       <a href="https://t.me/sigpulsebot" class="btn btn-outline">Open Bot on Telegram</a>
     </div>
   </div>
@@ -1443,7 +1443,7 @@ body::before{
         <a href="#features">Features</a>
         <a href="#methodology">Methodology</a>
         <a href="#pricing">Pricing</a>
-        <a href="/proof.html">Live Proof</a>
+        <a href="https://agoraiq.net/proof">Live Proof</a>
       </div>
       <div class="footer-col">
         <h5>AgoraIQ</h5>
