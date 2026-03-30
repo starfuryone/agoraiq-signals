@@ -1292,6 +1292,11 @@ button{cursor:pointer}
         <span class="ev-label">Exchange source</span>
         <span class="ev-val" id="evExchange">Binance spot</span>
       </div>
+      <span class="ev-sep"></span>
+      <div class="evidence-item">
+        <span class="ev-label">Resolved records</span>
+        <span class="ev-val" id="evResolved">Pending</span>
+      </div>
     </div>
   </div>
 </div>
@@ -1936,6 +1941,9 @@ button{cursor:pointer}
       if (data.lastHash) {
         document.getElementById('evLastHash').textContent = formatShortTime(data.lastHash);
       }
+      if (data.resolved > 0) {
+        document.getElementById('evResolved').textContent = data.resolved.toLocaleString();
+      }
       if (data.tracking) {
         document.getElementById('trackingCount').textContent =
           data.tracking + ' signal' + (data.tracking !== 1 ? 's' : '') + ' currently monitored';
@@ -1963,6 +1971,7 @@ button{cursor:pointer}
           var prefix = data.avgReturn >= 0 ? '+' : '';
           document.getElementById('kpiReturn').textContent = prefix + data.avgReturn.toFixed(2) + '%';
         }
+        document.getElementById('evResolved').textContent = data.resolved.toLocaleString();
         document.getElementById('statusResolution').textContent = data.resolved + ' resolved';
         document.getElementById('statusResolution').className = 'status-val online';
         // Swap hourglass to radar animation when archive is active

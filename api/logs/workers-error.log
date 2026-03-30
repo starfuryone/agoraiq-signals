@@ -6,3 +6,5 @@
 2026-03-27 09:12:23: [price] Binance failed for ACTUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=ACTUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
 2026-03-27 11:29:55: [price] Binance failed for DYDXUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=DYDXUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
 2026-03-27 21:20:02: [telegram] send error to 7640489257: fetch failed
+2026-03-30 13:27:44: [price] Binance failed for KAIAUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=KAIAUSDT failed, reason: Proxy connection timed out
+2026-03-30 13:30:35: [price] Binance failed for PENGUUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=PENGUUSDT failed, reason: socket hang up

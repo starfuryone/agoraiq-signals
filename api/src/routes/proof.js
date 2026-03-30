@@ -101,4 +101,7 @@ router.get("/recent", async (req, res) => {
   }
 });
 
+
+// ── Equity curve ──────────────────────────────────────────────
+router.get("/equity-curve", require("./equity-curve"));
 module.exports = router;
