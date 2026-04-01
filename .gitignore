@@ -13,3 +13,8 @@ dist/
 *.db
 *.sqlite
 .pm2/
+
+# local secrets
+api/.env
+.env
+*.env
