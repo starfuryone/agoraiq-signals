@@ -107,10 +107,22 @@ router.post("/link/confirm", requireAuth, async (req, res) => {
       [req.userId]
     );
 
+    // Remove old unlinked records for this telegram_id (allows re-link)
+    await db.query(
+      `DELETE FROM bot_telegram_accounts
+       WHERE telegram_id = $1 AND unlinked_at IS NOT NULL`,
+      [entry.telegram_id]
+    );
+
     // Create link
     await db.query(
-      `INSERT INTO bot_telegram_accounts (bot_user_id, telegram_id, telegram_username)
-       VALUES ($1, $2, $3)`,
+      `INSERT INTO bot_telegram_accounts (bot_user_id, telegram_id, telegram_username, linked_at, unlinked_at)
+       VALUES ($1, $2, $3, NOW(), NULL)
+       ON CONFLICT (telegram_id) DO UPDATE SET
+         bot_user_id = EXCLUDED.bot_user_id,
+         telegram_username = EXCLUDED.telegram_username,
+         linked_at = NOW(),
+         unlinked_at = NULL`,
       [req.userId, entry.telegram_id, entry.telegram_username]
     );
 

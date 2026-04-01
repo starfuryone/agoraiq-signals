@@ -8,3 +8,20 @@
 2026-03-27 21:20:02: [telegram] send error to 7640489257: fetch failed
 2026-03-30 13:27:44: [price] Binance failed for KAIAUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=KAIAUSDT failed, reason: Proxy connection timed out
 2026-03-30 13:30:35: [price] Binance failed for PENGUUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=PENGUUSDT failed, reason: socket hang up
+2026-03-30 23:07:03: [telegram] send failed to 7640489257: Gateway Timeout
+2026-03-30 23:09:03: [telegram] send failed to 7640489257: Gateway Timeout
+2026-03-31 05:51:14: [price] Binance failed for BNBUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=BNBUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
+2026-03-31 06:24:04: [price] Binance failed for ADAUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=ADAUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
+2026-03-31 11:36:09: [price] Binance failed for DYMUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=DYMUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
+2026-03-31 14:00:06: [price] Binance failed for THEUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=THEUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
+2026-03-31 14:19:15: [price] Binance failed for NEBLUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=NEBLUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
+2026-03-31 14:41:07: [price] Binance failed for SAHARAUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=SAHARAUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
+2026-03-31 15:48:34: [price] Binance failed for AAVEUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=AAVEUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
+2026-03-31 16:02:39: [price] Binance failed for ASTRUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=ASTRUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
+2026-03-31 18:26:01: [price] Binance failed for TOWNSUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=TOWNSUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
+2026-03-31 20:39:07: [price] Binance failed for NOMUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=NOMUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
+2026-04-01 08:10:20: [price] Binance failed for ROBOUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=ROBOUSDT failed, reason: Proxy connection timed out
+2026-04-01 12:12:01: [price] Binance failed for ERNUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=ERNUSDT failed, reason: Proxy connection timed out
+2026-04-01 13:28:27: [price] Binance failed for FUNUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=FUNUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
+2026-04-01 13:30:14: [price] Binance failed for ANCUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=ANCUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
+2026-04-01 14:50:47: [price] Binance failed for AIONUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=AIONUSDT failed, reason: Client network socket disconnected before secure TLS connection was established

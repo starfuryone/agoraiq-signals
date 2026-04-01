@@ -12,6 +12,7 @@ from typing import Any, Dict, Optional
 import httpx
 
 API_BASE = os.environ.get("API_BASE", "http://127.0.0.1:4300/api/v1")
+INTERNAL_SECRET = os.environ.get("INTERNAL_API_SECRET", "")
 
 _client: Optional[httpx.AsyncClient] = None
 
@@ -34,6 +35,8 @@ def _headers(token: Optional[str] = None) -> Dict[str, str]:
     h: Dict[str, str] = {"Content-Type": "application/json"}
     if token:
         h["Authorization"] = f"Bearer {token}"
+    if INTERNAL_SECRET:
+        h["X-Internal-Auth"] = INTERNAL_SECRET
     return h
 
 

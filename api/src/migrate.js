@@ -38,12 +38,14 @@ const MIGRATIONS = [
   `CREATE INDEX IF NOT EXISTS idx_bta_user ON bot_telegram_accounts(bot_user_id)`,
 
   // ── bot_subscriptions — billing state ───────────────────────────
+  // Stripe is sole source of truth. No free tier.
   `CREATE TABLE IF NOT EXISTS bot_subscriptions (
     id              SERIAL PRIMARY KEY,
     bot_user_id     INTEGER NOT NULL UNIQUE REFERENCES bot_users(id) ON DELETE CASCADE,
-    plan_tier       TEXT DEFAULT 'free',
-    status          TEXT DEFAULT 'active',
+    plan_tier       TEXT,
+    status          TEXT DEFAULT 'inactive',
     stripe_sub_id   TEXT,
+    billing_period  TEXT,
     started_at      TIMESTAMPTZ DEFAULT NOW(),
     expires_at      TIMESTAMPTZ,
     updated_at      TIMESTAMPTZ DEFAULT NOW()
@@ -51,6 +53,53 @@ const MIGRATIONS = [
   `CREATE INDEX IF NOT EXISTS idx_bsub_user ON bot_subscriptions(bot_user_id)`,
   `CREATE INDEX IF NOT EXISTS idx_bsub_stripe ON bot_subscriptions(stripe_sub_id)
    WHERE stripe_sub_id IS NOT NULL`,
+
+  // ── Migration: add billing_period column if missing ────────────
+  `DO $$ BEGIN
+     ALTER TABLE bot_subscriptions ADD COLUMN IF NOT EXISTS billing_period TEXT;
+   EXCEPTION WHEN duplicate_column THEN NULL;
+   END $$`,
+
+  // ── Migration: add scheduled change columns ───────────────────
+  `DO $$ BEGIN
+     ALTER TABLE bot_subscriptions ADD COLUMN IF NOT EXISTS scheduled_plan_tier TEXT;
+   EXCEPTION WHEN duplicate_column THEN NULL;
+   END $$`,
+  `DO $$ BEGIN
+     ALTER TABLE bot_subscriptions ADD COLUMN IF NOT EXISTS scheduled_billing_period TEXT;
+   EXCEPTION WHEN duplicate_column THEN NULL;
+   END $$`,
+  `DO $$ BEGIN
+     ALTER TABLE bot_subscriptions ADD COLUMN IF NOT EXISTS scheduled_effective_at TIMESTAMPTZ;
+   EXCEPTION WHEN duplicate_column THEN NULL;
+   END $$`,
+
+  // ── Migration: add meta JSONB column for consent/checkout links ─
+  `DO $$ BEGIN
+     ALTER TABLE bot_subscriptions ADD COLUMN IF NOT EXISTS meta JSONB DEFAULT '{}'::jsonb;
+   EXCEPTION WHEN duplicate_column THEN NULL;
+   END $$`,
+
+  // ── Migration: clean up legacy free rows (trial rows expire naturally) ──
+  `UPDATE bot_subscriptions SET status = 'inactive', plan_tier = NULL
+   WHERE plan_tier = 'free' AND stripe_sub_id IS NULL`,
+
+  // ── consent_log — durable compliance record ────────────────────
+  `CREATE TABLE IF NOT EXISTS consent_log (
+    id              SERIAL PRIMARY KEY,
+    bot_user_id     INTEGER NOT NULL REFERENCES bot_users(id) ON DELETE CASCADE,
+    version         TEXT NOT NULL,
+    documents       JSONB NOT NULL,
+    accepted_at     TIMESTAMPTZ NOT NULL,
+    ip_address      TEXT,
+    user_agent      TEXT,
+    plan            TEXT,
+    period          TEXT,
+    created_at      TIMESTAMPTZ DEFAULT NOW()
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_cl_user ON consent_log(bot_user_id)`,
+  `CREATE INDEX IF NOT EXISTS idx_cl_version ON consent_log(version)`,
+  `CREATE INDEX IF NOT EXISTS idx_cl_created ON consent_log(created_at DESC)`,
 
   // ── bot_sessions — magic link tokens ────────────────────────────
   `CREATE TABLE IF NOT EXISTS bot_sessions (

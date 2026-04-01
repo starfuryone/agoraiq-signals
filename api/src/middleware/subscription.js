@@ -16,12 +16,14 @@ function getRedis() {
   return _redis;
 }
 
-const TIER_RANK = { free: 0, pro: 1, elite: 2 };
+// No free tier. Trial gives pro-level access for 1 day. Stripe is source of truth for paid.
+const TIER_RANK = { trial: 1, pro: 1, elite: 2 };
 const CACHE_TTL = 300;
 
 /**
  * Get user's effective plan tier (cached).
  * Honors active, cancel_at_period_end, past_due with 3-day grace.
+ * Returns null if no active paid subscription.
  */
 async function getUserTier(botUserId) {
   const cacheKey = `sub:${botUserId}`;
@@ -30,24 +32,28 @@ async function getUserTier(botUserId) {
   if (redis) {
     try {
       const cached = await redis.get(cacheKey);
-      if (cached) return cached;
+      if (cached) return cached === "null" ? null : cached;
     } catch {}
   }
 
-  let tier = "free";
+  let tier = null;
   try {
     const r = await db.query(
       `SELECT plan_tier, status, expires_at FROM bot_subscriptions
-       WHERE bot_user_id = $1
-       ORDER BY started_at DESC LIMIT 1`,
+       WHERE bot_user_id = $1 AND plan_tier IN ('pro', 'elite', 'trial')
+       ORDER BY CASE plan_tier WHEN 'elite' THEN 3 WHEN 'pro' THEN 2 WHEN 'trial' THEN 1 END DESC,
+                started_at DESC LIMIT 1`,
       [botUserId]
     );
     if (r.rows.length > 0) {
       const sub = r.rows[0];
-      const plan = sub.plan_tier || "free";
+      const plan = sub.plan_tier;
       const now = new Date();
 
-      if (sub.status === "active") {
+      if (plan === "trial") {
+        // Trial: only active if not expired
+        if (sub.expires_at && new Date(sub.expires_at) > now) tier = "trial";
+      } else if (sub.status === "active") {
         tier = plan;
       } else if (sub.status === "cancel_at_period_end") {
         if (sub.expires_at && new Date(sub.expires_at) > now) tier = plan;
@@ -62,7 +68,7 @@ async function getUserTier(botUserId) {
   } catch {}
 
   if (redis) {
-    try { await redis.setex(cacheKey, CACHE_TTL, tier); } catch {}
+    try { await redis.setex(cacheKey, CACHE_TTL, tier || "null"); } catch {}
   }
 
   return tier;
@@ -78,12 +84,14 @@ function requirePlan(minTier) {
     const tier = await getUserTier(req.userId);
     const rank = TIER_RANK[tier] || 0;
 
-    if (rank < minRank) {
+    if (!tier || rank < minRank) {
       return res.status(403).json({
-        error: "upgrade_required",
+        error: "subscription_required",
         required_plan: minTier,
-        current_plan: tier,
-        message: `This feature requires ${minTier.toUpperCase()} plan.`,
+        current_plan: tier || "inactive",
+        message: tier
+          ? `This feature requires ${minTier.toUpperCase()} plan. You are on ${tier.toUpperCase()}.`
+          : "An active subscription is required. Subscribe at bot.agoraiq.net/pricing",
         upgrade_url: "/pricing.html",
       });
     }
@@ -96,7 +104,7 @@ async function attachPlan(req, res, next) {
   if (req.userId) {
     req.planTier = await getUserTier(req.userId);
   } else {
-    req.planTier = "free";
+    req.planTier = null;
   }
   next();
 }

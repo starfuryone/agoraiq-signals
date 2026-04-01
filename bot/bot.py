@@ -16,6 +16,8 @@ from collections import defaultdict
 from typing import Optional
 
 from dotenv import load_dotenv
+load_dotenv()
+
 from telegram import BotCommand, Update
 from telegram.constants import ParseMode
 from telegram.ext import (
@@ -31,8 +33,6 @@ import api
 import store
 import pushworker
 import cards
-
-load_dotenv()
 
 logging.basicConfig(
     format="%(asctime)s [%(name)s] %(levelname)s — %(message)s",
@@ -1037,31 +1037,8 @@ async def cmd_stats(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
 #  PROVIDER COMMANDS
 # ═══════════════════════════════════════════════════════════════════
 
-@rate_limited
-async def cmd_providers(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
-    try:
-        data = await api.providers_list(limit=10)
-        items = data if isinstance(data, list) else data.get("providers", data.get("data", []))
-        if not items:
-            await update.message.reply_text("📭 No providers tracked yet\\.", parse_mode=ParseMode.MARKDOWN_V2)
-            return
-        lines = [f"👥 {bold('Signal Providers')}\n"]
-        for p in items[:10]:
-            name = p.get("name", p.get("channel", "?"))
-            wr = p.get("winRate", p.get("win_rate", None))
-            total = p.get("totalSignals", p.get("total", "—"))
-            trust = p.get("trustScore", p.get("score", "—"))
-            wr_str = pct(wr) if wr else "—"
-            lines.append(
-                f"• {bold(esc(str(name)))} — "
-                f"WR: {esc(wr_str)} · "
-                f"Signals: {esc(str(total))} · "
-                f"Trust: {esc(str(trust))}"
-            )
-        lines.append(f"\n👉 {link('Full leaderboard', APP_URL + '/providers.html')}")
-        await update.message.reply_text("\n".join(lines), parse_mode=ParseMode.MARKDOWN_V2)
-    except Exception as e:
-        await api_error(update, "providers", e)
+# ═══════════════════════════════════════════════════════════════════
+# cmd_providers defined below (before main) — uses cards.provider_list_card
 
 
 @rate_limited
@@ -1220,21 +1197,38 @@ async def cmd_connect(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
 
 @rate_limited
 async def cmd_disconnect(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
-    token = store.get_token(update.effective_user.id)
-    removed = store.remove_link(update.effective_user.id)
-    if removed:
-        if token:
-            try:
-                await api.telegram_unlink(token)
-            except Exception:
-                pass
+    tg_id = update.effective_user.id
+
+    try:
+        result = await store.async_remove_link(tg_id)
+
+        if result == "ok":
+            log.info("disconnect success telegram_id=%s", tg_id)
+            await update.message.reply_text(
+                "\u2705 Your Telegram account has been disconnected\\.\n"
+                "Use /connect to re\\-link\\.",
+                parse_mode=ParseMode.MARKDOWN_V2,
+            )
+            return
+
+        if result == "not_linked":
+            log.info("disconnect no_link telegram_id=%s", tg_id)
+            await update.message.reply_text(
+                "\u2139\ufe0f No linked account found\\. Use /connect\\.",
+                parse_mode=ParseMode.MARKDOWN_V2,
+            )
+            return
+
+        log.warning("disconnect failed telegram_id=%s result=%s", tg_id, result)
         await update.message.reply_text(
-            "\U0001f513 Account unlinked\\. Use /connect to re\\-link\\.",
+            "\u26a0\ufe0f Could not disconnect right now\\. Please try again\\.",
             parse_mode=ParseMode.MARKDOWN_V2,
         )
-    else:
+
+    except Exception as e:
+        log.exception("disconnect exception telegram_id=%s", tg_id)
         await update.message.reply_text(
-            "\u2139\ufe0f No linked account found\\.",
+            "\u26a0\ufe0f Could not disconnect right now\\. Please try again\\.",
             parse_mode=ParseMode.MARKDOWN_V2,
         )
 
@@ -1607,6 +1601,143 @@ async def post_init(app: Application) -> None:
     log.info("Bot commands registered.")
 
 
+# ── Provider commands ─────────────────────────────────────────────
+
+@rate_limited
+async def cmd_providers(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    user = update.effective_user
+    token = store.get_token(user.id)
+    try:
+        data = await api.providers_list(token)
+        providers = data if isinstance(data, list) else data.get("providers", [])
+        total = len(providers)
+        msg = cards.provider_list_card(providers, total=total)
+        await update.message.reply_text(
+            msg,
+            parse_mode="MarkdownV2",
+            reply_markup=cards.InlineKeyboardMarkup([[
+                cards.InlineKeyboardButton("🌐 Browse on Web", url=f"{APP_URL}/providers.html")
+            ]]),
+        )
+    except Exception as e:
+        log.warning("cmd_providers error: %s", e)
+        await update.message.reply_text("⚠️ Could not load providers. Try again shortly.")
+
+
+@rate_limited
+async def cmd_provider(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    user = update.effective_user
+    plan = cards.get_plan(update, store)
+
+    if not cards.is_premium(plan):
+        await update.message.reply_text(
+            cards.provider_card_locked(),
+            parse_mode="MarkdownV2",
+            reply_markup=cards.InlineKeyboardMarkup([[
+                cards.InlineKeyboardButton("💎 Upgrade to Pro", url=f"{LANDING}/pricing")
+            ]]),
+        )
+        return
+
+    name_query = " ".join(ctx.args).strip() if ctx.args else ""
+    if not name_query:
+        await update.message.reply_text(
+            "Usage: `/provider NAME`\nExample: `/provider Fat Pig Signals`",
+            parse_mode="MarkdownV2",
+        )
+        return
+
+    token = store.get_token(user.id)
+    try:
+        data = await api.provider_by_name(name_query, token)
+        provider = data if isinstance(data, dict) and "name" in data else (
+            data[0] if isinstance(data, list) and data else None
+        )
+    except Exception as e:
+        log.warning("provider lookup error: %s", e)
+        await update.message.reply_text("⚠️ Provider not found. Check the name and try again.")
+        return
+
+    if not provider:
+        await update.message.reply_text(
+            f"❌ No provider found matching `{cards._e(name_query)}`\.\n\nUse /providers to browse all\.",
+            parse_mode="MarkdownV2",
+        )
+        return
+
+    channel = provider.get("channel", "")
+    tg_info = {}
+    if channel and provider.get("platform", "telegram") == "telegram":
+        tg_info = await api.get_telegram_channel_info(ctx.bot, channel)
+
+    msg = cards.provider_card(provider, tg_info=tg_info)
+    slug = provider.get("slug", "")
+    await update.message.reply_text(
+        msg,
+        parse_mode="MarkdownV2",
+        reply_markup=cards.provider_keyboard(slug, channel),
+    )
+
+
+# ── Signal formatter ──────────────────────────────────────────────
+
+@rate_limited
+async def cmd_format(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    """
+    /format <signal text>
+    Or just send a message after /format with no args — bot will ask.
+    Pro + Elite only.
+    """
+    user = update.effective_user
+    plan = cards.get_plan(update, store)
+
+    if not cards.is_premium(plan):
+        await update.message.reply_text(
+            cards.format_card_locked(),
+            parse_mode="MarkdownV2",
+            reply_markup=cards.InlineKeyboardMarkup([[
+                cards.InlineKeyboardButton("💎 Upgrade to Pro", url=f"{LANDING}/pricing")
+            ]]),
+        )
+        return
+
+    raw = " ".join(ctx.args).strip() if ctx.args else ""
+    if not raw:
+        await update.message.reply_text(
+            "📋 Paste your signal text and I'll clean it up\.\n\nExample:\n`/format BTCUSDT long entry 95000 sl 93000 tp1 97000 tp2 99000`",
+            parse_mode="MarkdownV2",
+        )
+        return
+
+    token = store.get_token(user.id)
+
+    try:
+        result = await api.signal_format(token, raw)
+        parsed = result if isinstance(result, dict) else {}
+
+        if not parsed.get("symbol"):
+            await update.message.reply_text(
+                "⚠️ Couldn\'t parse that signal\. Try including symbol, direction, entry, SL and TP\.",
+                parse_mode="MarkdownV2",
+            )
+            return
+
+        ctx.user_data["last_formatted_signal"] = raw
+        msg = cards.format_card_plain(parsed, raw)
+        await update.message.reply_text(
+            msg,
+            reply_markup=cards.InlineKeyboardMarkup([[
+                cards.InlineKeyboardButton("📡 Track this signal", callback_data="track_from_format"),
+            ]]),
+        )
+
+    except Exception as e:
+        log.warning("cmd_format error: %s", e)
+        await update.message.reply_text("⚠️ Could not format signal\. Try again shortly\.", parse_mode="MarkdownV2")
+
+
+# ── Lifecycle ─────────────────────────────────────────────────────
+
 async def post_shutdown(app: Application) -> None:
     pushworker.stop_push_worker()
     await api.close_client()
@@ -1713,157 +1844,9 @@ def main() -> None:
     log.info("Starting AgoraIQ Breakout Bot…")
     # /format — Signal Formatter
     app.add_handler(CommandHandler("format", cmd_format))
+    app.add_handler(CommandHandler("provider", cmd_provider))
     app.run_polling(drop_pending_updates=True)
 
-
-
-
-# ═══════════════════════════════════════════════════════════════════
-#  PROVIDER COMMANDS
-#  Register in main():
-#    app.add_handler(CommandHandler("provider",  cmd_provider))
-#    app.add_handler(CommandHandler("providers", cmd_providers))
-# ═══════════════════════════════════════════════════════════════════
-
-@rate_limited
-async def cmd_providers(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
-    user = update.effective_user
-    token = store.get_token(user.id)
-    try:
-        data = await api.providers_list(token)
-        providers = data if isinstance(data, list) else data.get("providers", [])
-        total = len(providers)
-        msg = cards.provider_list_card(providers, total=total)
-        await update.message.reply_text(
-            msg,
-            parse_mode="MarkdownV2",
-            reply_markup=cards.InlineKeyboardMarkup([[
-                cards.InlineKeyboardButton("🌐 Browse on Web", url=f"{APP_URL}/providers.html")
-            ]]),
-        )
-    except Exception as e:
-        log.warning("cmd_providers error: %s", e)
-        await update.message.reply_text("⚠️ Could not load providers. Try again shortly.")
-
-
-@rate_limited
-async def cmd_provider(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
-    user = update.effective_user
-    plan = cards.get_plan(update, store)
-
-    if not cards.is_premium(plan):
-        await update.message.reply_text(
-            cards.provider_card_locked(),
-            parse_mode="MarkdownV2",
-            reply_markup=cards.InlineKeyboardMarkup([[
-                cards.InlineKeyboardButton("💎 Upgrade to Pro", url=f"{LANDING}/pricing")
-            ]]),
-        )
-        return
-
-    name_query = " ".join(ctx.args).strip() if ctx.args else ""
-    if not name_query:
-        await update.message.reply_text(
-            "Usage: `/provider NAME`\nExample: `/provider Fat Pig Signals`",
-            parse_mode="MarkdownV2",
-        )
-        return
-
-    token = store.get_token(user.id)
-    try:
-        data = await api.provider_by_name(name_query, token)
-        provider = data if isinstance(data, dict) and "name" in data else (
-            data[0] if isinstance(data, list) and data else None
-        )
-    except Exception as e:
-        log.warning("provider lookup error: %s", e)
-        await update.message.reply_text("⚠️ Provider not found. Check the name and try again.")
-        return
-
-    if not provider:
-        await update.message.reply_text(
-            f"❌ No provider found matching `{cards._e(name_query)}`\.\n\nUse /providers to browse all\.",
-            parse_mode="MarkdownV2",
-        )
-        return
-
-    channel = provider.get("channel", "")
-    tg_info = {}
-    if channel and provider.get("platform", "telegram") == "telegram":
-        tg_info = await api.get_telegram_channel_info(ctx.bot, channel)
-
-    msg = cards.provider_card(provider, tg_info=tg_info)
-    slug = provider.get("slug", "")
-    await update.message.reply_text(
-        msg,
-        parse_mode="MarkdownV2",
-        reply_markup=cards.provider_keyboard(slug, channel),
-    )
-
-
-# ═══════════════════════════════════════════════════════════════════
-#  /format  — Signal Formatter (Pro + Elite)
-#  Register in main():
-#    app.add_handler(CommandHandler("format", cmd_format))
-#    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, cmd_format_message))
-#  Add to BotCommand list:
-#    BotCommand("format", "Clean + structure any signal (Pro+)"),
-# ═══════════════════════════════════════════════════════════════════
-
-@rate_limited
-async def cmd_format(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
-    """
-    /format <signal text>
-    Or just send a message after /format with no args — bot will ask.
-    Pro + Elite only.
-    """
-    user = update.effective_user
-    plan = cards.get_plan(update, store)
-
-    if not cards.is_premium(plan):
-        await update.message.reply_text(
-            cards.format_card_locked(),
-            parse_mode="MarkdownV2",
-            reply_markup=cards.InlineKeyboardMarkup([[
-                cards.InlineKeyboardButton("💎 Upgrade to Pro", url=f"{LANDING}/pricing")
-            ]]),
-        )
-        return
-
-    # Get text from args or prompt
-    raw = " ".join(ctx.args).strip() if ctx.args else ""
-    if not raw:
-        await update.message.reply_text(
-            "📋 Paste your signal text and I'll clean it up\.\n\nExample:\n`/format BTCUSDT long entry 95000 sl 93000 tp1 97000 tp2 99000`",
-            parse_mode="MarkdownV2",
-        )
-        return
-
-    token = store.get_token(user.id)
-
-    try:
-        result = await api.signal_format(token, raw)
-        parsed = result if isinstance(result, dict) else {}
-
-        if not parsed.get("symbol"):
-            await update.message.reply_text(
-                "⚠️ Couldn\'t parse that signal\. Try including symbol, direction, entry, SL and TP\.",
-                parse_mode="MarkdownV2",
-            )
-            return
-
-        ctx.user_data["last_formatted_signal"] = raw
-        msg = cards.format_card_plain(parsed, raw)
-        await update.message.reply_text(
-            msg,
-            reply_markup=cards.InlineKeyboardMarkup([[
-                cards.InlineKeyboardButton("📡 Track this signal", callback_data="track_from_format"),
-            ]]),
-        )
-
-    except Exception as e:
-        log.warning("cmd_format error: %s", e)
-        await update.message.reply_text("⚠️ Could not format signal\. Try again shortly\.", parse_mode="MarkdownV2")
 
 if __name__ == "__main__":
     main()

@@ -24,6 +24,7 @@ import httpx
 
 API_BASE = os.environ.get("API_BASE", "http://127.0.0.1:4300/api/v1")
 CACHE_TTL = int(os.environ.get("TOKEN_CACHE_TTL", "300"))
+INTERNAL_SECRET = os.environ.get("INTERNAL_API_SECRET", "")
 
 # { telegram_id: { token, email, plan_tier, fetched_at } }
 _cache: dict[int, dict] = {}
@@ -35,11 +36,14 @@ def _is_fresh(entry: dict) -> bool:
 
 def _sync_fetch(telegram_id: int) -> Optional[dict]:
     try:
+        headers = {"Content-Type": "application/json"}
+        if INTERNAL_SECRET:
+            headers["X-Internal-Auth"] = INTERNAL_SECRET
         with httpx.Client(timeout=10.0) as client:
             r = client.post(
                 f"{API_BASE}/auth/telegram-auth",
                 json={"telegram_id": telegram_id},
-                headers={"Content-Type": "application/json"},
+                headers=headers,
             )
             if r.status_code == 200:
                 return r.json()
@@ -50,11 +54,14 @@ def _sync_fetch(telegram_id: int) -> Optional[dict]:
 
 async def _async_fetch(telegram_id: int) -> Optional[dict]:
     try:
+        headers = {"Content-Type": "application/json"}
+        if INTERNAL_SECRET:
+            headers["X-Internal-Auth"] = INTERNAL_SECRET
         async with httpx.AsyncClient(timeout=10.0) as client:
             r = await client.post(
                 f"{API_BASE}/auth/telegram-auth",
                 json={"telegram_id": telegram_id},
-                headers={"Content-Type": "application/json"},
+                headers=headers,
             )
             if r.status_code == 200:
                 return r.json()
@@ -118,9 +125,31 @@ def get_user(telegram_id: int) -> Optional[dict]:
 
 
 def remove_link(telegram_id: int) -> bool:
+    """Legacy sync cache-only clear. Prefer async_remove_link."""
     removed = telegram_id in _cache
     _cache.pop(telegram_id, None)
     return removed
+
+
+async def async_remove_link(telegram_id: int) -> str:
+    """API-backed unlink. Returns 'ok', 'not_linked', or 'error'."""
+    token = await async_get_token(telegram_id)
+    if not token:
+        _cache.pop(telegram_id, None)
+        return "not_linked"
+
+    try:
+        from api import telegram_unlink
+        await telegram_unlink(token)
+        _cache.pop(telegram_id, None)
+        return "ok"
+    except httpx.HTTPStatusError as e:
+        if e.response is not None and e.response.status_code in (401, 403, 404):
+            _cache.pop(telegram_id, None)
+            return "not_linked"
+        return "error"
+    except Exception:
+        return "error"
 
 
 def close() -> None:
