@@ -83,7 +83,7 @@ def _get_all_linked_users() -> List[Dict[str, Any]]:
             users.append({
                 "telegram_id": tg_id,
                 "email": entry.get("email", ""),
-                "plan_tier": entry.get("plan_tier", "free"),
+                "plan_tier": entry.get("plan_tier"),
             })
     return users
 
@@ -151,7 +151,7 @@ async def _check_new_signals(bot: Bot) -> int:
 
         emoji = "🟢" if action in ("LONG", "BUY") else "🔴"
 
-        # Build message — different for free vs pro/elite
+        # Build message for paid subscribers only
         base_msg = (
             f"{emoji} {_bold('New Signal')}\n\n"
             f"📊 {_bold(_esc(str(symbol)))} {_esc(str(action))}\n"
@@ -165,7 +165,7 @@ async def _check_new_signals(bot: Bot) -> int:
 
         pro_msg = base_msg
 
-        # Add targets/SL for pro users
+        # Add targets/SL for paid users
         targets = sig.get("targets", sig.get("takeProfits", []))
         sl = sig.get("stopLoss", sig.get("stop_loss", None))
         if targets and isinstance(targets, list):
@@ -174,22 +174,12 @@ async def _check_new_signals(bot: Bot) -> int:
         if sl:
             pro_msg += f"🛑 SL: {_mono(_usd(sl))}\n"
 
-        # Gated message for free users
-        APP_URL = os.environ.get("APP_URL", "https://bot.agoraiq.net")
-        free_msg = (
-            base_msg + "\n"
-            f"🔒 {_bold('Full signal locked')}\n\n"
-            f"Upgrade to PRO to unlock:\n"
-            f"→ Entry, TP, SL details\n"
-            f"→ AI confidence scoring\n"
-            f"→ Real\\-time push alerts\n\n"
-            f"[Upgrade now]({APP_URL}/pricing)"
-        )
-
+        # Push to active subscribers (trial, pro, elite) — no free tier
         for user in users:
             tier = user["plan_tier"]
-            msg = pro_msg if tier in ("pro", "elite") else free_msg
-            ok = await _safe_send(bot, user["telegram_id"], msg)
+            if tier not in ("trial", "pro", "elite"):
+                continue
+            ok = await _safe_send(bot, user["telegram_id"], pro_msg)
             if ok:
                 sent += 1
             # Small delay to avoid Telegram rate limits
@@ -298,11 +288,11 @@ async def _maybe_send_daily(bot: Bot) -> None:
 
     users = _get_all_linked_users()
     for user in users:
-        if user["plan_tier"] in ("pro", "elite"):
+        if user["plan_tier"] in ("trial", "pro", "elite"):
             await _safe_send(bot, user["telegram_id"], msg)
             await asyncio.sleep(0.05)
 
-    log.info(f"Daily summary sent to {len([u for u in users if u['plan_tier'] in ('pro', 'elite')])} pro/elite users")
+    log.info(f"Daily summary sent to {len([u for u in users if u['plan_tier'] in ('trial', 'pro', 'elite')])} active users")
 
 
 # ═══════════════════════════════════════════════════════════════════

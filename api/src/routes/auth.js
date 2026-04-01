@@ -53,10 +53,11 @@ router.post("/register", async (req, res) => {
 
     const user = result.rows[0];
 
-    // Create default free subscription
+    // Grant 1-day free trial — no Stripe subscription, time-limited access
     await db.query(
-      `INSERT INTO bot_subscriptions (bot_user_id, plan_tier, status)
-       VALUES ($1, 'free', 'active')`,
+      `INSERT INTO bot_subscriptions (bot_user_id, plan_tier, status, expires_at)
+       VALUES ($1, 'trial', 'active', NOW() + INTERVAL '1 day')
+       ON CONFLICT (bot_user_id) DO NOTHING`,
       [user.id]
     );
 
@@ -68,7 +69,7 @@ router.post("/register", async (req, res) => {
         id: user.id,
         email: user.email,
         role: user.role,
-        planTier: "free",
+        planTier: "trial",
       },
     });
   } catch (err) {
@@ -154,9 +155,11 @@ router.post("/magic-link", async (req, res) => {
         [trimEmail]
       );
       userId = newUser.rows[0].id;
+      // Grant 1-day free trial — no Stripe subscription
       await db.query(
-        `INSERT INTO bot_subscriptions (bot_user_id, plan_tier, status)
-         VALUES ($1, 'free', 'active')`,
+        `INSERT INTO bot_subscriptions (bot_user_id, plan_tier, status, expires_at)
+         VALUES ($1, 'trial', 'active', NOW() + INTERVAL '1 day')
+         ON CONFLICT (bot_user_id) DO NOTHING`,
         [userId]
       );
     }
@@ -285,7 +288,7 @@ router.get("/me", requireAuth, async (req, res) => {
 // ─────────────────────────────────────────────────────────────────
 // POST /auth/telegram-auth — bot-only: issue JWT for a linked telegram user
 // Body: { telegram_id }
-// Security: only accessible from 127.0.0.1 (Caddy does not expose this)
+// Security: localhost + shared internal secret (INTERNAL_API_SECRET)
 // ─────────────────────────────────────────────────────────────────
 router.post("/telegram-auth", async (req, res) => {
   try {
@@ -293,6 +296,15 @@ router.post("/telegram-auth", async (req, res) => {
     const ip = req.ip || req.connection?.remoteAddress;
     if (ip !== "127.0.0.1" && ip !== "::1" && ip !== "::ffff:127.0.0.1") {
       return res.status(403).json({ error: "Localhost only" });
+    }
+
+    // Require internal shared secret
+    const internalSecret = process.env.INTERNAL_API_SECRET;
+    if (internalSecret) {
+      const provided = req.headers["x-internal-auth"];
+      if (provided !== internalSecret) {
+        return res.status(403).json({ error: "Invalid internal auth" });
+      }
     }
 
     const { telegram_id } = req.body;
@@ -323,8 +335,6 @@ router.post("/telegram-auth", async (req, res) => {
     res.status(500).json({ error: "Internal error" });
   }
 });
-
-module.exports = router;
 
 // ─────────────────────────────────────────────────────────────────
 // GET /auth/token-login?auth=xxx — one-time push auth token
@@ -366,3 +376,5 @@ router.get("/token-login", async (req, res) => {
     res.status(500).json({ error: "Internal error" });
   }
 });
+
+module.exports = router;

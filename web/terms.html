@@ -1,80 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- auth-gate --><style>body{visibility:hidden}</style><script>(function(){if(!localStorage.getItem("iq_token")){window.location.replace("/")}else{document.addEventListener("DOMContentLoaded",function(){document.body.style.visibility="visible"})}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Terms of Use — AgoraIQ Signals</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Albert+Sans:wght@400;500;600;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* === SUBTITLE STYLE === */
-.subtitle, .container > p, h1 + p {
-  font-size: 15px !important;
-  color: var(--label, #8b90b0) !important;
-  line-height: 1.7 !important;
-  max-width: 480px;
-  margin-bottom: 28px;
-  text-shadow: 0 1px 8px rgba(0,0,0,.6);
-}
-
-/* === H1 MASTER === */
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Albert Sans', sans-serif !important;
-  -webkit-text-fill-color: unset !important;
-  -webkit-background-clip: unset !important;
-  background: none !important;
-}
-h1 {
-  font-family: 'Albert Sans', sans-serif !important;
-  font-weight: 900 !important;
-  font-size: clamp(34px, 4.5vw, 48px) !important;
-  letter-spacing: -2px !important;
-  text-transform: uppercase !important;
-  color: #e2e4ef !important;
-  -webkit-text-fill-color: #e2e4ef !important;
-  line-height: 1.08 !important;
-}
-h1 .accent {
-  color: #FCD535 !important;
-  -webkit-text-fill-color: #FCD535 !important;
-}
-
-h1 .accent { color: #FCD535 !important; }
-
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Albert Sans', sans-serif !important;
-}
-h1 {
-  font-family: 'Albert Sans', sans-serif !important;
-  font-weight: 900 !important;
-  font-size: clamp(34px, 4.5vw, 48px) !important;
-  letter-spacing: -2px !important;
-  text-transform: uppercase !important;
-  color: #e2e4ef !important;
-  line-height: 1.08 !important;
-}
-h1 .accent {
-  color: #EFBF04 !important;
-}
-
-
-h1 .accent { color: #FCD535 !important; }
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Albert Sans', sans-serif !important;
-}
-h1 {
-  font-family: 'Albert Sans', sans-serif !important;
-  font-weight: 900 !important;
-  font-size: clamp(34px, 4.5vw, 48px) !important;
-  letter-spacing: -2px !important;
-  text-transform: uppercase !important;
-  color: #EFBF04 !important;
-  line-height: 1.08 !important;
-}
-
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#08090d;--surface:#0e1017;--surface2:#161822;--border:#1e2230;--cyan:#00d4ff;--cyan-dim:rgba(0,212,255,.12);--green:#22c55e;--red:#ef4444;--amber:#f59e0b;--text:#e4e7ef;--text2:#8b92a8;--text3:#5b6178;--syne:'Syne',sans-serif;--mono:'DM Mono',monospace;--sans:'Albert Sans',sans-serif}
 html{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;-webkit-font-smoothing:antialiased}
@@ -82,7 +14,7 @@ body{min-height:100vh}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);background:var(--surface)}
 .brand{display:flex;align-items:center;gap:8px;text-decoration:none}
 .brand-mark{width:28px;height:28px;background:linear-gradient(135deg,#FCD535,#EFBF04);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);flex-shrink:0}
-.brand-text{font-family:var(--syne,'Syne',sans-serif);font-weight:800;font-size:18px;color:#fff;letter-spacing:-.02em}
+.brand-text{font-family:var(--syne);font-weight:800;font-size:18px;color:#fff;letter-spacing:-.02em}
 .brand-iq{color:#FCD535}
 .topbar nav{display:flex;gap:20px}
 .topbar nav a{color:var(--text2);text-decoration:none;font-size:13px;font-family:var(--mono);transition:color .2s}
@@ -91,9 +23,11 @@ body{min-height:100vh}
 .breadcrumb{font-size:13px;color:var(--text3);margin-bottom:24px}
 .breadcrumb a{color:var(--text2);text-decoration:none}
 .breadcrumb a:hover{color:var(--cyan)}
-h1{/* inherited from styles.css */ font-weight:800;font-size:32px;margin-bottom:8px;background:linear-gradient(135deg,#fff 40%,var(--cyan));-webkit-background-clip: unset;-webkit-text-fill-color: unset;font-size:13px;margin-bottom:32px}
-h2{/* inherited from styles.css */ font-weight:700;font-size:18px;color:#fff;margin:32px 0 12px;padding-top:20px;border-top:1px solid var(--border)}
+h1{font-family:'Albert Sans',sans-serif;font-weight:900;font-size:clamp(26px,4vw,36px);letter-spacing:-1px;text-transform:uppercase;color:#EFBF04;line-height:1.1;margin-bottom:32px}
+h1 .accent{color:#FCD535}
+h2{font-weight:700;font-size:18px;color:#fff;margin:32px 0 12px;padding-top:20px;border-top:1px solid var(--border)}
 h2:first-of-type{border-top:none;margin-top:24px}
+h3{font-weight:600;font-size:15px;color:var(--cyan);margin:20px 0 8px}
 p{color:var(--text);line-height:1.7;margin-bottom:14px}
 ul,ol{margin:0 0 14px 24px;line-height:1.7}
 li{margin-bottom:6px}
@@ -101,80 +35,122 @@ strong{color:#fff}
 a{color:var(--cyan);text-decoration:none}
 a:hover{text-decoration:underline}
 .callout{background:var(--surface);border-left:3px solid var(--amber);padding:14px 18px;border-radius:0 8px 8px 0;margin:16px 0;font-size:14px;color:var(--text)}
+.callout.info{border-left-color:var(--cyan)}
+.updated{font-size:13px;color:var(--text3);margin-bottom:24px}
 
-.legal-footer{background:var(--surface,#0e1017);border-top:1px solid var(--border,#1e2230);padding:32px 24px;margin-top:48px;text-align:center;font-size:12px;font-family:var(--sans,'Albert Sans',sans-serif);color:var(--text2,#8b92a8)}
+.legal-footer{background:var(--surface);border-top:1px solid var(--border);padding:32px 24px;margin-top:48px;text-align:center;font-size:12px;font-family:var(--sans);color:var(--text2)}
 .footer-inner{max-width:860px;margin:0 auto}
-.footer-brand{font-family:var(--syne,'Syne',sans-serif);font-weight:800;font-size:16px;color:var(--cyan,#00d4ff);margin-bottom:12px}
+.footer-brand{font-family:var(--syne);font-weight:800;font-size:16px;color:var(--cyan);margin-bottom:12px}
 .footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-bottom:12px}
-.footer-links a{color:var(--text2,#8b92a8);text-decoration:none;transition:color .2s}
-.footer-links a:hover{color:var(--cyan,#00d4ff)}
+.footer-links a{color:var(--text2);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--cyan)}
 .footer-copy{margin-bottom:8px}
-.footer-warn{font-size:11px;color:var(--text2,#8b92a8);opacity:.7;max-width:640px;margin:0 auto;line-height:1.5}
-
-@media(max-width:768px){.container{padding:24px 16px 40px}h1{font-size:26px}}
+.footer-warn{font-size:11px;opacity:.7;max-width:640px;margin:0 auto;line-height:1.5}
+@media(max-width:768px){.container{padding:24px 16px 40px}}
 </style>
 </head>
 <body>
 <div class="topbar">
   <a href="/" class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">Agora<span class="brand-iq">IQ</span></span></a>
-  <nav>
-    <a href="signals.html">Signals</a>
-    <a href="scanner.html">Scanner</a>
-    <a href="track.html">Track</a>
-    <a href="proof.html">Proof</a>
-    <a href="providers.html">Providers</a>
-    <a href="pricing.html">Pricing</a>
-    <a href="watchlist.html">Watchlist</a><a href="help.html">Help</a>
-  </nav>
+  <nav><a href="signals.html">Signals</a><a href="scanner.html">Scanner</a><a href="track.html">Track</a><a href="proof.html">Proof</a><a href="providers.html">Providers</a><a href="pricing.html">Pricing</a><a href="watchlist.html">Watchlist</a><a href="help.html">Help</a></nav>
 </div>
 <div class="container">
   <div class="breadcrumb"><a href="signals.html">Home</a> &rarr; Terms of Use</div>
   <h1>Terms of <span class="accent">Use</span></h1>
-<p class="updated">Last updated: February 2026</p>
+  <p class="updated">Last updated: April 2026</p>
 
 <h2>1. Acceptance</h2>
-<p>By accessing AgoraIQ Signals ("Service"), you agree to these Terms. If you do not agree, do not use the Service. AgoraIQ is operated by ChatLogic Insights LTD.</p>
+<p>By accessing AgoraIQ Signals ("Service"), you agree to these Terms of Use. If you do not agree, do not use the Service. AgoraIQ is operated by <strong>ChatLogic Insights LTD</strong>.</p>
 
 <h2>2. Eligibility</h2>
-<p>You must be at least 18 years old. AgoraIQ is not authorised or regulated by the Financial Conduct Authority (FCA) and is not available to persons located in the United Kingdom. By creating an account you represent that you are not a UK national, resident, or accessing from within the UK.</p>
+<p>You must be at least 18 years old. AgoraIQ is <strong>not authorised or regulated by the Financial Conduct Authority (FCA)</strong> and is not available to persons located in the United Kingdom. By creating an account you represent that you are not a UK national, UK resident, or accessing the Service from within the UK.</p>
 
 <h2>3. Service Description</h2>
-<p>AgoraIQ provides informational signal tracking analytics. It does not provide financial advice, investment recommendations, or trade execution. Past performance does not guarantee future results.</p>
+<p>AgoraIQ provides informational signal tracking and analytics for cryptocurrency markets. The Service does not provide financial advice, investment recommendations, or trade execution. Past performance does not guarantee future results. See our <a href="no-financial-advice.html">No Financial Advice Disclaimer</a> for full details.</p>
 
 <h2>4. Accounts</h2>
-<p>You are responsible for maintaining the confidentiality of your credentials. Notify us immediately of any unauthorized use.</p>
+<p>You are responsible for maintaining the confidentiality of your login credentials and any linked Telegram account. You must notify us immediately of any unauthorized access. One person per account — sharing accounts or credentials is prohibited.</p>
 
-<h2>5. Subscriptions &amp; Billing</h2>
-<p>Paid plans are billed monthly or yearly via Stripe. You may cancel at any time; access continues until the end of the billing period. No refunds for partial periods.</p>
+<h2>5. Subscriptions and Billing</h2>
 
-<h2>6. Acceptable Use</h2>
-<p>You agree not to: reverse engineer the Service, scrape data, redistribute content without permission, or use the Service for unlawful purposes.</p>
+<div class="callout info">
+  Full billing terms are set out in the <a href="subscription-agreement.html">Subscription Agreement</a>. This section provides a summary.
+</div>
 
-<h2>7. Intellectual Property</h2>
-<p>All content, code, and design are owned by ChatLogic Insights LTD. Signal data from providers remains the property of their respective providers.</p>
+<h3>5.1 Plans</h3>
+<p>AgoraIQ offers two paid plans: <strong>Pro</strong> and <strong>Elite</strong>. Each may be billed monthly or yearly. Current pricing is displayed at <a href="pricing.html">bot.agoraiq.net/pricing.html</a>.</p>
 
-<h2>8. Limitation of Liability</h2>
-<p>AgoraIQ is provided "as is." We disclaim all warranties. In no event shall ChatLogic Insights LTD be liable for any indirect, incidental, or consequential damages arising from use of the Service.</p>
+<h3>5.2 Payment</h3>
+<p>All payments are processed by <strong>Stripe</strong>. AgoraIQ never stores your card details. By subscribing, you authorise recurring charges at your selected billing interval.</p>
 
-<h2>9. Termination</h2>
-<p>We reserve the right to suspend or terminate accounts that violate these Terms or are identified as belonging to UK persons.</p>
+<h3>5.3 Plan Changes</h3>
+<p>You may upgrade, downgrade, or change your billing interval at any time from the pricing page. Plan changes follow these rules:</p>
+<ul>
+  <li><strong>Upgrades</strong> (e.g., Pro to Elite) take effect <strong>immediately</strong> with prorated billing.</li>
+  <li><strong>Downgrades</strong> (e.g., Elite to Pro) are <strong>scheduled at the end of your current billing period</strong>. You retain full access to your current plan until then.</li>
+  <li><strong>Monthly to Yearly</strong> (same plan) takes effect <strong>immediately</strong> with prorated billing.</li>
+  <li><strong>Yearly to Monthly</strong> (same plan) is <strong>scheduled at the end of your current yearly period</strong>.</li>
+</ul>
+<p>Pending changes may be modified or cancelled before they take effect by selecting a different plan. An immediate upgrade cancels any pending downgrade.</p>
 
-<h2>10. Changes</h2>
-<p>We may update these Terms at any time. Continued use constitutes acceptance.</p>
+<h3>5.4 Proration</h3>
+<p>When an immediate plan change occurs, Stripe calculates a credit for the unused portion of your current plan and applies it against the charge for your new plan. The net difference is charged to your payment method.</p>
 
-<h2>11. Contact</h2>
-<p>Questions: <a href="mailto:legal@agoraiq.net">legal@agoraiq.net</a></p>
+<h3>5.5 Confirmations</h3>
+<p>Every billing transaction generates a unique confirmation number. Confirmations are sent automatically to your linked <strong>Telegram</strong> account and may optionally be sent to an email address of your choice.</p>
+
+<h3>5.6 Cancellation</h3>
+<p>You may cancel at any time via the Stripe Customer Portal (accessible from the pricing page) or by contacting <a href="mailto:support@agoraiq.net">support@agoraiq.net</a>. Cancellation takes effect at the end of your current billing period. <strong>No refunds</strong> are issued for partial billing periods.</p>
+
+<h3>5.7 Failed Payments</h3>
+<p>If a payment fails, your subscription enters a "past due" state. You have a 3-day grace period to update your payment method. After the grace period, access may be suspended until payment is resolved.</p>
+
+<h2>6. Consent</h2>
+<p>Before completing any purchase or plan change, you must explicitly consent to this document, the <a href="subscription-agreement.html">Subscription Agreement</a>, the <a href="privacy.html">Privacy Policy</a>, the <a href="cookies.html">Cookie Policy</a>, and the <a href="no-financial-advice.html">No Financial Advice Disclaimer</a>. Your consent is timestamped and recorded.</p>
+
+<h2>7. Acceptable Use</h2>
+<p>You agree not to:</p>
+<ul>
+  <li>Reverse engineer, decompile, or disassemble any part of the Service.</li>
+  <li>Scrape, crawl, or programmatically extract data from the Service without written permission.</li>
+  <li>Redistribute, resell, or republish signal data, analytics, or any content from the Service.</li>
+  <li>Use the Service for any unlawful purpose or in violation of any applicable regulations.</li>
+  <li>Attempt to gain unauthorised access to other users' accounts or to AgoraIQ systems.</li>
+  <li>Use automated tools (bots, scripts) to interact with the Service beyond the provided Telegram bot.</li>
+</ul>
+
+<h2>8. Intellectual Property</h2>
+<p>All content, code, design, analytics, scoring models, and branding are owned by ChatLogic Insights LTD or its licensors. Signal data sourced from third-party providers remains the intellectual property of those providers. Your subscription grants a limited, non-exclusive, non-transferable licence to access the Service for personal use.</p>
+
+<h2>9. Limitation of Liability</h2>
+<p>The Service is provided <strong>"as is"</strong> and <strong>"as available"</strong> without warranties of any kind, whether express or implied. In no event shall ChatLogic Insights LTD, its directors, employees, or affiliates be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the Service, including but not limited to loss of profits, data, or trading losses.</p>
+<p>Our total liability for any claim arising from the Service is limited to the amount you paid to AgoraIQ in the 12 months preceding the claim.</p>
+
+<h2>10. Indemnification</h2>
+<p>You agree to indemnify and hold harmless ChatLogic Insights LTD from any claims, damages, or expenses (including legal fees) arising from your use of the Service, your violation of these Terms, or your violation of any third-party rights.</p>
+
+<h2>11. Termination</h2>
+<p>We reserve the right to suspend or terminate accounts that violate these Terms, are identified as belonging to UK persons, engage in abusive behaviour, or are used for fraudulent purposes. Upon termination for cause, no refund is issued.</p>
+
+<h2>12. Changes to Terms</h2>
+<p>We may update these Terms at any time. Material changes will be communicated via the Service or by email. Continued use after changes constitutes acceptance. If you do not agree with updated Terms, you must cancel your subscription and stop using the Service.</p>
+
+<h2>13. Governing Law</h2>
+<p>These Terms are governed by the laws of <strong>England and Wales</strong>. Any disputes shall be subject to the exclusive jurisdiction of the courts of England and Wales.</p>
+
+<h2>14. Severability</h2>
+<p>If any provision of these Terms is held invalid or unenforceable, the remaining provisions continue in full force.</p>
+
+<h2>15. Contact</h2>
+<p>ChatLogic Insights LTD<br>
+Legal: <a href="mailto:legal@agoraiq.net">legal@agoraiq.net</a><br>
+Support: <a href="mailto:support@agoraiq.net">support@agoraiq.net</a></p>
+
 </div>
 <footer class="legal-footer">
   <div class="footer-inner">
-    <div class="footer-brand">Agora<span style="color:var(--cyan,#00d4ff)">IQ</span></div>
-    <div class="footer-links">
-      <a href="terms.html">Terms</a>
-      <a href="privacy.html">Privacy</a>
-      <a href="cookies.html">Cookies</a>
-      <a href="disclaimer.html">Disclaimer</a>
-      <a href="no-financial-advice.html">No Financial Advice</a>
-    </div>
+    <div class="footer-brand">Agora<span style="color:var(--cyan)">IQ</span></div>
+    <div class="footer-links"><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a><a href="cookies.html">Cookies</a><a href="disclaimer.html">Disclaimer</a><a href="no-financial-advice.html">No Financial Advice</a></div>
     <div class="footer-copy">&copy; 2026 ChatLogic Insights LTD. All rights reserved.</div>
     <div class="footer-warn">&olarr; Not for UK Persons. AgoraIQ is not authorised or regulated by the FCA. Not directed at UK persons. Nothing on this site constitutes financial advice. Past performance does not guarantee future results.</div>
   </div>

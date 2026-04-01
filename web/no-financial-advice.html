@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- auth-gate --><style>body{visibility:hidden}</style><script>(function(){if(!localStorage.getItem("iq_token")){window.location.replace("/")}else{document.addEventListener("DOMContentLoaded",function(){document.body.style.visibility="visible"})}})();</script>
+<!-- auth-gate --><style>body{visibility:hidden}</style><script>(function(){if(!localStorage.getItem("iq_token")){window.location.replace("/login.html")}else{document.addEventListener("DOMContentLoaded",function(){document.body.style.visibility="visible"})}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>No Financial Advice — AgoraIQ Signals</title>
@@ -125,7 +125,7 @@ a:hover{text-decoration:underline}
     <a href="providers.html">Providers</a>
     <a href="pricing.html">Pricing</a>
     <a href="watchlist.html">Watchlist</a><a href="help.html">Help</a>
-  </nav>
+  <a href="#" onclick="localStorage.removeItem('iq_token');location.href='/login.html'" style="color:var(--red,#ef4444);font-size:13px;text-decoration:none;margin-left:4px;opacity:.7;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.7">Sign Out</a></nav>
 </div>
 <div class="container">
   <div class="breadcrumb"><a href="signals.html">Home</a> &rarr; No Financial Advice</div>

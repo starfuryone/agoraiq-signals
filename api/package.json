@@ -9,6 +9,7 @@
     "worker": "node src/workers/index.js"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1021.0",
     "bcryptjs": "^2.4.3",
     "bullmq": "^5.34.0",
     "cors": "^2.8.5",
@@ -16,6 +17,7 @@
     "express": "^4.21.1",
     "ioredis": "^5.4.2",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "^7.1.1",
     "node-fetch": "^2.7.0",
     "node-telegram-bot-api": "^0.66.0",
     "pg": "^8.13.1",

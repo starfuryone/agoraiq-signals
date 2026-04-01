@@ -140,7 +140,7 @@ def signal_card_locked(s: Dict[str, Any]) -> str:
     lines.append("  ✔ Verified provider edge")
     lines.append("  ✔ Entry, TP, SL targets")
     lines.append("")
-    lines.append(f"Start your {_b('1\-day free trial')} or upgrade:")
+    lines.append(f"Subscribe to unlock full signals:")
     lines.append("→ Real\\-time breakout alerts")
     lines.append("→ Full signal details \\+ AI scoring")
     lines.append("→ Signal tracking \\+ PnL")
@@ -362,22 +362,14 @@ def proof_keyboard() -> InlineKeyboardMarkup:
 # ═══════════════════════════════════════════════════════════════════
 
 def get_plan(update, store_module) -> str:
-    """Get user's plan tier. Returns 'expired' if trial is past expiry."""
-    import datetime
+    """Get user's plan tier. Returns 'inactive' if no active subscription or trial expired."""
     user = store_module.get_user(update.effective_user.id)
     if not user:
         return "no_account"
-    plan = user.get("plan_tier", "trial")
-    if plan == "trial":
-        expires = user.get("expires_at")
-        if expires:
-            try:
-                exp_dt = datetime.datetime.fromisoformat(str(expires).replace("Z", "+00:00"))
-                if datetime.datetime.now(datetime.timezone.utc) > exp_dt:
-                    return "expired"
-            except Exception:
-                pass
-    return plan
+    plan = user.get("plan_tier")
+    if not plan or plan == "free":
+        return "inactive"
+    return plan  # "trial", "pro", or "elite"
 
 
 def is_premium(plan: str) -> bool:

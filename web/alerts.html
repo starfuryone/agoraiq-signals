@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- auth-gate --><style>body{visibility:hidden}</style><script>(function(){if(!localStorage.getItem("iq_token")){window.location.replace("/")}else{document.addEventListener("DOMContentLoaded",function(){document.body.style.visibility="visible"})}})();</script>
+<!-- auth-gate --><style>body{visibility:hidden}</style><script>(function(){if(!localStorage.getItem("iq_token")){window.location.replace("/login.html")}else{document.addEventListener("DOMContentLoaded",function(){document.body.style.visibility="visible"})}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Smart Alerts — AgoraIQ Signals</title>
@@ -141,7 +141,7 @@ tr:hover td{background:var(--surface2)}
 <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-<div class="topbar"><a href="/" class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">Agora<span class="brand-iq">IQ</span></span></a><nav><a href="signals.html">Signals</a><a href="scanner.html">Scanner</a><a href="track.html">Track</a><a href="proof.html">Proof</a><a href="providers.html">Providers</a><a href="pricing.html">Pricing</a><a href="watchlist.html">Watchlist</a><a href="help.html">Help</a></nav></div>
+<div class="topbar"><a href="/" class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">Agora<span class="brand-iq">IQ</span></span></a><nav><a href="signals.html">Signals</a><a href="scanner.html">Scanner</a><a href="track.html">Track</a><a href="proof.html">Proof</a><a href="providers.html">Providers</a><a href="pricing.html">Pricing</a><a href="watchlist.html">Watchlist</a><a href="help.html">Help</a><a href="#" onclick="localStorage.removeItem('iq_token');location.href='/login.html'" style="color:var(--red,#ef4444);font-size:13px;text-decoration:none;margin-left:4px;opacity:.7;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.7">Sign Out</a></nav></div>
 <div class="container">
   <h1>Smart <span class="accent">Alerts</span></h1>
   <p class="subtitle">Custom alert rules — get notified when market conditions match your criteria</p>
