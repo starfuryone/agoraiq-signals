@@ -61,11 +61,28 @@ async function scanOnce() {
     _alerted.set(ticker.symbol, now);
 
     // ── Normalize through canonical schema ──────────────────────
+    const dir = ticker.priceChangePercent > 0 ? "LONG" : "SHORT";
+    const atr = ticker.highPrice - ticker.lowPrice;
+    const risk = Math.max(atr * 0.4, ticker.price * 0.015); // 40% of daily range or 1.5% min
+
+    let stop, tp1, tp2;
+    if (dir === "LONG") {
+      stop = +(ticker.price - risk).toPrecision(6);
+      tp1  = +(ticker.price + risk * 1.5).toPrecision(6);
+      tp2  = +(ticker.price + risk * 3).toPrecision(6);
+    } else {
+      stop = +(ticker.price + risk).toPrecision(6);
+      tp1  = +(ticker.price - risk * 1.5).toPrecision(6);
+      tp2  = +(ticker.price - risk * 3).toPrecision(6);
+    }
+
     const signal = Signal.normalize({
       symbol: ticker.symbol,
       type: "breakout",
-      direction: ticker.priceChangePercent > 0 ? "LONG" : "SHORT",
+      direction: dir,
       entry: ticker.price,
+      stop: stop,
+      targets: [tp1, tp2],
       confidence: score,
       source: "scanner",
       status: "OPEN",

@@ -123,6 +123,24 @@ router.post("/submit", requireAuth, async (req, res) => {
       parse_status: parsed.parseStatus,
     });
 
+    // Auto-generate TP/SL if missing but entry exists
+    if (signal.entry && signal.entry > 0) {
+      const e = signal.entry;
+      const risk = e * 0.03; // 3% default risk
+      if (!signal.stop) {
+        signal.stop = signal.direction === "LONG"
+          ? +(e - risk).toPrecision(6)
+          : +(e + risk).toPrecision(6);
+        signal.meta.auto_sl = true;
+      }
+      if (!signal.targets || signal.targets.length === 0) {
+        signal.targets = signal.direction === "LONG"
+          ? [+(e + risk * 1.5).toPrecision(6), +(e + risk * 3).toPrecision(6)]
+          : [+(e - risk * 1.5).toPrecision(6), +(e - risk * 3).toPrecision(6)];
+        signal.meta.auto_tp = true;
+      }
+    }
+
     const check = Signal.validate(signal);
     if (!check.valid) {
       return res.status(422).json({ error: "Invalid signal", details: check.errors });

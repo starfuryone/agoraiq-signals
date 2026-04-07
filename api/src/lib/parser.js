@@ -113,7 +113,8 @@ function looksLikeSignal(text) {
  * @returns {{ symbol, action, price, stopLoss, targets, leverage, parseStatus, notes }}
  */
 function parseSignal(rawText) {
-  const text = (rawText || "").trim();
+  // Strip common formatting chars (Telegram markdown backticks, currency $)
+  const text = (rawText || "").trim().replace(/[`$]/g, "");
   const result = {
     symbol: null,
     action: null,
