@@ -144,22 +144,31 @@ function clampSigned(n, lo = -30, hi = 0) {
 
 function validateFullScore(parsed, heuristic) {
   if (!parsed || typeof parsed !== "object") return null;
-  const score = parseInt(parsed.score);
+  let score = parseInt(parsed.score);
   if (isNaN(score)) return null;
+
+  // Detect 0-10 scale responses from AI and rescale to 0-100
+  const aiUsed10Scale = score >= 0 && score <= 10;
+  if (aiUsed10Scale) {
+    console.warn(`[ai] Score ${score} appears 0-10 scale — rescaling to ${score * 10}`);
+    score = score * 10;
+  }
 
   const heurBd = heuristic?.score_breakdown || {};
 
   let breakdown = null;
   if (parsed.score_breakdown && typeof parsed.score_breakdown === "object") {
     const bd = parsed.score_breakdown;
+    // If main score was 0-10, sub-scores likely are too
+    const rs = aiUsed10Scale ? (v) => (v != null && v <= 10 ? v * 10 : v) : (v) => v;
     breakdown = {
-      breakout: clamp(bd.breakout ?? bd.breakout_strength ?? heurBd.breakout ?? 50),
-      volume: clamp(bd.volume ?? bd.volume_confirmation ?? heurBd.volume ?? 50),
-      oi: clamp(bd.oi ?? bd.oi_confirmation ?? heurBd.oi ?? 50),
-      liquidity: clamp(bd.liquidity ?? bd.liquidity_quality ?? heurBd.liquidity ?? 50),
-      funding: clamp(bd.funding ?? bd.funding_distortion ?? heurBd.funding ?? 50),
-      regime: clamp(bd.regime ?? bd.market_regime ?? heurBd.regime ?? 50),
-      provider: clamp(bd.provider ?? bd.provider_reliability ?? heurBd.provider ?? 60),
+      breakout: clamp(rs(bd.breakout ?? bd.breakout_strength) ?? heurBd.breakout ?? 50),
+      volume: clamp(rs(bd.volume ?? bd.volume_confirmation) ?? heurBd.volume ?? 50),
+      oi: clamp(rs(bd.oi ?? bd.oi_confirmation) ?? heurBd.oi ?? 50),
+      liquidity: clamp(rs(bd.liquidity ?? bd.liquidity_quality) ?? heurBd.liquidity ?? 50),
+      funding: clamp(rs(bd.funding ?? bd.funding_distortion) ?? heurBd.funding ?? 50),
+      regime: clamp(rs(bd.regime ?? bd.market_regime) ?? heurBd.regime ?? 50),
+      provider: clamp(rs(bd.provider ?? bd.provider_reliability) ?? heurBd.provider ?? 60),
       risk_penalty: clampSigned(bd.risk_penalty ?? heurBd.risk_penalty ?? -10),
     };
   } else if (heurBd.breakout != null) {
