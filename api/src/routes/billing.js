@@ -444,7 +444,7 @@ router.post("/checkout", requireAuth, async (req, res) => {
       success_url: `${APP_URL()}/pricing.html?session_id={CHECKOUT_SESSION_ID}&status=success`,
       cancel_url: `${APP_URL()}/pricing.html?status=cancelled`,
       metadata: { bot_user_id: String(req.userId), plan_tier: plan, billing_period: cycle, consent_version: consent.version },
-      subscription_data: { metadata: { bot_user_id: String(req.userId), plan_tier: plan, billing_period: cycle } },
+      subscription_data: { metadata: { bot_user_id: String(req.userId), plan_tier: plan, billing_period: cycle }, trial_period_days: 1 },
     });
 
     await persistConsent(req.userId, consent, plan, cycle);

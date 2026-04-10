@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+if (!/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+  window.location.replace('/track.html' + window.location.search + window.location.hash);
+}
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Track Signals — AgoraIQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── AgoraIQ Design Tokens ──────────────────────────── */
+:root {
+  --bg: #0f1119;
+  --bg-card: #161822;
+  --bg-card-hover: #1c1f2e;
+  --bg-surface: #1a1d2b;
+  --bg-input: #12141e;
+  --border: rgba(255,255,255,.06);
+  --border-focus: rgba(252,213,53,.35);
+  --gold: #FCD535;
+  --gold-dim: #EFBF04;
+  --gold-bg: rgba(252,213,53,.08);
+  --gold-bg-hover: rgba(252,213,53,.14);
+  --green: #0ECB81;
+  --red: #F6465D;
+  --blue: #3B82F6;
+  --text: #e2e4ea;
+  --text-dim: #8a8ea0;
+  --text-muted: #555872;
+  --font-body: 'Albert Sans', -apple-system, sans-serif;
+  --font-display: 'Syne', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-xs: 6px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ── Reset ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--gold); text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; }
+input, textarea, select { font-family: inherit; }
+
+/* ── Header ─────────────────────────────────────────── */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px;
+  background: rgba(15,17,25,.92);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.brand {
+  font-family: var(--font-display);
+  font-size: 1.15rem; font-weight: 700;
+  display: flex; align-items: center; gap: 2px;
+  letter-spacing: -.01em;
+}
+.brand .a { color: #fff; }
+.brand .iq { color: var(--gold); }
+.header-actions { display: flex; align-items: center; gap: 10px; }
+.hamburger {
+  width: 36px; height: 36px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+  background: transparent; border-radius: var(--radius-xs);
+}
+.hamburger span {
+  display: block; width: 20px; height: 2px;
+  background: var(--text-dim); border-radius: 2px;
+  transition: all .25s ease;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ── Mobile Nav Drawer ──────────────────────────────── */
+.nav-overlay {
+  position: fixed; inset: 0; z-index: 90;
+  background: rgba(0,0,0,.6);
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s ease;
+}
+.nav-overlay.open { opacity: 1; pointer-events: auto; }
+.nav-drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 95;
+  width: 280px; max-width: 80vw;
+  background: var(--bg-card);
+  border-left: 1px solid var(--border);
+  transform: translateX(100%);
+  transition: transform .3s cubic-bezier(.4,0,.2,1);
+  padding: 72px 20px 24px;
+  overflow-y: auto;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.nav-drawer.open { transform: translateX(0); }
+.nav-link {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 14px;
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  font-size: .95rem; font-weight: 500;
+  transition: all .2s ease;
+}
+.nav-link:hover, .nav-link.active { background: var(--gold-bg); color: var(--gold); }
+.nav-link .icon { font-size: 1.1rem; width: 24px; text-align: center; }
+.nav-divider { height: 1px; background: var(--border); margin: 12px 0; }
+
+/* ── Page Title ─────────────────────────────────────── */
+.page-title {
+  padding: 20px 16px 6px;
+}
+.page-title h1 {
+  font-family: var(--font-display);
+  font-size: 1.5rem; font-weight: 700;
+  color: #fff;
+  letter-spacing: -.02em;
+}
+.page-title p {
+  font-size: .82rem; color: var(--text-dim);
+  margin-top: 4px; line-height: 1.4;
+}
+
+/* ── Auth Gate ───────────────────────────────────────── */
+.auth-gate {
+  display: none;
+  margin: 20px 16px;
+  padding: 28px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-align: center;
+}
+.auth-gate.show { display: block; }
+.auth-gate h3 {
+  font-family: var(--font-display);
+  font-size: 1.15rem; color: #fff; font-weight: 700;
+  margin-bottom: 8px;
+}
+.auth-gate p { font-size: .85rem; color: var(--text-dim); margin-bottom: 18px; line-height: 1.5; }
+.btn-signin {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 28px;
+  background: var(--gold); color: #000;
+  font-weight: 600; font-size: .9rem;
+  border-radius: var(--radius-sm);
+  transition: background .2s;
+}
+.btn-signin:hover { background: var(--gold-dim); }
+
+/* ── Stats Bar ──────────────────────────────────────── */
+.stats-bar {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 10px; padding: 16px;
+}
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 14px 12px;
+}
+.stat-label {
+  font-size: .7rem; font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: 1.35rem; font-weight: 500;
+  color: #fff; margin-top: 4px;
+}
+.stat-value.green { color: var(--green); }
+
+/* ── Submit Signal ──────────────────────────────────── */
+.submit-section {
+  margin: 4px 16px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.submit-header {
+  padding: 14px 16px 0;
+  font-size: .95rem; font-weight: 600; color: #fff;
+  display: flex; align-items: center; gap: 8px;
+}
+.submit-body { padding: 12px 16px 16px; }
+.signal-input {
+  width: 100%; min-height: 100px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text); font-size: .9rem;
+  padding: 12px; resize: vertical;
+  font-family: var(--font-mono);
+  transition: border-color .2s;
+  line-height: 1.5;
+}
+.signal-input:focus { outline: none; border-color: var(--border-focus); }
+.signal-input::placeholder { color: var(--text-muted); }
+.submit-actions {
+  display: flex; gap: 10px; margin-top: 12px;
+}
+.btn-submit {
+  flex: 1;
+  padding: 13px 16px;
+  background: var(--gold); color: #000;
+  font-weight: 600; font-size: .9rem;
+  border-radius: var(--radius-sm);
+  transition: all .2s;
+}
+.btn-submit:active { transform: scale(.97); }
+.btn-clear {
+  padding: 13px 20px;
+  background: rgba(255,255,255,.05);
+  color: var(--text-dim); font-weight: 500;
+  font-size: .9rem; border-radius: var(--radius-sm);
+  transition: all .2s;
+}
+.btn-clear:active { background: rgba(255,255,255,.08); }
+.submit-hint {
+  font-size: .75rem; color: var(--text-muted);
+  margin-top: 10px; line-height: 1.4;
+}
+
+/* ── Signal Cards (mobile table replacement) ────────── */
+.signals-section {
+  padding: 0 16px 16px;
+}
+.signals-section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.signals-section-header h2 {
+  font-size: 1rem; font-weight: 600; color: #fff;
+}
+.sort-btn {
+  padding: 6px 12px;
+  background: rgba(255,255,255,.05);
+  border-radius: var(--radius-xs);
+  font-size: .75rem; color: var(--text-dim); font-weight: 500;
+  display: flex; align-items: center; gap: 4px;
+}
+.signal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 10px;
+  transition: all .2s;
+}
+.signal-card:active { background: var(--bg-card-hover); }
+.signal-card-top {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px;
+}
+.signal-pair {
+  display: flex; align-items: center; gap: 8px;
+}
+.signal-symbol {
+  font-family: var(--font-mono);
+  font-size: 1rem; font-weight: 600; color: #fff;
+}
+.signal-dir {
+  font-size: .7rem; font-weight: 600;
+  padding: 3px 8px; border-radius: 4px;
+  text-transform: uppercase; letter-spacing: .04em;
+}
+.signal-dir.long { background: rgba(14,203,129,.12); color: var(--green); }
+.signal-dir.short { background: rgba(246,70,93,.12); color: var(--red); }
+.signal-status {
+  font-size: .72rem; font-weight: 600;
+  padding: 4px 10px; border-radius: 20px;
+  letter-spacing: .03em;
+}
+.signal-status.open { background: rgba(59,130,246,.12); color: var(--blue); }
+.signal-status.tp1 { background: rgba(14,203,129,.12); color: var(--green); }
+.signal-status.tp2 { background: rgba(14,203,129,.18); color: var(--green); }
+.signal-status.tp3 { background: rgba(14,203,129,.25); color: var(--green); }
+.signal-status.sl { background: rgba(246,70,93,.12); color: var(--red); }
+.signal-status.expired { background: rgba(255,255,255,.06); color: var(--text-muted); }
+
+.signal-card-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.signal-field {
+  display: flex; flex-direction: column; gap: 2px;
+}
+.signal-field-label {
+  font-size: .65rem; font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.signal-field-value {
+  font-family: var(--font-mono);
+  font-size: .85rem; color: var(--text);
+}
+.signal-card-bottom {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.signal-pnl {
+  font-family: var(--font-mono);
+  font-size: .95rem; font-weight: 600;
+}
+.signal-pnl.positive { color: var(--green); }
+.signal-pnl.negative { color: var(--red); }
+.signal-pnl.neutral { color: var(--text-dim); }
+.signal-card-actions {
+  display: flex; gap: 8px;
+}
+.card-action-btn {
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.04);
+  border-radius: var(--radius-xs);
+  color: var(--text-dim);
+  font-size: .85rem;
+  transition: all .2s;
+}
+.card-action-btn:active { background: rgba(255,255,255,.1); }
+.card-action-btn.danger:active { background: rgba(246,70,93,.15); color: var(--red); }
+
+/* ── Empty State ────────────────────────────────────── */
+.empty-state {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: .88rem;
+}
+.empty-state .icon { font-size: 2rem; margin-bottom: 12px; opacity: .5; }
+.empty-state p { line-height: 1.5; }
+
+/* ── Monthly Breakdown ──────────────────────────────── */
+.monthly-section {
+  padding: 0 16px 20px;
+}
+.monthly-section h2 {
+  font-size: 1rem; font-weight: 600; color: #fff;
+  margin-bottom: 12px;
+}
+.monthly-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.monthly-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.monthly-row:last-child { border-bottom: none; }
+.monthly-label {
+  font-size: .88rem; font-weight: 500; color: var(--text);
+}
+.monthly-stats {
+  display: flex; align-items: center; gap: 14px;
+}
+.monthly-stat {
+  font-family: var(--font-mono);
+  font-size: .82rem; color: var(--text-dim);
+}
+.monthly-stat.wr { color: var(--green); font-weight: 500; }
+
+/* ── Signal Detail Modal ────────────────────────────── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,.7);
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s ease;
+}
+.modal-overlay.open { opacity: 1; pointer-events: auto; }
+.modal-sheet {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 210;
+  background: var(--bg-card);
+  border-radius: 20px 20px 0 0;
+  max-height: 90dvh;
+  overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform .35s cubic-bezier(.4,0,.2,1);
+  padding-bottom: var(--safe-bottom);
+}
+.modal-sheet.open { transform: translateY(0); }
+.modal-handle {
+  width: 36px; height: 4px;
+  background: rgba(255,255,255,.15);
+  border-radius: 4px;
+  margin: 12px auto 0;
+}
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 18px 12px;
+}
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem; font-weight: 700; color: #fff;
+}
+.modal-close {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.06);
+  border-radius: 50%;
+  color: var(--text-dim); font-size: 1.1rem;
+}
+.modal-tabs {
+  display: flex; gap: 6px;
+  padding: 0 18px 14px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.modal-tabs::-webkit-scrollbar { display: none; }
+.modal-tab {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: .8rem; font-weight: 500;
+  color: var(--text-dim);
+  background: rgba(255,255,255,.04);
+  white-space: nowrap;
+  transition: all .2s;
+}
+.modal-tab.active { background: var(--gold-bg); color: var(--gold); }
+.modal-content { padding: 0 18px 24px; }
+.modal-kv {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 10px; margin-bottom: 16px;
+}
+.modal-kv-item {
+  padding: 10px 12px;
+  background: rgba(255,255,255,.03);
+  border-radius: var(--radius-xs);
+}
+.modal-kv-label {
+  font-size: .65rem; font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.modal-kv-value {
+  font-family: var(--font-mono);
+  font-size: .92rem; color: #fff;
+  margin-top: 3px;
+}
+.modal-chart-area {
+  width: 100%; height: 260px;
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted); font-size: .85rem;
+}
+.modal-actions {
+  display: flex; gap: 8px; margin-top: 16px;
+}
+.modal-action-btn {
+  flex: 1; padding: 12px;
+  border-radius: var(--radius-sm);
+  font-size: .85rem; font-weight: 500;
+  text-align: center;
+  transition: all .2s;
+}
+.modal-action-btn.primary {
+  background: var(--gold-bg); color: var(--gold);
+}
+.modal-action-btn.secondary {
+  background: rgba(255,255,255,.04); color: var(--text-dim);
+}
+
+/* ── Footer ─────────────────────────────────────────── */
+.footer {
+  padding: 24px 16px calc(16px + var(--safe-bottom));
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.footer-brand {
+  font-family: var(--font-display);
+  font-size: 1rem; font-weight: 700;
+  margin-bottom: 12px;
+}
+.footer-links {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 6px 14px; margin-bottom: 14px;
+}
+.footer-links a {
+  font-size: .75rem; color: var(--text-muted);
+  transition: color .2s;
+}
+.footer-links a:hover { color: var(--text-dim); }
+.footer-copy {
+  font-size: .7rem; color: var(--text-muted);
+  line-height: 1.5;
+}
+.footer-disclaimer {
+  font-size: .65rem; color: var(--text-muted);
+  margin-top: 10px; line-height: 1.5;
+  opacity: .7;
+}
+
+/* ── Utility ────────────────────────────────────────── */
+.hidden { display: none !important; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+.fade-up { animation: fadeUp .4s ease forwards; }
+.fade-up-d1 { animation-delay: .05s; opacity:0; }
+.fade-up-d2 { animation-delay: .1s; opacity:0; }
+.fade-up-d3 { animation-delay: .15s; opacity:0; }
+.fade-up-d4 { animation-delay: .2s; opacity:0; }
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══════════════════════════════════════ -->
+<header class="header">
+  <a href="https://bot.agoraiq.net/" class="brand"><span class="a">A</span>gora<span class="iq">IQ</span></a>
+  <div class="header-actions">
+    <button class="hamburger" id="menuBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ═══ NAV DRAWER ═══════════════════════════════════ -->
+<div class="nav-overlay" id="navOverlay"></div>
+<nav class="nav-drawer" id="navDrawer">
+  <a class="nav-link" href="https://bot.agoraiq.net/signals.html"><span class="icon">📡</span> Signals</a>
+  <a class="nav-link" href="https://bot.agoraiq.net/scanner.html"><span class="icon">🔍</span> Scanner</a>
+  <a class="nav-link active" href="https://bot.agoraiq.net/track.html"><span class="icon">📊</span> Track</a>
+  <a class="nav-link" href="https://bot.agoraiq.net/proof.html"><span class="icon">✅</span> Proof</a>
+  <a class="nav-link" href="https://bot.agoraiq.net/providers.html"><span class="icon">👥</span> Providers</a>
+  <a class="nav-link" href="https://bot.agoraiq.net/watchlist.html"><span class="icon">⭐</span> Watchlist</a>
+  <div class="nav-divider"></div>
+  <a class="nav-link" href="https://bot.agoraiq.net/pricing.html"><span class="icon">💎</span> Pricing</a>
+  <a class="nav-link" href="https://bot.agoraiq.net/help.html"><span class="icon">❓</span> Help</a>
+  <div class="nav-divider"></div>
+  <a class="nav-link" href="#" id="signOutLink"><span class="icon">🚪</span> Sign Out</a>
+</nav>
+
+<!-- ═══ PAGE TITLE ═══════════════════════════════════ -->
+<section class="page-title fade-up">
+  <h1>Signal Tracker</h1>
+  <p>Submit, track &amp; measure your signals against live market data</p>
+</section>
+
+<!-- ═══ AUTH GATE (shown when not signed in) ═════════ -->
+<section class="auth-gate" id="authGate">
+  <h3>Sign in to track signals</h3>
+  <p>Submit your own trading signals and track them against live market data.</p>
+  <a href="https://bot.agoraiq.net/signals.html" class="btn-signin">Sign In →</a>
+</section>
+
+<!-- ═══ STATS BAR ════════════════════════════════════ -->
+<section class="stats-bar fade-up fade-up-d1" id="statsBar">
+  <div class="stat-card">
+    <div class="stat-label">Total Tracked</div>
+    <div class="stat-value" id="statTotal">—</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Open</div>
+    <div class="stat-value" id="statOpen">—</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Win Rate</div>
+    <div class="stat-value green" id="statWinRate">—</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Wins / Resolved</div>
+    <div class="stat-value" id="statWins">—</div>
+  </div>
+</section>
+
+<!-- ═══ SUBMIT SIGNAL ════════════════════════════════ -->
+<section class="submit-section fade-up fade-up-d2" id="submitSection">
+  <div class="submit-header">✏️ Submit Signal</div>
+  <div class="submit-body">
+    <textarea
+      class="signal-input"
+      id="signalInput"
+      placeholder="Paste your signal here…&#10;e.g. BTC/USDT LONG&#10;Entry: 68500&#10;TP1: 70000 TP2: 72000&#10;SL: 67000"
+      rows="5"
+    ></textarea>
+    <div class="submit-actions">
+      <button class="btn-submit" id="submitBtn">Submit &amp; Track</button>
+      <button class="btn-clear" id="clearBtn">Clear</button>
+    </div>
+    <p class="submit-hint">Supports most common signal formats. AgoraIQ will auto-parse symbol, direction, entry, TP, SL.</p>
+  </div>
+</section>
+
+<!-- ═══ TRACKED SIGNALS ══════════════════════════════ -->
+<section class="signals-section fade-up fade-up-d3" id="signalsSection">
+  <div class="signals-section-header">
+    <h2>Your Tracked Signals</h2>
+    <button class="sort-btn" id="sortBtn">↕ Latest</button>
+  </div>
+
+  <div id="signalsList">
+    <!-- Signal cards get injected here by JS -->
+  </div>
+
+  <div class="empty-state" id="emptyState">
+    <div class="icon">📭</div>
+    <p>No tracked signals yet.<br>Submit one above to get started.</p>
+  </div>
+</section>
+
+<!-- ═══ MONTHLY BREAKDOWN ════════════════════════════ -->
+<section class="monthly-section fade-up fade-up-d4" id="monthlySection">
+  <h2>Monthly Breakdown</h2>
+  <div class="monthly-card" id="monthlyCard">
+    <div class="empty-state" style="padding:24px;">
+      <p>Monthly stats will appear once signals are resolved.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SIGNAL DETAIL MODAL (bottom sheet) ═══════════ -->
+<div class="modal-overlay" id="modalOverlay"></div>
+<div class="modal-sheet" id="modalSheet">
+  <div class="modal-handle"></div>
+  <div class="modal-header">
+    <span class="modal-title" id="modalTitle">—</span>
+    <button class="modal-close" id="modalClose">✕</button>
+  </div>
+  <div class="modal-tabs" id="modalTabs">
+    <button class="modal-tab active" data-tab="overview">Overview</button>
+    <button class="modal-tab" data-tab="chart">Chart</button>
+    <button class="modal-tab" data-tab="ai">AI Score</button>
+    <button class="modal-tab" data-tab="lifecycle">Lifecycle</button>
+  </div>
+  <div class="modal-content" id="modalContent">
+    <!-- Tab content injected by JS -->
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═══════════════════════════════════════ -->
+<footer class="footer">
+  <div class="footer-brand"><span style="color:#fff">A</span>gora<span style="color:var(--gold)">IQ</span></div>
+  <div class="footer-links">
+    <a href="https://bot.agoraiq.net/terms.html">Terms</a>
+    <a href="https://bot.agoraiq.net/privacy.html">Privacy</a>
+    <a href="https://bot.agoraiq.net/cookies.html">Cookies</a>
+    <a href="https://bot.agoraiq.net/disclaimer.html">Disclaimer</a>
+    <a href="https://bot.agoraiq.net/no-financial-advice.html">No Financial Advice</a>
+  </div>
+  <div class="footer-copy">© 2026 ChatLogic Insights LTD. All rights reserved.</div>
+  <div class="footer-disclaimer">↺ Not for UK Persons. AgoraIQ is not authorised or regulated by the FCA. Not directed at UK persons. Nothing on this site constitutes financial advice. Past performance does not guarantee future results.</div>
+</footer>
+
+<script>
+/* ── Nav Drawer ─────────────────────────────────────── */
+const menuBtn = document.getElementById('menuBtn');
+const navOverlay = document.getElementById('navOverlay');
+const navDrawer = document.getElementById('navDrawer');
+
+function toggleNav() {
+  const open = navDrawer.classList.toggle('open');
+  navOverlay.classList.toggle('open', open);
+  menuBtn.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+menuBtn.addEventListener('click', toggleNav);
+navOverlay.addEventListener('click', toggleNav);
+
+/* ── Submit / Clear ─────────────────────────────────── */
+const signalInput = document.getElementById('signalInput');
+const submitBtn = document.getElementById('submitBtn');
+const clearBtn = document.getElementById('clearBtn');
+
+clearBtn.addEventListener('click', () => { signalInput.value = ''; signalInput.focus(); });
+
+submitBtn.addEventListener('click', async () => {
+  const raw = signalInput.value.trim();
+  if (!raw) return;
+  submitBtn.textContent = 'Parsing…';
+  submitBtn.disabled = true;
+
+  try {
+    const res = await fetch('/api/v1/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ raw }),
+      credentials: 'include'
+    });
+    if (!res.ok) throw new Error('Submit failed');
+    const data = await res.json();
+    signalInput.value = '';
+    loadSignals();
+  } catch (e) {
+    console.error('Submit error:', e);
+    alert('Could not submit signal. Please try again.');
+  } finally {
+    submitBtn.textContent = 'Submit & Track';
+    submitBtn.disabled = false;
+  }
+});
+
+/* ── Load & Render Signals ──────────────────────────── */
+let signals = [];
+
+async function loadSignals() {
+  try {
+    const res = await fetch('/api/v1/track/signals', { credentials: 'include' });
+    if (!res.ok) throw new Error('Fetch failed');
+    signals = await res.json();
+    renderSignals();
+    updateStats();
+  } catch (e) {
+    console.error('Load signals error:', e);
+  }
+}
+
+function renderSignals() {
+  const list = document.getElementById('signalsList');
+  const empty = document.getElementById('emptyState');
+
+  if (!signals.length) {
+    list.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+
+  list.innerHTML = signals.map(s => {
+    const dirClass = (s.direction || '').toLowerCase() === 'long' ? 'long' : 'short';
+    const statusClass = (s.status || 'open').toLowerCase().replace(/[^a-z0-9]/g, '');
+    const pnl = s.pnl != null ? (s.pnl >= 0 ? `+${s.pnl}%` : `${s.pnl}%`) : '—';
+    const pnlClass = s.pnl > 0 ? 'positive' : s.pnl < 0 ? 'negative' : 'neutral';
+    const tp1 = s.targets && s.targets[0] ? s.targets[0] : '—';
+
+    return `
+      <div class="signal-card" data-id="${s.id}" onclick="openModal(${s.id})">
+        <div class="signal-card-top">
+          <div class="signal-pair">
+            <span class="signal-symbol">${s.symbol || '—'}</span>
+            <span class="signal-dir ${dirClass}">${s.direction || '—'}</span>
+          </div>
+          <span class="signal-status ${statusClass}">${s.status || 'OPEN'}</span>
+        </div>
+        <div class="signal-card-grid">
+          <div class="signal-field">
+            <span class="signal-field-label">Entry</span>
+            <span class="signal-field-value">${s.entry || '—'}</span>
+          </div>
+          <div class="signal-field">
+            <span class="signal-field-label">TP1</span>
+            <span class="signal-field-value">${tp1}</span>
+          </div>
+          <div class="signal-field">
+            <span class="signal-field-label">SL</span>
+            <span class="signal-field-value">${s.stop || '—'}</span>
+          </div>
+        </div>
+        <div class="signal-card-bottom">
+          <span class="signal-pnl ${pnlClass}">${pnl}</span>
+          <div class="signal-card-actions">
+            <button class="card-action-btn" onclick="event.stopPropagation(); openModal(${s.id})" title="Details">📋</button>
+            <button class="card-action-btn danger" onclick="event.stopPropagation(); deleteSignal(${s.id})" title="Delete">🗑</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function updateStats() {
+  const total = signals.length;
+  const open = signals.filter(s => (s.status || '').toUpperCase() === 'OPEN').length;
+  const resolved = signals.filter(s => ['TP1','TP2','TP3','SL','EXPIRED'].includes((s.status||'').toUpperCase()));
+  const wins = resolved.filter(s => ['TP1','TP2','TP3'].includes((s.status||'').toUpperCase()));
+  const wr = resolved.length ? ((wins.length / resolved.length) * 100).toFixed(1) + '%' : '—';
+
+  document.getElementById('statTotal').textContent = total || '—';
+  document.getElementById('statOpen').textContent = open || '0';
+  document.getElementById('statWinRate').textContent = wr;
+  document.getElementById('statWins').textContent = resolved.length ? `${wins.length} / ${resolved.length}` : '—';
+}
+
+/* ── Delete Signal ──────────────────────────────────── */
+async function deleteSignal(id) {
+  if (!confirm('Delete this tracked signal?')) return;
+  try {
+    await fetch(`/api/v1/track/${id}`, { method: 'DELETE', credentials: 'include' });
+    loadSignals();
+  } catch (e) { console.error('Delete error:', e); }
+}
+
+/* ── Modal ──────────────────────────────────────────── */
+const modalOverlay = document.getElementById('modalOverlay');
+const modalSheet = document.getElementById('modalSheet');
+const modalClose = document.getElementById('modalClose');
+const modalTitle = document.getElementById('modalTitle');
+const modalContent = document.getElementById('modalContent');
+const modalTabs = document.getElementById('modalTabs');
+
+function openModal(id) {
+  const s = signals.find(x => x.id === id);
+  if (!s) return;
+
+  modalTitle.textContent = s.symbol || '—';
+  renderModalTab('overview', s);
+
+  modalOverlay.classList.add('open');
+  modalSheet.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Tab clicks
+  modalTabs.querySelectorAll('.modal-tab').forEach(tab => {
+    tab.onclick = () => {
+      modalTabs.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      renderModalTab(tab.dataset.tab, s);
+    };
+  });
+  // Reset to overview tab
+  modalTabs.querySelector('[data-tab="overview"]').classList.add('active');
+}
+
+function closeModal() {
+  modalOverlay.classList.remove('open');
+  modalSheet.classList.remove('open');
+  document.body.style.overflow = '';
+}
+modalClose.addEventListener('click', closeModal);
+modalOverlay.addEventListener('click', closeModal);
+
+function renderModalTab(tab, s) {
+  const tp1 = s.targets && s.targets[0] ? s.targets[0] : '—';
+  const tp2 = s.targets && s.targets[1] ? s.targets[1] : '—';
+  const tp3 = s.targets && s.targets[2] ? s.targets[2] : '—';
+
+  if (tab === 'overview') {
+    modalContent.innerHTML = `
+      <div class="modal-kv">
+        <div class="modal-kv-item"><div class="modal-kv-label">Direction</div><div class="modal-kv-value">${s.direction || '—'}</div></div>
+        <div class="modal-kv-item"><div class="modal-kv-label">Status</div><div class="modal-kv-value">${s.status || 'OPEN'}</div></div>
+        <div class="modal-kv-item"><div class="modal-kv-label">Entry</div><div class="modal-kv-value">${s.entry || '—'}</div></div>
+        <div class="modal-kv-item"><div class="modal-kv-label">Stop Loss</div><div class="modal-kv-value">${s.stop || '—'}</div></div>
+        <div class="modal-kv-item"><div class="modal-kv-label">TP1</div><div class="modal-kv-value">${tp1}</div></div>
+        <div class="modal-kv-item"><div class="modal-kv-label">TP2</div><div class="modal-kv-value">${tp2}</div></div>
+        <div class="modal-kv-item"><div class="modal-kv-label">TP3</div><div class="modal-kv-value">${tp3}</div></div>
+        <div class="modal-kv-item"><div class="modal-kv-label">PnL</div><div class="modal-kv-value">${s.pnl != null ? s.pnl + '%' : '—'}</div></div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-action-btn primary" onclick="alert('Added to watchlist')">⊕ Watchlist</button>
+        <button class="modal-action-btn secondary" onclick="alert('Alert set')">🔔 Alert me</button>
+      </div>
+    `;
+  } else if (tab === 'chart') {
+    const sym = (s.symbol || 'BTCUSDT').replace('/', '');
+    modalContent.innerHTML = `
+      <div class="modal-chart-area" id="chartArea">
+        <iframe
+          src="https://s.tradingview.com/widgetembed/?hideideas=1&overrides=%7B%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=en&utm_source=agoraiq&symbol=${sym}&interval=60&theme=dark&style=1&timezone=Etc%2FUTC"
+          style="width:100%;height:100%;border:none;border-radius:8px;"
+          allowtransparency="true"
+        ></iframe>
+      </div>
+      <p style="font-size:.72rem;color:var(--text-muted);margin-top:8px;text-align:center;">Chart via TradingView · Entry, SL and TP levels shown where available</p>
+    `;
+  } else if (tab === 'ai') {
+    const conf = s.confidence || '—';
+    const aiMeta = s.meta || {};
+    modalContent.innerHTML = `
+      <div class="modal-kv">
+        <div class="modal-kv-item"><div class="modal-kv-label">Confidence</div><div class="modal-kv-value">${conf}</div></div>
+        <div class="modal-kv-item"><div class="modal-kv-label">Provider</div><div class="modal-kv-value">${s.provider || '—'}</div></div>
+        <div class="modal-kv-item"><div class="modal-kv-label">Source</div><div class="modal-kv-value">${s.source || '—'}</div></div>
+        <div class="modal-kv-item"><div class="modal-kv-label">AI Model</div><div class="modal-kv-value">${aiMeta.ai_model || '—'}</div></div>
+      </div>
+      ${aiMeta.ai_rationale ? `<p style="font-size:.85rem;color:var(--text-dim);line-height:1.6;margin-top:8px;">${aiMeta.ai_rationale}</p>` : ''}
+    `;
+  } else if (tab === 'lifecycle') {
+    modalContent.innerHTML = `
+      <div class="modal-kv">
+        <div class="modal-kv-item"><div class="modal-kv-label">Created</div><div class="modal-kv-value">${s.created_at ? new Date(s.created_at).toLocaleString() : '—'}</div></div>
+        <div class="modal-kv-item"><div class="modal-kv-label">Resolved</div><div class="modal-kv-value">${s.resolved_at ? new Date(s.resolved_at).toLocaleString() : 'Pending'}</div></div>
+        <div class="modal-kv-item"><div class="modal-kv-label">Status</div><div class="modal-kv-value">${s.status || 'OPEN'}</div></div>
+        <div class="modal-kv-item"><div class="modal-kv-label">Signal ID</div><div class="modal-kv-value">#${s.id}</div></div>
+      </div>
+    `;
+  }
+}
+
+/* ── Touch swipe-to-close for modal ─────────────────── */
+let startY = 0;
+modalSheet.addEventListener('touchstart', (e) => {
+  if (modalSheet.scrollTop <= 0) startY = e.touches[0].clientY;
+}, { passive: true });
+modalSheet.addEventListener('touchmove', (e) => {
+  const diff = e.touches[0].clientY - startY;
+  if (diff > 0 && modalSheet.scrollTop <= 0) {
+    modalSheet.style.transform = `translateY(${diff}px)`;
+  }
+}, { passive: true });
+modalSheet.addEventListener('touchend', (e) => {
+  const diff = e.changedTouches[0].clientY - startY;
+  if (diff > 100) {
+    closeModal();
+  }
+  modalSheet.style.transform = '';
+  setTimeout(() => {
+    if (modalSheet.classList.contains('open')) {
+      modalSheet.style.transform = 'translateY(0)';
+    }
+  }, 10);
+});
+
+/* ── Sort toggle ────────────────────────────────────── */
+let sortDesc = true;
+document.getElementById('sortBtn').addEventListener('click', () => {
+  sortDesc = !sortDesc;
+  document.getElementById('sortBtn').textContent = sortDesc ? '↕ Latest' : '↕ Oldest';
+  signals.reverse();
+  renderSignals();
+});
+
+/* ── Init ───────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  loadSignals();
+});
+</script>
+</body>
+</html>
