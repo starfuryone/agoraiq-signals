@@ -18,3 +18,5 @@ dist/
 api/.env
 .env
 *.env
+api/logs/
+*.log
