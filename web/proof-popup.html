@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Signal Proof — AgoraIQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --font-head: 'Albert Sans', -apple-system, sans-serif;
+  --font-body: 'Albert Sans', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+  --syne:      'Syne', sans-serif;
+  --gold:        #FFC107;
+  --gold-dim:    rgba(255,193,7,.08);
+  --gold-border: rgba(255,193,7,.18);
+  --cyan:        #00d4ff;
+  --cyan-hover:  #00bde6;
+  --cyan-dim:    rgba(0,212,255,.06);
+  --cyan-border: rgba(0,212,255,.15);
+  --green:       #00e676;
+  --green-dim:   rgba(0,230,118,.08);
+  --red:         #ff3b5c;
+  --red-dim:     rgba(255,59,92,.08);
+  --amber:       #ffab00;
+  --bg:       #0f1119;
+  --bg-deep:  #0a0c12;
+  --surface:  #141822;
+  --surface2: #1a1f2e;
+  --surface3: #212738;
+  --border:    rgba(255,255,255,.06);
+  --border-hi: rgba(255,255,255,.10);
+  --text:      #f0f0f2;
+  --text-dim:  #a0a6b8;
+  --text-muted:#64697e;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--font-body);font-size:15px;font-weight:400;
+  line-height:1.6;background:var(--bg);color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+  display:flex;flex-direction:column;
+}
+
+/* ── Popup header bar ── */
+.popup-bar{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 20px;
+  background:rgba(15,17,25,.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:10;
+}
+.brand{display:flex;align-items:center;gap:8px;text-decoration:none}
+.brand-mark{width:28px;height:28px;background:linear-gradient(135deg,#FCD535,#EFBF04);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);flex-shrink:0}
+.brand-text{font-family:var(--syne);font-weight:800;font-size:18px;color:#fff;letter-spacing:-.02em}
+.brand-iq{color:#FCD535}
+.popup-title{
+  font-size:13px;font-weight:600;color:var(--text-muted);
+  text-transform:uppercase;letter-spacing:.8px;
+  margin-left:4px;
+}
+.popup-close{
+  margin-left:auto;
+  width:28px;height:28px;border-radius:6px;
+  background:var(--surface2);border:1px solid var(--border-hi);
+  color:var(--text-muted);font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .15s;
+}
+.popup-close:hover{color:var(--text);border-color:var(--cyan-border);background:var(--surface3)}
+
+/* ── Main content ── */
+.popup-body{
+  flex:1;padding:20px;
+  overflow-y:auto;
+}
+
+/* ── Search row ── */
+.search-row{
+  display:flex;gap:8px;margin-bottom:20px;
+}
+.search-input{
+  flex:1;padding:9px 14px;border-radius:8px;
+  background:var(--bg-deep);border:1px solid var(--border-hi);
+  color:var(--text);font-size:14px;font-family:var(--font-mono);
+  outline:none;transition:border-color .2s;
+}
+.search-input:focus{border-color:var(--cyan-border)}
+.search-input::placeholder{color:var(--text-muted)}
+.search-btn{
+  padding:9px 18px;border-radius:8px;border:none;
+  background:var(--cyan);color:#000;font-size:14px;font-weight:700;
+  cursor:pointer;flex-shrink:0;transition:background .2s;
+}
+.search-btn:hover{background:var(--cyan-hover)}
+.search-btn:disabled{background:var(--surface2);color:var(--text-muted);cursor:wait}
+
+/* ── Loading state ── */
+.proof-loading{
+  display:flex;flex-direction:column;align-items:center;
+  padding:48px 20px;gap:14px;
+}
+.proof-spinner{
+  width:32px;height:32px;border-radius:50%;
+  border:2.5px solid var(--border-hi);border-top-color:var(--cyan);
+  animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.proof-loading-text{
+  font-size:14px;color:var(--text-muted);
+  font-family:var(--font-mono);
+}
+
+/* ── Error / empty states ── */
+.proof-state{
+  text-align:center;padding:36px 20px;
+  border-radius:10px;background:var(--surface);border:1px solid var(--border);
+}
+.proof-state.error{border-color:rgba(255,59,92,.15)}
+.proof-state .state-icon{
+  width:44px;height:44px;margin:0 auto 14px;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:20px;
+}
+.proof-state .state-icon.not-found{background:var(--surface2);color:var(--text-muted)}
+.proof-state .state-icon.err{background:var(--red-dim);color:var(--red)}
+.proof-state h3{font-size:15px;font-weight:700;margin-bottom:6px}
+.proof-state p{font-size:13px;color:var(--text-dim);max-width:360px;margin:0 auto;line-height:1.6}
+
+/* ── Signal card ── */
+.sig-card{
+  border-radius:10px;background:var(--bg-deep);
+  border:1px solid var(--cyan-border);
+  overflow:hidden;
+  animation:card-enter .35s ease;
+}
+@keyframes card-enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.sig-header{
+  padding:14px 18px;display:flex;align-items:center;gap:10px;
+  border-bottom:1px solid var(--border);flex-wrap:wrap;
+}
+.sig-pair{font-size:17px;font-weight:800;color:var(--text);letter-spacing:-.02em}
+.sig-dir{
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;
+  padding:3px 8px;border-radius:4px;
+}
+.sig-dir.long{color:var(--green);background:var(--green-dim)}
+.sig-dir.short{color:var(--red);background:var(--red-dim)}
+.sig-status{
+  margin-left:auto;font-size:12px;font-weight:700;
+  padding:4px 10px;border-radius:6px;
+}
+.sig-status.win{color:var(--green);background:var(--green-dim)}
+.sig-status.partial_win{color:var(--cyan);background:var(--cyan-dim)}
+.sig-status.loss{color:var(--red);background:var(--red-dim)}
+.sig-status.expired{color:var(--text-muted);background:var(--surface2)}
+.sig-status.open{color:var(--amber);background:rgba(255,171,0,.1)}
+
+/* ── Verified badge ── */
+.verified-badge{
+  display:flex;align-items:center;gap:6px;
+  padding:10px 18px;
+  background:linear-gradient(90deg,rgba(0,212,255,.04),rgba(0,230,118,.04));
+  border-bottom:1px solid var(--border);
+  font-size:12px;font-weight:600;color:var(--green);
+}
+.verified-badge svg{flex-shrink:0}
+.verified-badge .hash-short{
+  font-family:var(--font-mono);font-size:11px;color:var(--cyan);
+  margin-left:auto;cursor:pointer;
+  padding:2px 6px;border-radius:3px;
+  transition:background .15s;
+}
+.verified-badge .hash-short:hover{background:var(--cyan-dim)}
+
+/* ── Data grid ── */
+.sig-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:1px;background:var(--border);
+}
+.sig-cell{padding:10px 14px;background:var(--bg-deep)}
+.sig-cell-label{
+  font-size:10px;font-weight:600;text-transform:uppercase;
+  letter-spacing:.5px;color:var(--text-muted);margin-bottom:2px;
+}
+.sig-cell-val{
+  font-size:13px;font-weight:600;color:var(--text);
+  font-family:var(--font-mono);word-break:break-all;
+}
+.sig-cell-val.hash{font-size:11px;color:var(--cyan)}
+.sig-cell-val.pos{color:var(--green)}
+.sig-cell-val.neg{color:var(--red)}
+
+/* ── Timeline ── */
+.sig-timeline{padding:16px 18px;border-top:1px solid var(--border)}
+.sig-timeline h4{
+  font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.8px;color:var(--text-muted);margin-bottom:12px;
+}
+.tl{position:relative;padding-left:20px}
+.tl::before{
+  content:'';position:absolute;left:4px;top:4px;bottom:4px;
+  width:1px;background:var(--cyan-border);
+}
+.tl-item{
+  position:relative;padding-bottom:10px;
+  display:flex;align-items:baseline;gap:10px;
+}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{
+  position:absolute;left:-20px;top:5px;
+  width:9px;height:9px;border-radius:50%;
+  border:2px solid var(--bg-deep);z-index:1;
+}
+.tl-dot.capture{background:var(--cyan)}
+.tl-dot.parsed{background:var(--cyan)}
+.tl-dot.entry{background:var(--green)}
+.tl-dot.tp{background:var(--green)}
+.tl-dot.sl{background:var(--red)}
+.tl-dot.closed{background:var(--gold)}
+.tl-dot.archived{background:var(--gold)}
+.tl-time{
+  font-family:var(--font-mono);font-size:11px;color:var(--text-muted);
+  min-width:120px;flex-shrink:0;
+}
+.tl-event{font-size:13px;color:var(--text-dim)}
+.tl-event strong{color:var(--text);font-weight:600}
+
+/* ── Hash footer ── */
+.sig-hash-footer{
+  padding:12px 18px;border-top:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;
+  background:rgba(0,212,255,.02);
+}
+.sig-hash-footer .label{
+  font-size:10px;font-weight:600;text-transform:uppercase;
+  letter-spacing:.5px;color:var(--text-muted);flex-shrink:0;
+}
+.sig-hash-footer .full-hash{
+  font-family:var(--font-mono);font-size:10px;color:var(--cyan);
+  word-break:break-all;flex:1;line-height:1.5;opacity:.8;
+}
+.copy-btn{
+  padding:4px 8px;border-radius:4px;border:1px solid var(--border-hi);
+  background:var(--surface);color:var(--text-muted);
+  font-size:11px;font-weight:600;cursor:pointer;
+  transition:all .15s;flex-shrink:0;
+  font-family:var(--font-mono);
+}
+.copy-btn:hover{border-color:var(--cyan-border);color:var(--cyan)}
+.copy-btn.copied{border-color:var(--green);color:var(--green)}
+
+/* ── Proof stamp watermark ── */
+.proof-stamp{
+  text-align:center;padding:14px 20px 20px;
+}
+.proof-stamp-inner{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--font-mono);font-size:11px;color:var(--text-muted);
+  padding:6px 14px;border-radius:6px;
+  background:var(--surface);border:1px solid var(--border);
+}
+.proof-stamp-inner .dot{
+  width:5px;height:5px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 6px rgba(0,230,118,.4);
+}
+
+/* ── Responsive ── */
+@media(max-width:480px){
+  .sig-grid{grid-template-columns:1fr}
+  .sig-header{flex-direction:column;align-items:flex-start;gap:6px}
+  .sig-status{margin-left:0}
+  .tl-item{flex-direction:column;gap:2px}
+  .tl-time{min-width:auto}
+  .sig-hash-footer{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<div class="popup-bar">
+  <a href="/" class="brand" target="_blank">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span class="brand-text">Agora<span class="brand-iq">IQ</span></span>
+  </a>
+  <span class="popup-title">Signal Proof</span>
+  <button class="popup-close" onclick="window.close()" title="Close">✕</button>
+</div>
+
+<!-- ── Body ── -->
+<div class="popup-body">
+  <div class="search-row">
+    <input type="text" class="search-input" id="qInput" placeholder="Signal ID, symbol, or hash…" spellcheck="false"/>
+    <button class="search-btn" id="searchBtn" onclick="doVerify()">Verify</button>
+  </div>
+  <div id="resultPanel"></div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  var panel = document.getElementById('resultPanel');
+  var input = document.getElementById('qInput');
+  var btn   = document.getElementById('searchBtn');
+
+  // Enter key triggers verify
+  input.addEventListener('keydown', function(e){ if(e.key==='Enter') doVerify(); });
+
+
+  window.doVerify = function(){
+    var val = input.value.trim();
+    if(!val){
+      showEmpty('Enter a signal ID, symbol, or hash prefix.');
+      return;
+    }
+    showLoading();
+    btn.disabled = true;
+
+    fetch('/api/proof/verify?q=' + encodeURIComponent(val))
+      .then(function(res){
+        btn.disabled = false;
+        if(res.status === 404) return null;
+        if(!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
+      .then(function(data){
+        if(!data || data.found === false){
+          showNotFound(val);
+          return;
+        }
+        renderSignal(data);
+      })
+      .catch(function(){
+        btn.disabled = false;
+        showError();
+      });
+  };
+
+  function showLoading(){
+    panel.innerHTML =
+      '<div class="proof-loading">' +
+        '<div class="proof-spinner"></div>' +
+        '<div class="proof-loading-text">Verifying signal…</div>' +
+      '</div>';
+  }
+
+  function showNotFound(q){
+    panel.innerHTML =
+      '<div class="proof-state">' +
+        '<div class="state-icon not-found">?</div>' +
+        '<h3>No match found</h3>' +
+        '<p>No signal matching "' + esc(q) + '" was found. Check the ID or hash and try again.</p>' +
+      '</div>';
+  }
+
+  function showEmpty(msg){
+    panel.innerHTML =
+      '<div class="proof-state">' +
+        '<div class="state-icon not-found">⌕</div>' +
+        '<h3>Enter a query</h3>' +
+        '<p>' + esc(msg) + '</p>' +
+      '</div>';
+  }
+
+  function showError(){
+    panel.innerHTML =
+      '<div class="proof-state error">' +
+        '<div class="state-icon err">!</div>' +
+        '<h3>Verification unavailable</h3>' +
+        '<p>Could not reach the proof API. Try again shortly.</p>' +
+      '</div>';
+  }
+
+  function renderSignal(s){
+    var dirClass = (s.direction||s.dir||'').toLowerCase() === 'short' ? 'short' : 'long';
+    var dirArrow = dirClass === 'long' ? '⬆' : '⬇';
+    var statusLabels = {win:'Win',partial_win:'Partial Win',loss:'Loss',expired:'Expired',open:'Tracking'};
+    var statusDisplay = statusLabels[s.status] || s.status || 'Tracking';
+    var statusClass = s.status || 'open';
+    var hashShort = (s.hash||'').slice(0,12) + '…' + (s.hash||'').slice(-6);
+    var pnlVal = s.pnlPct !== undefined ? s.pnlPct : s.pnl;
+    var pnlClass = (pnlVal||0) >= 0 ? 'pos' : 'neg';
+    var pnlPrefix = (pnlVal||0) >= 0 ? '+' : '';
+
+    var h = '';
+
+    // ── Card
+    h += '<div class="sig-card">';
+
+    // Header
+    h += '<div class="sig-header">';
+    h += '<span class="sig-pair">' + esc(s.symbol||'—') + '</span>';
+    h += '<span class="sig-dir '+dirClass+'">' + dirArrow + ' ' + esc((s.direction||'').toUpperCase()) + '</span>';
+    h += '<span class="sig-status '+statusClass+'">' + esc(statusDisplay) + '</span>';
+    h += '</div>';
+
+    // Verified badge
+    h += '<div class="verified-badge">';
+    h += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+    h += ' SHA-256 verified at ingestion';
+    h += '<span class="hash-short" onclick="copyHash(\'' + esc(s.hash||'') + '\',this)" title="Click to copy full hash">' + esc(hashShort) + '</span>';
+    h += '</div>';
+
+    // Grid
+    h += '<div class="sig-grid">';
+    h += cell('Signal ID', s.id);
+    h += cell('Provider', s.provider || s.providerName || '—');
+    h += cell('Entry', fmtPrice(s.entry));
+    h += cell('Stop-loss', fmtPrice(s.stop_loss || s.sl));
+    h += cell('Target 1', fmtPrice(s.tp1 || s.tp));
+    if(s.tp2) h += cell('Target 2', fmtPrice(s.tp2));
+    h += cell('AI Score', s.ai_score ? s.ai_score + ' / 100' : '—');
+    h += cell('Exchange', s.exchange || 'Binance');
+    h += cell('Received', s.received || fmtDate(s.received_at));
+    if(pnlVal !== undefined && pnlVal !== null){
+      h += '<div class="sig-cell"><div class="sig-cell-label">Net Result</div><div class="sig-cell-val ' + pnlClass + '">' + pnlPrefix + pnlVal + '%</div></div>';
+    }
+    if(s.duration) h += cell('Duration', s.duration);
+    if(s.resolved_at) h += cell('Resolved', fmtDate(s.resolved_at));
+    h += '</div>';
+
+    // Timeline
+    if(s.timeline && s.timeline.length){
+      h += '<div class="sig-timeline"><h4>Signal Lifecycle</h4><div class="tl">';
+      s.timeline.forEach(function(ev){
+        h += '<div class="tl-item">';
+        h += '<div class="tl-dot ' + esc(ev.type||'capture') + '"></div>';
+        h += '<span class="tl-time">' + esc(ev.time||'') + '</span>';
+        h += '<span class="tl-event"><strong>' + esc(ev.label||'') + '</strong>';
+        if(ev.detail) h += ' — ' + esc(ev.detail);
+        h += '</span></div>';
+      });
+      h += '</div></div>';
+    }
+
+    // Hash footer
+    h += '<div class="sig-hash-footer">';
+    h += '<span class="label">SHA-256</span>';
+    h += '<span class="full-hash">' + esc(s.hash||'—') + '</span>';
+    h += '<button class="copy-btn" onclick="copyHash(\'' + esc(s.hash||'') + '\',this)">Copy</button>';
+    h += '</div>';
+
+    h += '</div>'; // end card
+
+    // Proof stamp
+    h += '<div class="proof-stamp"><div class="proof-stamp-inner">';
+    h += '<span class="dot"></span> ';
+    h += 'Verified ' + new Date().toISOString().replace('T',' ').slice(0,19) + ' UTC · bot.agoraiq.net/proof';
+    h += '</div></div>';
+
+    panel.innerHTML = h;
+
+    // Update page title
+    document.title = (s.symbol||'Signal') + ' Proof — AgoraIQ';
+  }
+
+  // ── Helpers ──
+
+  function cell(label, val){
+    if(val === undefined || val === null) val = '—';
+    return '<div class="sig-cell"><div class="sig-cell-label">' + esc(label) + '</div><div class="sig-cell-val">' + esc(String(val)) + '</div></div>';
+  }
+
+  function fmtPrice(v){
+    if(v === null || v === undefined) return '—';
+    var n = Number(v);
+    if(isNaN(n)) return String(v);
+    if(n >= 1) return '$' + n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+    return '$' + n.toPrecision(4);
+  }
+
+  function fmtDate(d){
+    if(!d) return '—';
+    try{
+      var dt = new Date(d);
+      if(isNaN(dt.getTime())) return d;
+      return dt.toISOString().replace('T',' ').slice(0,16) + ' UTC';
+    }catch(e){ return d; }
+  }
+
+  function esc(str){
+    if(!str) return '';
+    var d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  window.copyHash = function(hash, el){
+    navigator.clipboard.writeText(hash).catch(function(){});
+    if(el.tagName === 'BUTTON'){
+      el.textContent = '✓ Copied';
+      el.classList.add('copied');
+      setTimeout(function(){ el.textContent = 'Copy'; el.classList.remove('copied'); }, 1800);
+    } else {
+      var orig = el.textContent;
+      el.textContent = '✓ copied';
+      el.style.color = 'var(--green)';
+      setTimeout(function(){ el.textContent = orig; el.style.color = ''; }, 1200);
+    }
+  };
+
+  var params = new URLSearchParams(window.location.search);
+  var q = params.get("q") || params.get("id") || params.get("symbol") || "";
+  if(q){ input.value = q; doVerify(); }
+
+})();
+</script>
+</body>
+</html>

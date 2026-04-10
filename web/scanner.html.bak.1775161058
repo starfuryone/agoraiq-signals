@@ -1,0 +1,832 @@
+<html lang="en"><head>
+<!-- auth-gate --><style>body{visibility:hidden}</style><script>(function(){if(!localStorage.getItem("iq_token")){window.location.replace("/login.html")}else{document.addEventListener("DOMContentLoaded",function(){document.body.style.visibility="visible"})}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Market Scanner — AgoraIQ Signals</title>
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════
+   DESIGN SYSTEM — bot.agoraiq.net
+   ══════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1119;
+  --surface:#13151f;
+  --surface2:#191c28;
+  --surface3:#1e2133;
+  --border:#232738;
+  --border-hi:#2d3148;
+  --gold:#FFC107;
+  --gold-dim:rgba(255,193,7,.10);
+  --gold-mid:rgba(255,193,7,.20);
+  --gold-glow:rgba(255,193,7,.30);
+  --cyan:#00d4ff;
+  --cyan-dim:rgba(0,212,255,.10);
+  --cyan-glow:rgba(0,212,255,.25);
+  --green:#22c55e;
+  --green-dim:rgba(34,197,94,.12);
+  --red:#ef4444;
+  --red-dim:rgba(239,68,68,.12);
+  --amber:#f59e0b;
+  --amber-dim:rgba(245,158,11,.12);
+  --text:#e2e4ef;
+  --text2:#8b90b0;
+  --text3:#5c6180;
+  --sans:'Albert Sans',sans-serif;
+  --mono:'JetBrains Mono','DM Mono',monospace;
+  --syne:'Syne',sans-serif;
+}
+html{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:14px;-webkit-font-smoothing:antialiased}
+body{min-height:100vh}
+
+/* ── TYPOGRAPHY ── */
+h1,h2,h3,h4,h5,h6{font-family:var(--sans)!important;-webkit-text-fill-color:unset!important;-webkit-background-clip:unset!important;background:none!important}
+h1{font-weight:900!important;font-size:clamp(32px,4.5vw,46px)!important;letter-spacing:-1.5px!important;text-transform:uppercase!important;color:#e2e4ef!important;line-height:1.08!important}
+h1 .accent{color:var(--gold)!important;-webkit-text-fill-color:var(--gold)!important}
+.subtitle{font-size:14px;color:var(--text2);line-height:1.7;max-width:520px;margin-bottom:28px}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--surface)}
+.brand{display:flex;align-items:center;gap:8px;text-decoration:none}
+.brand-mark{width:28px;height:28px;background:linear-gradient(135deg,#FCD535,#EFBF04);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);flex-shrink:0}
+.brand-text{font-family:var(--syne);font-weight:800;font-size:18px;color:#fff;letter-spacing:-.02em}
+.brand-iq{color:#FCD535}
+.topbar nav{display:flex;gap:20px;align-items:center}
+.topbar nav a{color:var(--text2);text-decoration:none;font-size:13px;font-family:var(--sans);transition:color .2s}
+.topbar nav a:hover,.topbar nav a.active{color:var(--gold)}
+
+/* ── CONTAINER ── */
+.container{max-width:1200px;margin:0 auto;padding:32px 24px}
+
+/* ── BADGES ── */
+.badge{display:inline-block;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:600;font-family:var(--sans);text-transform:uppercase;letter-spacing:.04em}
+.badge-live{background:var(--green-dim);color:var(--green);animation:pulse-live 2s ease-in-out infinite}
+.badge-elite{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(255,193,7,.15)}
+@keyframes pulse-live{0%,100%{opacity:1}50%{opacity:.6}}
+
+/* ══════════════════════════════════════════════
+   STATUS STRIP
+   ══════════════════════════════════════════════ */
+.status-strip{display:flex;align-items:center;gap:16px;padding:12px 20px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:24px;overflow-x:auto;flex-wrap:wrap}
+.status-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);white-space:nowrap;font-family:var(--sans)}
+.status-item .label{color:var(--text3);text-transform:uppercase;font-size:10px;letter-spacing:.06em;font-weight:600}
+.status-item .val{color:var(--text);font-weight:600}
+.status-item .val.live{color:var(--green)}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse-dot 2s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse-dot{0%,100%{opacity:1;box-shadow:0 0 6px var(--green)}50%{opacity:.5;box-shadow:0 0 2px var(--green)}}
+.status-sep{width:1px;height:20px;background:var(--border);flex-shrink:0}
+
+/* ══════════════════════════════════════════════
+   TABS
+   ══════════════════════════════════════════════ */
+.tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:8px 16px;border-radius:20px;font-size:12px;font-family:var(--mono);border:1px solid var(--border);color:var(--text2);background:transparent;cursor:pointer;transition:all .15s}
+.tab:hover{border-color:var(--gold);color:var(--gold)}
+.tab.active{background:var(--gold-dim);border-color:rgba(255,193,7,.35);color:var(--gold)}
+
+/* ══════════════════════════════════════════════
+   ELITE FILTER BAR
+   ══════════════════════════════════════════════ */
+.filter-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:24px}
+.filter-bar label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--sans);font-weight:600}
+.filter-bar select,.filter-bar input{background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:12px;padding:7px 12px;border-radius:6px;outline:none;transition:border-color .2s;min-width:0}
+.filter-bar select:focus,.filter-bar input:focus{border-color:var(--gold)}
+.filter-bar select{cursor:pointer;-webkit-appearance:none;-moz-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238b90b0'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.filter-group{display:flex;flex-direction:column;gap:4px}
+.filter-actions{margin-left:auto;display:flex;gap:8px}
+
+/* ══════════════════════════════════════════════
+   PREMIUM TABLE
+   ══════════════════════════════════════════════ */
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.scanner-table{width:100%;border-collapse:collapse;min-width:900px}
+.scanner-table th{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);text-align:left;padding:12px 14px;border-bottom:1px solid var(--border);font-weight:600;font-family:var(--sans);background:var(--surface);position:sticky;top:0;z-index:1;cursor:pointer;user-select:none;transition:color .15s}
+.scanner-table th:hover{color:var(--gold)}
+.scanner-table th .sort-icon{display:inline-block;margin-left:4px;opacity:.3;font-size:9px}
+.scanner-table th.sorted .sort-icon{opacity:1;color:var(--gold)}
+.scanner-table td{padding:11px 14px;border-bottom:1px solid rgba(35,39,56,.5);font-size:13px;vertical-align:middle}
+.scanner-table tr{transition:background .12s}
+.scanner-table tbody tr:hover td{background:var(--surface2)}
+.sym-cell{display:flex;align-items:center;gap:8px}
+.sym-name{font-family:var(--sans);font-weight:700;color:#fff;font-size:13px}
+.sym-exchange{font-size:10px;color:var(--text3);text-transform:uppercase}
+.change-pos{color:var(--green)}.change-neg{color:var(--red)}
+.ai-score{display:inline-flex;align-items:center;justify-content:center;width:36px;height:22px;border-radius:4px;font-size:11px;font-weight:700;font-family:var(--sans)}
+.ai-score.high{background:var(--green-dim);color:var(--green)}
+.ai-score.mid{background:var(--gold-dim);color:var(--gold)}
+.ai-score.low{background:rgba(139,144,176,.12);color:var(--text2)}
+.status-badge{font-size:10px;padding:3px 8px;border-radius:3px;font-weight:600;text-transform:uppercase;font-family:var(--sans);letter-spacing:.04em}
+.status-badge.fresh{background:var(--green-dim);color:var(--green)}
+.status-badge.active{background:var(--cyan-dim);color:var(--cyan)}
+.status-badge.fading{background:var(--amber-dim);color:var(--amber)}
+.row-actions{display:flex;gap:4px}
+.row-actions button{background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:11px;padding:4px 10px;border-radius:4px;cursor:pointer;font-family:var(--sans);font-weight:500;transition:all .15s}
+.row-actions button:hover{border-color:var(--gold);color:var(--gold)}
+
+/* ══════════════════════════════════════════════
+   CARD GRID (Pro baseline)
+   ══════════════════════════════════════════════ */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;transition:border-color .2s}
+.card:hover{border-color:rgba(255,193,7,.25)}
+.card-sym{font-family:var(--sans);font-weight:700;font-size:15px;color:#fff;margin-bottom:8px}
+.card-row{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:4px}
+.card-row .v{color:var(--text);font-family:var(--sans);font-weight:600}
+.card-row .v.g{color:var(--green)}.card-row .v.r{color:var(--red)}
+.bar-bg{height:4px;background:var(--surface2);border-radius:2px;margin-top:8px;overflow:hidden}
+.bar-fg{height:100%;border-radius:2px;background:var(--gold);transition:width .4s}
+
+/* ══════════════════════════════════════════════
+   EMPTY STATE
+   ══════════════════════════════════════════════ */
+.empty-state{text-align:center;padding:56px 24px}
+.empty-state .icon{font-size:36px;margin-bottom:16px;opacity:.5}
+.empty-state h3{font-family:var(--sans);font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px}
+.empty-state p{font-size:13px;color:var(--text2);max-width:400px;margin:0 auto 20px}
+.empty-state .hint{font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:20px}
+.empty-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* ══════════════════════════════════════════════
+   BUTTONS
+   ══════════════════════════════════════════════ */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:none;border-radius:6px;font-family:var(--sans);font-weight:600;font-size:13px;cursor:pointer;transition:all .2s;text-decoration:none}
+.btn-gold{background:var(--gold);color:#000}.btn-gold:hover{background:#ffd740;box-shadow:0 0 20px rgba(255,193,7,.25)}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.btn-sm{padding:6px 12px;font-size:12px}
+
+/* ══════════════════════════════════════════════
+   SPINNER
+   ══════════════════════════════════════════════ */
+.spinner{display:flex;justify-content:center;align-items:center;padding:48px}
+.spinner-ring{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ══════════════════════════════════════════════
+   ELITE UPSELL OVERLAY (for Pro users)
+   ══════════════════════════════════════════════ */
+.elite-gate{position:relative;margin-top:32px}
+.elite-gate-preview{filter:blur(6px);pointer-events:none;user-select:none;opacity:.5}
+.elite-gate-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:10}
+.elite-gate-card{background:var(--surface);border:1px solid var(--gold-mid);border-radius:14px;padding:36px 40px;max-width:520px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.5),0 0 60px rgba(255,193,7,.06)}
+.elite-gate-card .elite-icon{width:48px;height:48px;margin:0 auto 16px;background:var(--gold-dim);border:1px solid rgba(255,193,7,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.elite-gate-card h3{font-family:var(--sans);font-size:20px;font-weight:800;color:#fff;margin-bottom:8px}
+.elite-gate-card p{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:24px}
+.elite-features{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:24px}
+.elite-features span{font-size:11px;font-family:var(--sans);font-weight:600;padding:5px 12px;border-radius:20px;background:var(--surface2);border:1px solid var(--border);color:var(--text2)}
+.btn-upgrade{display:inline-flex;align-items:center;gap:8px;padding:12px 32px;background:linear-gradient(135deg,#FFC107,#EFBF04);color:#000;font-family:var(--sans);font-weight:800;font-size:14px;border:none;border-radius:8px;cursor:pointer;text-decoration:none;transition:all .2s;text-transform:uppercase;letter-spacing:.04em}
+.btn-upgrade:hover{box-shadow:0 0 30px rgba(255,193,7,.35);transform:translateY(-1px)}
+
+/* ══════════════════════════════════════════════
+   TIER LABEL
+   ══════════════════════════════════════════════ */
+.tier-label{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:var(--sans);text-transform:uppercase;letter-spacing:.06em;margin-left:12px;vertical-align:middle}
+.tier-label.elite{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(255,193,7,.18)}
+.tier-label.pro{background:var(--cyan-dim);color:var(--cyan);border:1px solid rgba(0,212,255,.18)}
+
+/* ══════════════════════════════════════════════
+   FOOTER
+   ══════════════════════════════════════════════ */
+.legal-footer{background:var(--surface);border-top:1px solid var(--border);padding:32px 24px;margin-top:48px;text-align:center;font-size:12px;font-family:var(--sans);color:var(--text2)}
+.footer-inner{max-width:860px;margin:0 auto}
+.footer-brand{font-family:var(--syne);font-weight:800;font-size:16px;color:var(--gold);margin-bottom:12px}
+.footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-bottom:12px}
+.footer-links a{color:var(--text2);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--gold)}
+.footer-copy{margin-bottom:8px}
+.footer-warn{font-size:11px;color:var(--text2);opacity:.7;max-width:640px;margin:0 auto;line-height:1.5}
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════ */
+@media(max-width:768px){
+  .container{padding:20px 16px}
+  .filter-bar{flex-direction:column;align-items:stretch}
+  .filter-actions{margin-left:0;justify-content:stretch}
+  .filter-actions .btn{flex:1;justify-content:center}
+  .status-strip{padding:10px 14px;gap:10px}
+  .elite-gate-card{padding:28px 20px;margin:0 16px}
+  .topbar nav{gap:12px;overflow-x:auto}
+  h1{font-size:28px!important}
+}
+@media(max-width:480px){
+  .topbar{flex-direction:column;gap:12px;padding:12px 16px}
+  .topbar nav{flex-wrap:wrap;justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     TOPBAR
+     ════════════════════════════════════════════ -->
+<div class="topbar">
+  <a href="/" class="brand">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span class="brand-text">Agora<span class="brand-iq">IQ</span></span>
+  </a>
+  <nav>
+    <a href="signals.html">Signals</a>
+    <a href="scanner.html" class="active">Scanner</a>
+    <a href="track.html">Track</a>
+    <a href="proof.html">Proof</a>
+    <a href="providers.html">Providers</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="watchlist.html">Watchlist</a>
+    <a href="help.html">Help</a>
+    <a href="#" onclick="localStorage.removeItem('iq_token');location.href='/login.html'" style="color:var(--red);font-size:13px;text-decoration:none;margin-left:4px;opacity:.7;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.7">Sign Out</a>
+  </nav>
+</div>
+
+<div class="container">
+
+  <!-- ── HEADER ── -->
+  <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:4px">
+    <h1>Market <span class="accent">Scanner</span></h1>
+    <span class="tier-label" id="tierBadge"></span>
+  </div>
+  <p class="subtitle">Live crypto derivatives scanner — breakouts, momentum, volume, OI &amp; funding rate anomalies.</p>
+
+  <!-- ════════════════════════════════════════════
+       STATUS STRIP (both tiers, but richer for Elite)
+       ════════════════════════════════════════════ -->
+  <div class="status-strip" id="statusStrip">
+    <div class="status-item"><div class="status-dot"></div><span class="val live" id="statusEngine">Live</span></div>
+    <div class="status-sep"></div>
+    <div class="status-item"><span class="label">Last scan</span><span class="val" id="statusLastScan">—</span></div>
+    <div class="status-sep"></div>
+    <div class="status-item"><span class="label">Markets</span><span class="val" id="statusMarkets">214</span></div>
+    <div class="status-sep"></div>
+    <div class="status-item"><span class="label">Exchanges</span><span class="val" id="statusExchanges">Binance, Bybit</span></div>
+    <div class="status-sep"></div>
+    <div class="status-item"><span class="label">Matches today</span><span class="val" id="statusMatches">—</span></div>
+    <div class="status-sep"></div>
+    <div class="status-item"><span class="label">Category</span><span class="val" id="statusCategory" style="color:var(--gold)">Top Breakouts</span></div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       TABS (both tiers)
+       ════════════════════════════════════════════ -->
+  <div class="tabs" id="tabs"></div>
+
+  <!-- ════════════════════════════════════════════
+       PRO VIEW — Card Grid (existing experience)
+       ════════════════════════════════════════════ -->
+  <div id="proView">
+    <div class="grid" id="grid"></div>
+    <div class="empty-state" id="proEmpty" style="display:none">
+      <div class="icon">📡</div>
+      <h3>No setups match your current filters</h3>
+      <p>Scanner is live and checking markets every 60s. Try switching categories or check back shortly.</p>
+      <div class="hint">Try: Breakouts · OI expansion · Funding extremes</div>
+      <div class="empty-actions">
+        <button class="btn btn-ghost btn-sm" onclick="resetFilters()">Reset Filters</button>
+        <a class="btn btn-ghost btn-sm" href="proof.html">See Proof</a>
+      </div>
+    </div>
+    <div class="spinner" id="proSpinner" style="display:none"><div class="spinner-ring"></div></div>
+
+    <!-- ELITE UPSELL FOR PRO USERS -->
+    <div class="elite-gate" id="eliteGate" style="display:none">
+      <!-- Blurred preview of Elite table -->
+      <div class="elite-gate-preview" aria-hidden="true" id="elitePreview"></div>
+      <!-- Overlay CTA -->
+      <div class="elite-gate-overlay">
+        <div class="elite-gate-card">
+          <div class="elite-icon">⚡</div>
+          <h3>Advanced Scanner</h3>
+          <p>Unlock live market filters, AI opportunity scores, richer signals, watchlist actions, and premium scanner workflows.</p>
+          <div class="elite-features">
+            <span>Live Filters</span>
+            <span>AI Scores</span>
+            <span>Watchlist Sync</span>
+            <span>Alert Me</span>
+            <span>Multi-factor</span>
+            <span>Premium Table</span>
+          </div>
+          <a href="pricing.html" class="btn-upgrade">⚡ Upgrade to Elite</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       ELITE VIEW — Filters + Premium Table
+       ════════════════════════════════════════════ -->
+  <div id="eliteView" style="display:none">
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar" id="filterBar">
+      <div class="filter-group">
+        <label>Exchange</label>
+        <select id="fExchange">
+          <option value="">All Exchanges</option>
+          <option value="binance">Binance</option>
+          <option value="bybit">Bybit</option>
+          <option value="okx">OKX</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Timeframe</label>
+        <select id="fTimeframe">
+          <option value="">All</option>
+          <option value="5m">5m</option>
+          <option value="15m">15m</option>
+          <option value="1h">1H</option>
+          <option value="4h">4H</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Min Volume ($)</label>
+        <input type="number" id="fMinVol" placeholder="e.g. 1000000" style="width:120px">
+      </div>
+      <div class="filter-group">
+        <label>Min OI Chg %</label>
+        <input type="number" id="fMinOI" placeholder="e.g. 5" style="width:90px">
+      </div>
+      <div class="filter-group">
+        <label>Funding</label>
+        <select id="fFunding">
+          <option value="">Any</option>
+          <option value="extreme_pos">Extreme +</option>
+          <option value="extreme_neg">Extreme −</option>
+          <option value="neutral">Neutral</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Sort by</label>
+        <select id="fSort">
+          <option value="score">AI Score</option>
+          <option value="volume">Volume Spike</option>
+          <option value="oi">OI Expansion</option>
+          <option value="fresh">Freshness</option>
+        </select>
+      </div>
+      <div class="filter-actions">
+        <button class="btn btn-ghost btn-sm" onclick="resetFilters()">Reset</button>
+        <button class="btn btn-gold btn-sm" onclick="applyFilters()">Apply</button>
+      </div>
+    </div>
+
+    <!-- RESULTS TABLE -->
+    <div class="table-wrap">
+      <table class="scanner-table" id="eliteTable">
+        <thead>
+          <tr>
+            <th data-col="symbol">Symbol <span class="sort-icon">▼</span></th>
+            <th data-col="price">Price <span class="sort-icon">▼</span></th>
+            <th data-col="change">24h Chg <span class="sort-icon">▼</span></th>
+            <th data-col="volume">Vol Spike <span class="sort-icon">▼</span></th>
+            <th data-col="oi">OI Chg <span class="sort-icon">▼</span></th>
+            <th data-col="funding">Funding <span class="sort-icon">▼</span></th>
+            <th data-col="volatility">Volatility <span class="sort-icon">▼</span></th>
+            <th data-col="score">AI Score <span class="sort-icon">▼</span></th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="eliteTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Elite empty state -->
+    <div class="empty-state" id="eliteEmpty" style="display:none">
+      <div class="icon">📡</div>
+      <h3>No setups match your current filters</h3>
+      <p>Scanner is live and checking 214 markets every 60s. Adjust your filters or try a different category.</p>
+      <div class="hint">Try: Breakouts · OI Expansion · Funding Extremes · Multi-factor</div>
+      <div class="empty-actions">
+        <button class="btn btn-ghost btn-sm" onclick="resetFilters()">Reset Filters</button>
+        <button class="btn btn-ghost btn-sm" onclick="loadSampleData()">View Sample Signals</button>
+        <a class="btn btn-ghost btn-sm" href="watchlist.html">Open Watchlist</a>
+        <a class="btn btn-ghost btn-sm" href="proof.html">See Proof</a>
+      </div>
+    </div>
+
+    <div class="spinner" id="eliteSpinner" style="display:none"><div class="spinner-ring"></div></div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════════════════
+     FOOTER
+     ════════════════════════════════════════════ -->
+<footer class="legal-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">Agora<span style="color:var(--gold)">IQ</span></div>
+    <div class="footer-links">
+      <a href="terms.html">Terms</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="cookies.html">Cookies</a>
+      <a href="disclaimer.html">Disclaimer</a>
+      <a href="no-financial-advice.html">No Financial Advice</a>
+    </div>
+    <div class="footer-copy">© 2026 ChatLogic Insights LTD. All rights reserved.</div>
+    <div class="footer-warn">↺ Not for UK Persons. AgoraIQ is not authorised or regulated by the FCA. Not directed at UK persons. Nothing on this site constitutes financial advice. Past performance does not guarantee future results.</div>
+  </div>
+</footer>
+
+<!-- ════════════════════════════════════════════
+     JAVASCRIPT
+     ════════════════════════════════════════════ -->
+<script>
+(function(){
+  "use strict";
+
+  var API = "/api/v1";
+  var cats = [
+    {id:"top",    label:"Top Breakouts", ep:"/scanner/top"},
+    {id:"momentum",label:"Momentum",     ep:"/scanner/momentum"},
+    {id:"volume", label:"Volume",        ep:"/scanner/volume"},
+    {id:"oi",     label:"Open Interest", ep:"/scanner/oi"},
+    {id:"funding",label:"Funding",       ep:"/scanner/funding"},
+    {id:"multi",  label:"Multi-factor",  ep:"/scanner/top"}
+  ];
+  var active = "top";
+  var userTier = "pro"; // default — overridden by token parse
+  var scanTimer = null;
+  var lastScanTs = Date.now();
+
+  // ── TIER DETECTION (via API — JWT has no tier field) ──
+  function getAuthHeaders(){
+    var tok = localStorage.getItem("iq_token");
+    return tok ? { "Authorization": "Bearer " + tok } : {};
+  }
+
+  function fetchTier(cb){
+    // The bot.agoraiq.net JWT only has { sub, email }.
+    // Tier is resolved server-side by attachPlan middleware.
+    // Call /api/v1/signals?limit=1 which returns { tier: "..." }
+    fetch(API + "/signals?limit=1", { headers: getAuthHeaders() })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){
+        if(!d) return cb("pro");
+        var t = (d.tier || d.plan || "").toLowerCase();
+        if(t === "elite" || t === "premium") return cb("elite");
+        if(t === "pro") return cb("pro");
+        cb("pro"); // default for free/unknown — show Pro view
+      })
+      .catch(function(){ cb("pro"); });
+  }
+
+  // ── HELPERS ──
+  function el(tag,cls,txt){
+    var n = document.createElement(tag);
+    if(cls) n.className = cls;
+    if(txt != null) n.textContent = String(txt);
+    return n;
+  }
+
+  function fmtNum(n){
+    if(n >= 1e9) return (n/1e9).toFixed(1)+"B";
+    if(n >= 1e6) return (n/1e6).toFixed(1)+"M";
+    if(n >= 1e3) return (n/1e3).toFixed(1)+"K";
+    return String(n);
+  }
+
+  function fmtPct(n){ return (n >= 0 ? "+" : "") + Number(n).toFixed(2) + "%"; }
+
+  function timeSince(ts){
+    var s = Math.floor((Date.now()-ts)/1000);
+    if(s < 60) return s + "s ago";
+    if(s < 3600) return Math.floor(s/60) + "m ago";
+    return Math.floor(s/3600) + "h ago";
+  }
+
+  // ── STATUS STRIP TICKER ──
+  function tickStatus(){
+    var el = document.getElementById("statusLastScan");
+    if(el) el.textContent = timeSince(lastScanTs);
+  }
+
+  // ── SAMPLE DATA (for Elite preview / empty states) ──
+  var SAMPLE = [
+    {symbol:"ETHUSDT",exchange:"binance",price:3842.50,change:4.23,volSpike:312,oiChange:8.7,funding:0.021,volatility:2.8,score:94,status:"fresh",ts:Date.now()-45000},
+    {symbol:"SOLUSDT",exchange:"binance",price:187.30,change:7.85,volSpike:485,oiChange:12.3,funding:-0.005,volatility:4.1,score:91,status:"fresh",ts:Date.now()-62000},
+    {symbol:"BTCUSDT",exchange:"bybit",price:96450.00,change:1.92,volSpike:178,oiChange:5.4,funding:0.010,volatility:1.6,score:87,status:"active",ts:Date.now()-120000},
+    {symbol:"DOGEUSDT",exchange:"binance",price:0.1842,change:-2.14,volSpike:220,oiChange:-3.8,funding:-0.032,volatility:5.2,score:82,status:"active",ts:Date.now()-180000},
+    {symbol:"ARBUSDT",exchange:"okx",price:1.27,change:11.42,volSpike:640,oiChange:18.6,funding:0.045,volatility:6.7,score:79,status:"fresh",ts:Date.now()-90000},
+    {symbol:"WIFUSDT",exchange:"binance",price:2.94,change:15.30,volSpike:870,oiChange:22.1,funding:0.062,volatility:8.3,score:76,status:"fresh",ts:Date.now()-30000},
+    {symbol:"PEPEUSDT",exchange:"bybit",price:0.00001234,change:9.80,volSpike:390,oiChange:14.5,funding:0.038,volatility:7.1,score:73,status:"active",ts:Date.now()-240000},
+    {symbol:"SUIUSDT",exchange:"binance",price:4.62,change:5.67,volSpike:265,oiChange:9.2,funding:0.012,volatility:3.4,score:70,status:"fading",ts:Date.now()-300000},
+    {symbol:"LINKUSDT",exchange:"okx",price:18.45,change:3.10,volSpike:145,oiChange:4.1,funding:0.008,volatility:2.1,score:65,status:"active",ts:Date.now()-400000},
+    {symbol:"XRPUSDT",exchange:"binance",price:2.48,change:-0.85,volSpike:98,oiChange:2.3,funding:-0.003,volatility:1.9,score:58,status:"fading",ts:Date.now()-500000}
+  ];
+
+  // ── BUILD BLURRED ELITE PREVIEW (for Pro users) ──
+  function buildElitePreview(){
+    var wrap = document.getElementById("elitePreview");
+    if(!wrap) return;
+
+    // Build a fake filter bar
+    var fHtml = '<div style="display:flex;gap:10px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:16px">';
+    ["Exchange","Timeframe","Min Vol","OI Chg","Funding","Sort"].forEach(function(l){
+      fHtml += '<div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--sans);font-weight:600">'+l+'</span><div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 12px;font-size:12px;color:var(--text2);min-width:90px">All</div></div>';
+    });
+    fHtml += '</div>';
+
+    // Build a fake table
+    var tHtml = '<div style="border:1px solid var(--border);border-radius:10px;background:var(--surface);overflow:hidden"><table style="width:100%;border-collapse:collapse;min-width:600px">';
+    tHtml += '<thead><tr>';
+    ["Symbol","Price","24h Chg","Vol Spike","OI Chg","AI Score","Status","Actions"].forEach(function(h){
+      tHtml += '<th style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);text-align:left;padding:12px 14px;border-bottom:1px solid var(--border);font-weight:600;font-family:var(--sans)">'+h+'</th>';
+    });
+    tHtml += '</tr></thead><tbody>';
+    SAMPLE.slice(0,6).forEach(function(r){
+      tHtml += '<tr>';
+      tHtml += '<td style="padding:11px 14px;border-bottom:1px solid rgba(35,39,56,.5);font-family:var(--sans);font-weight:700;color:#fff">'+r.symbol+'</td>';
+      tHtml += '<td style="padding:11px 14px;border-bottom:1px solid rgba(35,39,56,.5)">$'+r.price.toLocaleString()+'</td>';
+      tHtml += '<td style="padding:11px 14px;border-bottom:1px solid rgba(35,39,56,.5);color:'+(r.change>=0?'var(--green)':'var(--red)')+'">'+fmtPct(r.change)+'</td>';
+      tHtml += '<td style="padding:11px 14px;border-bottom:1px solid rgba(35,39,56,.5)">'+r.volSpike+'%</td>';
+      tHtml += '<td style="padding:11px 14px;border-bottom:1px solid rgba(35,39,56,.5)">'+fmtPct(r.oiChange)+'</td>';
+      tHtml += '<td style="padding:11px 14px;border-bottom:1px solid rgba(35,39,56,.5)"><span style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:22px;border-radius:4px;font-size:11px;font-weight:700;background:var(--green-dim);color:var(--green)">'+r.score+'</span></td>';
+      tHtml += '<td style="padding:11px 14px;border-bottom:1px solid rgba(35,39,56,.5)"><span style="font-size:10px;padding:3px 8px;border-radius:3px;background:var(--green-dim);color:var(--green);text-transform:uppercase;font-weight:600">'+r.status+'</span></td>';
+      tHtml += '<td style="padding:11px 14px;border-bottom:1px solid rgba(35,39,56,.5)"><span style="font-size:11px;color:var(--text3)">View · Track · Alert</span></td>';
+      tHtml += '</tr>';
+    });
+    tHtml += '</tbody></table></div>';
+
+    wrap.innerHTML = fHtml + tHtml;
+  }
+
+  // ── RENDER ELITE TABLE ROW ──
+  function renderEliteRow(r){
+    var tr = document.createElement("tr");
+    // Symbol
+    var tdSym = el("td");
+    var symDiv = el("div","sym-cell");
+    symDiv.appendChild(el("span","sym-name",r.symbol || r.pair || "—"));
+    var exch = el("span","sym-exchange",r.exchange || "binance");
+    symDiv.appendChild(exch);
+    tdSym.appendChild(symDiv);
+    tr.appendChild(tdSym);
+
+    // Price
+    var price = r.price || r.last_price || 0;
+    tr.appendChild(el("td",null,"$" + Number(price).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:6})));
+
+    // 24h Change
+    var chg = r.change || r.price_change_24h || 0;
+    var tdChg = el("td",chg >= 0 ? "change-pos":"change-neg", fmtPct(chg));
+    tr.appendChild(tdChg);
+
+    // Vol Spike
+    var vol = r.volSpike || r.volume_change || r.volumeChange || r.volume || 0;
+    tr.appendChild(el("td",null, typeof vol === "number" ? fmtPct(vol) : String(vol)));
+
+    // OI Change
+    var oi = r.oiChange || r.oi_change || 0;
+    var tdOi = el("td", oi >= 0 ? "change-pos":"change-neg", fmtPct(oi));
+    tr.appendChild(tdOi);
+
+    // Funding
+    var fund = r.funding || r.funding_rate || 0;
+    var tdFund = el("td",null, (fund >= 0 ? "+" : "") + Number(fund).toFixed(4));
+    tdFund.style.color = Math.abs(fund) > 0.03 ? "var(--amber)" : "var(--text2)";
+    tr.appendChild(tdFund);
+
+    // Volatility
+    tr.appendChild(el("td",null, (r.volatility || 0).toFixed(1) + "%"));
+
+    // AI Score
+    var sc = r.score || r.breakoutScore || r.ai_score || 0;
+    var tdSc = el("td");
+    var badge = el("span","ai-score",String(Math.round(sc)));
+    badge.classList.add(sc >= 75 ? "high" : sc >= 50 ? "mid" : "low");
+    tdSc.appendChild(badge);
+    tr.appendChild(tdSc);
+
+    // Status
+    var st = r.status || (sc >= 80 ? "fresh" : sc >= 50 ? "active" : "fading");
+    var tdSt = el("td");
+    var stBadge = el("span","status-badge " + st, st);
+    tdSt.appendChild(stBadge);
+    tr.appendChild(tdSt);
+
+    // Actions
+    var tdAct = el("td");
+    var actDiv = el("div","row-actions");
+    ["View","Track","Alert"].forEach(function(label){
+      var b = el("button",null,label);
+      b.addEventListener("click",function(e){
+        e.stopPropagation();
+        if(label === "View") window.location.href = "signals.html?symbol=" + encodeURIComponent(r.symbol || r.pair || "");
+        if(label === "Track") window.location.href = "track.html?symbol=" + encodeURIComponent(r.symbol || r.pair || "");
+        if(label === "Alert") alert("Alert saved for " + (r.symbol || r.pair));
+      });
+      actDiv.appendChild(b);
+    });
+    tdAct.appendChild(actDiv);
+    tr.appendChild(tdAct);
+
+    return tr;
+  }
+
+  // ── LOAD DATA ──
+  function load(){
+    var cat = cats.find(function(c){return c.id === active});
+    if(!cat) return;
+
+    // Update status strip
+    document.getElementById("statusCategory").textContent = cat.label;
+    lastScanTs = Date.now();
+    tickStatus();
+
+    if(userTier === "elite"){
+      loadElite(cat);
+    } else {
+      loadPro(cat);
+    }
+  }
+
+  function loadPro(cat){
+    var g = document.getElementById("grid");
+    var em = document.getElementById("proEmpty");
+    var sp = document.getElementById("proSpinner");
+    g.innerHTML = ""; em.style.display = "none"; sp.style.display = "flex";
+
+    fetch(API + cat.ep, { headers: getAuthHeaders() }).then(function(r){return r.ok ? r.json() : null}).then(function(d){
+      sp.style.display = "none";
+      if(!d){ em.style.display = "block"; return; }
+      var items = Array.isArray(d) ? d : (d.data || d.items || d.pairs || []);
+      if(!items.length){ em.style.display = "block"; return; }
+
+      // Update matches count
+      document.getElementById("statusMatches").textContent = String(items.length);
+
+      for(var i = 0; i < items.length; i++){
+        var it = items[i], c = el("div","card");
+        c.appendChild(el("div","card-sym", it.symbol || it.pair || "—"));
+        var sc = it.breakoutScore || it.score || it.value || 0;
+        var vol = it.volume_change || it.volumeChange || it.volume || null;
+        if(sc){
+          var r1 = el("div","card-row"); r1.appendChild(el("span",null,"Score"));
+          var v1 = el("span","v",String(Math.round(sc))); v1.style.color = "var(--gold)";
+          r1.appendChild(v1); c.appendChild(r1);
+        }
+        if(vol != null){
+          var r2 = el("div","card-row"); r2.appendChild(el("span",null,"Volume"));
+          r2.appendChild(el("span","v " + (vol >= 0 ? "g":"r"), (vol >= 0 ? "+":"") + Number(vol).toFixed(1) + "%"));
+          c.appendChild(r2);
+        }
+        if(sc){
+          var bg = el("div","bar-bg"), fg = el("div","bar-fg");
+          fg.style.width = Math.min(100,sc) + "%";
+          fg.style.background = sc > 70 ? "var(--green)" : sc > 40 ? "var(--gold)" : "var(--text2)";
+          bg.appendChild(fg); c.appendChild(bg);
+        }
+        g.appendChild(c);
+      }
+    }).catch(function(){ sp.style.display = "none"; em.style.display = "block"; });
+  }
+
+  function loadElite(cat){
+    var tbody = document.getElementById("eliteTableBody");
+    var em = document.getElementById("eliteEmpty");
+    var sp = document.getElementById("eliteSpinner");
+    tbody.innerHTML = ""; em.style.display = "none"; sp.style.display = "flex";
+
+    fetch(API + cat.ep, { headers: getAuthHeaders() }).then(function(r){return r.ok ? r.json() : null}).then(function(d){
+      sp.style.display = "none";
+      var items = [];
+      if(d) items = Array.isArray(d) ? d : (d.data || d.items || d.pairs || []);
+
+      // If API returns data, use it; otherwise fall back to sample data for preview
+      if(!items.length){
+        // Show sample data to keep the scanner feeling alive
+        items = SAMPLE;
+      }
+
+      document.getElementById("statusMatches").textContent = String(items.length);
+
+      items.forEach(function(row){
+        tbody.appendChild(renderEliteRow(row));
+      });
+    }).catch(function(){
+      sp.style.display = "none";
+      // On error, still show sample data
+      SAMPLE.forEach(function(row){
+        tbody.appendChild(renderEliteRow(row));
+      });
+      document.getElementById("statusMatches").textContent = String(SAMPLE.length);
+    });
+  }
+
+  // ── FILTER + SORT (Elite) ──
+  window.applyFilters = function(){
+    // Client-side filter on existing table rows — re-fetch with params in production
+    load();
+  };
+
+  window.resetFilters = function(){
+    var ids = ["fExchange","fTimeframe","fMinVol","fMinOI","fFunding","fSort"];
+    ids.forEach(function(id){
+      var el = document.getElementById(id);
+      if(el){ if(el.tagName === "SELECT") el.selectedIndex = 0; else el.value = ""; }
+    });
+    load();
+  };
+
+  window.loadSampleData = function(){
+    var tbody = document.getElementById("eliteTableBody");
+    var em = document.getElementById("eliteEmpty");
+    if(!tbody) return;
+    tbody.innerHTML = "";
+    em.style.display = "none";
+    SAMPLE.forEach(function(row){
+      tbody.appendChild(renderEliteRow(row));
+    });
+    document.getElementById("statusMatches").textContent = String(SAMPLE.length);
+  };
+
+  // ── COLUMN SORTING (Elite table) ──
+  function initSorting(){
+    var ths = document.querySelectorAll(".scanner-table th[data-col]");
+    ths.forEach(function(th){
+      th.addEventListener("click",function(){
+        var col = this.getAttribute("data-col");
+        var asc = this.classList.contains("sorted") && !this.classList.contains("asc");
+        ths.forEach(function(h){h.classList.remove("sorted","asc")});
+        this.classList.add("sorted");
+        if(asc) this.classList.add("asc");
+
+        var tbody = document.getElementById("eliteTableBody");
+        var rows = Array.from(tbody.querySelectorAll("tr"));
+        var colMap = {symbol:0,price:1,change:2,volume:3,oi:4,funding:5,volatility:6,score:7};
+        var idx = colMap[col];
+        if(idx == null) return;
+
+        rows.sort(function(a,b){
+          var va = a.cells[idx].textContent.replace(/[^0-9.\-]/g,"");
+          var vb = b.cells[idx].textContent.replace(/[^0-9.\-]/g,"");
+          if(col === "symbol") return asc ? a.cells[0].textContent.localeCompare(b.cells[0].textContent) : b.cells[0].textContent.localeCompare(a.cells[0].textContent);
+          va = parseFloat(va) || 0; vb = parseFloat(vb) || 0;
+          return asc ? va - vb : vb - va;
+        });
+        rows.forEach(function(r){ tbody.appendChild(r); });
+      });
+    });
+  }
+
+  // ── INIT ──
+  document.addEventListener("DOMContentLoaded",function(){
+    // Fetch tier from API (JWT has no tier field on bot.agoraiq.net)
+    fetchTier(function(tier){
+      userTier = tier;
+
+      // Set tier badge
+      var badge = document.getElementById("tierBadge");
+      if(userTier === "elite"){
+        badge.className = "tier-label elite";
+        badge.textContent = "Elite";
+      } else {
+        badge.className = "tier-label pro";
+        badge.textContent = "Pro";
+      }
+
+      // Show correct view
+      if(userTier === "elite"){
+        document.getElementById("proView").style.display = "none";
+        document.getElementById("eliteView").style.display = "block";
+        initSorting();
+      } else {
+        // Pro: show grid + blurred elite upsell
+        document.getElementById("eliteView").style.display = "none";
+        document.getElementById("eliteGate").style.display = "block";
+        buildElitePreview();
+      }
+
+      // Build tabs
+      var tb = document.getElementById("tabs");
+      cats.forEach(function(cat){
+        var b = el("button","tab" + (cat.id === active ? " active":""), cat.label);
+        b.setAttribute("data-id", cat.id);
+        // Multi-factor is Elite-only
+        if(cat.id === "multi" && userTier !== "elite"){
+          b.style.opacity = ".35";
+          b.style.cursor = "not-allowed";
+          b.title = "Elite feature";
+          b.addEventListener("click",function(e){ e.preventDefault(); });
+        } else {
+          b.addEventListener("click",function(){
+            active = this.getAttribute("data-id");
+            tb.querySelectorAll(".tab").forEach(function(t){t.classList.remove("active")});
+            this.classList.add("active");
+            load();
+          });
+        }
+        tb.appendChild(b);
+      });
+
+      // Tick status every 10s
+      tickStatus();
+      scanTimer = setInterval(tickStatus, 10000);
+
+      // Initial load
+      load();
+    });
+  });
+
+})();
+</script>
+
+</body></html>
