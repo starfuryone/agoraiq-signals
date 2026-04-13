@@ -194,13 +194,13 @@ function validateConsent(consent) {
   return { valid: true };
 }
 
-async function persistConsent(botUserId, consent, plan, cycle) {
+async function persistConsent(botUserId, consent, plan, cycle, ip, email) {
   try {
     await db.query(
-      `INSERT INTO consent_log (bot_user_id, version, documents, consented_at, plan, period, created_at)
-       VALUES ($1, $2, $3, $4, $5, $6, NOW())
+      `INSERT INTO consent_log (bot_user_id, version, documents, accepted_at, plan, period, ip_address, email, created_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
        ON CONFLICT DO NOTHING`,
-      [botUserId, consent.version, JSON.stringify(consent.documents), consent.timestamp, plan, cycle]
+      [botUserId, consent.version, JSON.stringify(consent.documents), consent.timestamp, plan, cycle, ip || null, email || null]
     );
   } catch (err) {
     // Log but don't block checkout
@@ -355,7 +355,7 @@ router.post("/checkout", requireAuth, async (req, res) => {
           [plan, cycle, subId]
         );
         await db.query(`UPDATE bot_users SET role = $1 WHERE id = $2`, [plan, req.userId]);
-        await persistConsent(req.userId, consent, plan, cycle);
+        await persistConsent(req.userId, consent, plan, cycle, req.ip, req.userEmail || null);
         invalidateCache(req.userId);
         console.log(`[billing/checkout] ${direction} ${currentTier}/${currentPeriod} → ${plan}/${cycle} for user ${req.userId} (immediate)`);
         const confirmId = generateConfirmationId();
@@ -408,7 +408,7 @@ router.post("/checkout", requireAuth, async (req, res) => {
          WHERE stripe_sub_id = $3`,
         [plan, cycle, subId]
       );
-      await persistConsent(req.userId, consent, plan, cycle);
+      await persistConsent(req.userId, consent, plan, cycle, req.ip, req.userEmail || null);
       invalidateCache(req.userId);
       console.log(`[billing/checkout] ${direction} ${currentTier}/${currentPeriod} → ${plan}/${cycle} for user ${req.userId} (scheduled at ${new Date(effectiveAt * 1000).toISOString()})`);
       const confirmId = generateConfirmationId();
@@ -441,13 +441,13 @@ router.post("/checkout", requireAuth, async (req, res) => {
       customer: customerId,
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${APP_URL()}/pricing.html?session_id={CHECKOUT_SESSION_ID}&status=success`,
+      success_url: `${APP_URL()}/${req.body.source==="telegram"?"success":"welcome"}.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${APP_URL()}/pricing.html?status=cancelled`,
       metadata: { bot_user_id: String(req.userId), plan_tier: plan, billing_period: cycle, consent_version: consent.version },
       subscription_data: { metadata: { bot_user_id: String(req.userId), plan_tier: plan, billing_period: cycle }, trial_period_days: 1 },
     });
 
-    await persistConsent(req.userId, consent, plan, cycle);
+    await persistConsent(req.userId, consent, plan, cycle, req.ip, req.userEmail || null);
     txlog.record("checkout_new", {
       botUserId: req.userId, stripeCustomerId: customerId,
       stripeSessionId: session.id,
@@ -535,8 +535,12 @@ async function webhookHandler(req, res) {
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!sig || !secret) return res.status(400).json({ error: "Missing signature" });
 
+  console.log("[stripe/webhook-debug] secret:", secret?.substring(0,10), "bodyType:", typeof req.body, "isBuffer:", Buffer.isBuffer(req.body), "bodyLen:", req.body?.length);
+
   let event;
   try {
+    console.log("[stripe/webhook-debug2] sig header:", sig.substring(0, 80));
+    console.log("[stripe/webhook-debug2] body preview:", req.body.toString().substring(0, 100));
     event = getStripe().webhooks.constructEvent(req.body, sig, secret);
   } catch (err) {
     console.error("[stripe/webhook] sig failed:", err.message);
@@ -572,6 +576,54 @@ async function webhookHandler(req, res) {
             plan, period,
             stripeEventId: event.id,
           });
+        } else if (!uid && s.subscription && s.customer) {
+          // ── Cold visitor: create account from Stripe email ──
+          try {
+            const customer = await getStripe().customers.retrieve(s.customer);
+            const email = customer.email || s.customer_details?.email;
+            if (!email) { console.warn("[stripe/webhook] cold visitor: no email found"); break; }
+
+            // Check if user already exists
+            let userRow = await db.query("SELECT id FROM bot_users WHERE email = $1", [email]);
+            let newUserId;
+            if (userRow.rows.length > 0) {
+              newUserId = userRow.rows[0].id;
+              await db.query("UPDATE bot_users SET stripe_customer_id = $1 WHERE id = $2", [s.customer, newUserId]);
+            } else {
+              // Create user with random password (they'll use magic link or reset)
+              const crypto = require("crypto");
+              const tempPass = crypto.randomBytes(16).toString("hex");
+              const bcrypt = require("bcryptjs");
+              const hash = await bcrypt.hash(tempPass, 10);
+              const ins = await db.query(
+                "INSERT INTO bot_users (email, password_hash, stripe_customer_id) VALUES ($1, $2, $3) RETURNING id",
+                [email, hash, s.customer]
+              );
+              newUserId = ins.rows[0].id;
+              console.log(`[stripe/webhook] cold visitor: created bot_user ${newUserId} for ${email}`);
+            }
+
+            const period = await resolveStripePeriod(s.subscription, null);
+            await activateSub(newUserId, plan, s.subscription, period);
+            console.log(`[stripe/webhook] cold visitor: activated ${plan}/${period || "?"} for bot_user ${newUserId} (${email})`);
+
+            const confirmId = generateConfirmationId();
+            // Send welcome email
+            await sendEmailConfirmation(email, {
+              confirmationId: confirmId, action: "New Subscription",
+              plan, period: period || "monthly",
+            });
+            console.log(`[stripe/webhook] cold visitor: welcome email sent to ${email}`);
+
+            txlog.record("webhook_cold_visitor_activated", {
+              botUserId: newUserId, email,
+              stripeSubId: s.subscription, stripeCustomerId: s.customer,
+              confirmationId: confirmId, plan, period,
+              stripeEventId: event.id,
+            });
+          } catch (coldErr) {
+            console.error("[stripe/webhook] cold visitor error:", coldErr.message);
+          }
         }
         break;
       }
@@ -807,5 +859,34 @@ function invalidateCache(botUserId) {
     if (redis) redis.del(`sub:${botUserId}`).catch(() => {});
   } catch {}
 }
+
+
+
+// ── Public checkout for cold visitors (no auth required) ──
+router.post("/public-checkout", async (req, res) => {
+  try {
+    const { plan, period, consent } = req.body;
+    const cycle = period === "yearly" ? "yearly" : "monthly";
+    const priceId = PRICE_MAP[plan]?.[cycle]?.();
+    if (!priceId) return res.status(400).json({ error: "Invalid plan/period" });
+
+    const cc = validateConsent(consent);
+    if (!cc.valid) return res.status(400).json({ error: cc.reason });
+
+    const session = await getStripe().checkout.sessions.create({
+      mode: "subscription",
+      line_items: [{ price: priceId, quantity: 1 }],
+      success_url: `${APP_URL()}/welcome.html?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${APP_URL()}/pricing.html?status=cancelled`,
+      metadata: { plan_tier: plan, billing_period: cycle, consent_version: consent.version, source: "web_cold" },
+      subscription_data: { metadata: { plan_tier: plan, billing_period: cycle }, trial_period_days: 1 },
+    });
+
+    res.json({ url: session.url, sessionId: session.id });
+  } catch (err) {
+    console.error("[billing/public-checkout]", err.message);
+    res.status(500).json({ error: "Checkout failed" });
+  }
+});
 
 module.exports = { router, webhookHandler, resolveEntitlement };

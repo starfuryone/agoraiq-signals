@@ -1,22 +1,7 @@
 node_modules/
-.venv/
-*.log
-*.bak
-*.h1bak
-*.nukebak
-*.finalbak
-*.fullbak
-*.font-bak
 .env
-.env.*
+*.log
 dist/
-*.db
-*.sqlite
-.pm2/
-
-# local secrets
-api/.env
-.env
-*.env
-api/logs/
-*.log
+build/
+.DS_Store
+api/ecosystem.config.js

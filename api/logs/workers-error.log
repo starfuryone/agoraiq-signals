@@ -128,3 +128,95 @@
 2026-04-09 17:24:32: [price] Binance failed for PDAUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=PDAUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
 2026-04-10 05:19:28: [price] Binance failed for ERNUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=ERNUSDT failed, reason: Proxy connection timed out
 2026-04-10 09:13:03: [price] Binance failed for IOTAUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=IOTAUSDT failed, reason: Proxy connection timed out
+2026-04-11 02:08:10: [price] Binance failed for NBSUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=NBSUSDT failed, reason: Proxy connection timed out
+2026-04-11 08:36:47: [price] Binance failed for DNTUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=DNTUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
+2026-04-11 10:15:44: [price] Binance failed for ADADOWNUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=ADADOWNUSDT failed, reason: Proxy connection timed out
+2026-04-12 06:53:56: [price] Binance failed for AXLUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=AXLUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
+2026-04-12 14:29:42: [telegram] send error to 7640489257: fetch failed
+2026-04-12 15:15:03: [telegram] send error to 7640489257: fetch failed
+2026-04-12 17:43:44: [telegram] send error to 7640489257: fetch failed
+2026-04-12 21:25:33: [telegram] send failed to 7640489257: Too Many Requests: retry after 271
+2026-04-12 21:25:34: [telegram] send failed to 7640489257: Too Many Requests: retry after 270
+2026-04-12 21:25:34: [telegram] send failed to 7640489257: Too Many Requests: retry after 270
+2026-04-12 21:25:34: [telegram] send failed to 7640489257: Too Many Requests: retry after 270
+2026-04-12 21:25:34: [telegram] send failed to 7640489257: Too Many Requests: retry after 270
+2026-04-12 21:25:35: [telegram] send failed to 7640489257: Too Many Requests: retry after 269
+2026-04-12 21:25:35: [telegram] send failed to 7640489257: Too Many Requests: retry after 269
+2026-04-12 21:25:35: [telegram] send failed to 7640489257: Too Many Requests: retry after 269
+2026-04-12 21:25:35: [telegram] send failed to 7640489257: Too Many Requests: retry after 269
+2026-04-12 21:25:36: [telegram] send failed to 7640489257: Too Many Requests: retry after 268
+2026-04-12 21:25:36: [telegram] send failed to 7640489257: Too Many Requests: retry after 268
+2026-04-12 21:25:36: [telegram] send failed to 7640489257: Too Many Requests: retry after 268
+2026-04-12 21:25:36: [telegram] send failed to 7640489257: Too Many Requests: retry after 268
+2026-04-12 21:25:37: [telegram] send failed to 7640489257: Too Many Requests: retry after 267
+2026-04-12 21:25:37: [telegram] send failed to 7640489257: Too Many Requests: retry after 267
+2026-04-12 21:25:37: [telegram] send failed to 7640489257: Too Many Requests: retry after 267
+2026-04-12 21:25:37: [telegram] send failed to 7640489257: Too Many Requests: retry after 267
+2026-04-12 21:25:38: [telegram] send failed to 7640489257: Too Many Requests: retry after 266
+2026-04-12 21:25:38: [telegram] send failed to 7640489257: Too Many Requests: retry after 266
+2026-04-12 21:25:38: [telegram] send failed to 7640489257: Too Many Requests: retry after 266
+2026-04-12 21:25:38: [telegram] send failed to 7640489257: Too Many Requests: retry after 266
+2026-04-12 21:25:39: [telegram] send failed to 7640489257: Too Many Requests: retry after 266
+2026-04-12 21:25:39: [telegram] send failed to 7640489257: Too Many Requests: retry after 265
+2026-04-12 21:25:39: [telegram] send failed to 7640489257: Too Many Requests: retry after 265
+2026-04-12 21:25:39: [telegram] send failed to 7640489257: Too Many Requests: retry after 265
+2026-04-12 21:25:40: [telegram] send failed to 7640489257: Too Many Requests: retry after 265
+2026-04-12 22:30:33: [telegram] send failed to 7640489257: Too Many Requests: retry after 271
+2026-04-12 22:30:33: [telegram] send failed to 7640489257: Too Many Requests: retry after 271
+2026-04-12 22:30:34: [telegram] send failed to 7640489257: Too Many Requests: retry after 270
+2026-04-12 22:30:34: [telegram] send failed to 7640489257: Too Many Requests: retry after 270
+2026-04-12 22:30:34: [telegram] send failed to 7640489257: Too Many Requests: retry after 270
+2026-04-12 22:30:34: [telegram] send failed to 7640489257: Too Many Requests: retry after 270
+2026-04-12 22:30:35: [telegram] send failed to 7640489257: Too Many Requests: retry after 269
+2026-04-12 22:30:35: [telegram] send failed to 7640489257: Too Many Requests: retry after 269
+2026-04-12 22:30:35: [telegram] send failed to 7640489257: Too Many Requests: retry after 269
+2026-04-12 22:30:35: [telegram] send failed to 7640489257: Too Many Requests: retry after 269
+2026-04-12 22:30:36: [telegram] send failed to 7640489257: Too Many Requests: retry after 268
+2026-04-12 22:30:36: [telegram] send failed to 7640489257: Too Many Requests: retry after 268
+2026-04-12 22:30:36: [telegram] send failed to 7640489257: Too Many Requests: retry after 268
+2026-04-12 22:30:36: [telegram] send failed to 7640489257: Too Many Requests: retry after 268
+2026-04-12 22:30:37: [telegram] send failed to 7640489257: Too Many Requests: retry after 267
+2026-04-12 22:30:37: [telegram] send failed to 7640489257: Too Many Requests: retry after 267
+2026-04-12 22:30:37: [telegram] send failed to 7640489257: Too Many Requests: retry after 267
+2026-04-12 22:30:37: [telegram] send failed to 7640489257: Too Many Requests: retry after 267
+2026-04-12 22:30:38: [telegram] send failed to 7640489257: Too Many Requests: retry after 266
+2026-04-12 22:30:38: [telegram] send failed to 7640489257: Too Many Requests: retry after 266
+2026-04-12 22:30:38: [telegram] send failed to 7640489257: Too Many Requests: retry after 266
+2026-04-12 22:30:38: [telegram] send failed to 7640489257: Too Many Requests: retry after 266
+2026-04-12 22:30:39: [telegram] send failed to 7640489257: Too Many Requests: retry after 265
+2026-04-12 22:30:39: [telegram] send failed to 7640489257: Too Many Requests: retry after 265
+2026-04-12 22:30:39: [telegram] send failed to 7640489257: Too Many Requests: retry after 265
+2026-04-12 22:30:40: [telegram] send failed to 7640489257: Too Many Requests: retry after 265
+2026-04-12 22:30:40: [telegram] send failed to 7640489257: Too Many Requests: retry after 264
+2026-04-12 22:30:40: [telegram] send failed to 7640489257: Too Many Requests: retry after 264
+2026-04-12 22:30:40: [telegram] send failed to 7640489257: Too Many Requests: retry after 264
+2026-04-12 23:30:33: [telegram] send failed to 7640489257: Too Many Requests: retry after 271
+2026-04-12 23:30:34: [telegram] send failed to 7640489257: Too Many Requests: retry after 271
+2026-04-12 23:30:34: [telegram] send failed to 7640489257: Too Many Requests: retry after 270
+2026-04-12 23:30:34: [telegram] send failed to 7640489257: Too Many Requests: retry after 270
+2026-04-12 23:30:34: [telegram] send failed to 7640489257: Too Many Requests: retry after 270
+2026-04-12 23:30:35: [telegram] send failed to 7640489257: Too Many Requests: retry after 270
+2026-04-12 23:30:35: [telegram] send failed to 7640489257: Too Many Requests: retry after 269
+2026-04-12 23:30:35: [telegram] send failed to 7640489257: Too Many Requests: retry after 269
+2026-04-12 23:30:35: [telegram] send failed to 7640489257: Too Many Requests: retry after 269
+2026-04-12 23:30:36: [telegram] send failed to 7640489257: Too Many Requests: retry after 269
+2026-04-12 23:30:36: [telegram] send failed to 7640489257: Too Many Requests: retry after 268
+2026-04-12 23:30:36: [telegram] send failed to 7640489257: Too Many Requests: retry after 268
+2026-04-12 23:30:36: [telegram] send failed to 7640489257: Too Many Requests: retry after 268
+2026-04-12 23:30:36: [telegram] send failed to 7640489257: Too Many Requests: retry after 268
+2026-04-12 23:30:37: [telegram] send failed to 7640489257: Too Many Requests: retry after 267
+2026-04-12 23:30:37: [telegram] send failed to 7640489257: Too Many Requests: retry after 267
+2026-04-12 23:30:37: [telegram] send failed to 7640489257: Too Many Requests: retry after 267
+2026-04-13 00:30:34: [telegram] send failed to 7640489257: Too Many Requests: retry after 271
+2026-04-13 00:30:34: [telegram] send failed to 7640489257: Too Many Requests: retry after 270
+2026-04-13 00:30:34: [telegram] send failed to 7640489257: Too Many Requests: retry after 270
+2026-04-13 00:30:34: [telegram] send failed to 7640489257: Too Many Requests: retry after 270
+2026-04-13 00:30:35: [telegram] send failed to 7640489257: Too Many Requests: retry after 270
+2026-04-13 00:30:35: [telegram] send failed to 7640489257: Too Many Requests: retry after 269
+2026-04-13 00:30:35: [telegram] send failed to 7640489257: Too Many Requests: retry after 269
+2026-04-13 00:30:35: [telegram] send failed to 7640489257: Too Many Requests: retry after 269
+2026-04-13 00:30:36: [telegram] send failed to 7640489257: Too Many Requests: retry after 269
+2026-04-13 00:30:36: [telegram] send failed to 7640489257: Too Many Requests: retry after 268
+2026-04-13 00:30:36: [telegram] send failed to 7640489257: Too Many Requests: retry after 268
+2026-04-13 03:48:02: [price] Binance failed for ETHUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT failed, reason: Client network socket disconnected before secure TLS connection was established
+2026-04-13 15:05:17: [price] Binance failed for LITUSDT: request to https://api.binance.com/api/v3/ticker/price?symbol=LITUSDT failed, reason: Client network socket disconnected before secure TLS connection was established

@@ -1,0 +1,672 @@
+<html lang="en"><head>
+<!-- auth-gate --><style>body{visibility:hidden}</style><script>(function(){if(!localStorage.getItem("iq_token")){window.location.replace("/login.html?next="+encodeURIComponent(location.href))}else{document.addEventListener("DOMContentLoaded",function(){document.body.style.visibility="visible"})}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — AgoraIQ Signals</title>
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0f1119; --surface: #13151f; --surface2: #191c28; --surface3: #1e2133;
+  --border: #232738; --border-hi: #2d3148;
+  --gold: #FFC107; --gold-dim: rgba(255,193,7,.10); --gold-mid: rgba(255,193,7,.20);
+  --gold-glow: rgba(255,193,7,.30); --gold-dark: #EFBF04;
+  --cyan: #00d4ff; --cyan-dim: rgba(0,212,255,.10); --cyan-glow: rgba(0,212,255,.25);
+  --green: #22c55e; --green-dim: rgba(34,197,94,.12);
+  --red: #ef4444; --red-dim: rgba(239,68,68,.12);
+  --amber: #f59e0b; --amber-dim: rgba(245,158,11,.12);
+  --purple: #a78bfa; --purple-dim: rgba(167,139,250,.10);
+  --text: #e2e4ef; --text2: #8b90b0; --text3: #5c6180; --label: #8b90b0;
+  --syne: 'Syne', sans-serif; --mono: 'JetBrains Mono', 'DM Mono', monospace;
+  --sans: 'Albert Sans', sans-serif;
+}
+html { background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 14px; -webkit-font-smoothing: antialiased; }
+body { min-height: 100vh; }
+h1,h2,h3,h4,h5,h6 { font-family: var(--sans); font-weight: 900; line-height: 1.08; letter-spacing: -.02em; }
+h1 { font-size: clamp(28px,4.5vw,42px); letter-spacing: -1.5px; text-transform: uppercase; margin-bottom: 6px; }
+h1 .accent { color: var(--gold); }
+.subtitle { font-size: 13px; color: var(--text2); line-height: 1.7; max-width: 540px; margin-bottom: 20px; font-family: var(--sans); }
+.subtitle strong { color: var(--text); }
+
+/* === Topbar === */
+.topbar { display:flex; align-items:center; justify-content:space-between; padding:14px 24px; border-bottom:1px solid var(--border); background:var(--surface); }
+.brand { display:flex; align-items:center; gap:8px; text-decoration:none; }
+.brand-mark { width:28px; height:28px; background:linear-gradient(135deg,#FCD535,#EFBF04); clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); flex-shrink:0; }
+.brand-text { font-family:var(--syne); font-weight:800; font-size:18px; color:#fff; letter-spacing:-.02em; }
+.brand-iq { color:#FCD535; }
+.topbar nav { display:flex; gap:20px; }
+.topbar nav a { color:var(--text2); text-decoration:none; font-size:13px; font-family:var(--sans); transition:color .2s; }
+.topbar nav a:hover { color:var(--gold); }
+.topbar nav a.active { color:var(--gold); font-weight:600; }
+
+.container { max-width:1100px; margin:0 auto; padding:32px 24px 60px; }
+
+/* === Status bar === */
+.status-bar { display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:20px; padding:12px 18px; background:var(--surface); border:1px solid var(--border); border-radius:8px; }
+.tier-badge { font-family:var(--sans); font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:.08em; padding:4px 12px; border-radius:4px; }
+.tier-badge.pro { background:var(--cyan-dim); color:var(--cyan); border:1px solid rgba(0,212,255,.25); }
+.tier-badge.elite { background:var(--gold-dim); color:var(--gold); border:1px solid var(--gold-mid); }
+.tier-badge.trial { background:var(--amber-dim); color:var(--amber); border:1px solid rgba(245,158,11,.25); }
+.tier-badge.free { background:var(--surface2); color:var(--text3); border:1px solid var(--border); }
+.user-email { font-size:13px; color:var(--text2); font-family:var(--sans); }
+.spacer { flex:1; }
+.tg-status { font-size:12px; font-family:var(--sans); display:flex; align-items:center; gap:5px; }
+.tg-status.linked { color:var(--green); }
+.tg-status.unlinked { color:var(--amber); }
+.tg-status a { color:inherit; text-decoration:underline; font-size:12px; }
+.logout-btn { font-size:12px; color:var(--text3); font-family:var(--sans); cursor:pointer; background:none; border:1px solid var(--border); padding:5px 14px; border-radius:5px; transition:all .2s; }
+.logout-btn:hover { color:var(--red); border-color:var(--red); }
+.help-btn { display:inline-flex; align-items:center; gap:5px; font-size:12px; color:var(--cyan); font-family:var(--sans); font-weight:600; cursor:pointer; background:var(--cyan-dim); border:1px solid rgba(0,212,255,.2); padding:5px 14px; border-radius:5px; text-decoration:none; transition:all .2s; }
+.help-btn:hover { background:rgba(0,212,255,.15); border-color:var(--cyan); }
+
+/* === Live proof strip === */
+.live-strip { display:flex; gap:0; overflow-x:auto; margin-bottom:20px; border:1px solid var(--border); border-radius:8px; background:var(--surface); }
+.live-strip::-webkit-scrollbar { display:none; }
+.live-strip-item { display:flex; align-items:center; gap:10px; padding:12px 18px; border-right:1px solid var(--border); white-space:nowrap; min-width:0; flex-shrink:0; }
+.live-strip-item:last-child { border-right:none; }
+.live-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; animation:pulse-dot 2s ease-in-out infinite; }
+.live-dot.win { background:var(--green); box-shadow:0 0 8px var(--green); }
+.live-dot.loss { background:var(--red); box-shadow:0 0 8px var(--red); }
+.live-dot.open { background:var(--gold); box-shadow:0 0 8px var(--gold); }
+@keyframes pulse-dot { 0%,100% { opacity:1; } 50% { opacity:.4; } }
+.live-sym { font-weight:600; font-size:13px; color:var(--text); }
+.live-dir { font-family:var(--sans); font-weight:700; font-size:10px; text-transform:uppercase; padding:2px 6px; border-radius:3px; }
+.live-dir.long { background:var(--green-dim); color:var(--green); }
+.live-dir.short { background:var(--red-dim); color:var(--red); }
+.live-result { font-weight:600; font-size:13px; }
+.live-result.pos { color:var(--green); }
+.live-result.neg { color:var(--red); }
+.live-status { font-size:10px; font-family:var(--sans); color:var(--text3); font-weight:600; text-transform:uppercase; }
+.live-status.tp { color:var(--green); }
+.live-status.open { color:var(--gold); }
+.live-arrow { color:var(--text3); font-size:11px; opacity:.5; }
+.live-placeholder { padding:14px 20px; color:var(--text3); font-size:12px; font-family:var(--sans); width:100%; text-align:center; }
+
+/* === Conversion bar === */
+.conversion-bar { display:none; padding:14px 20px; margin-bottom:20px; border-radius:8px; border:1px solid rgba(255,193,7,.25); background:linear-gradient(135deg, rgba(255,193,7,.06), rgba(255,193,7,.02)); text-align:center; }
+.conversion-bar .cv-text { font-size:13px; color:var(--text); font-family:var(--sans); margin-bottom:8px; }
+.conversion-bar .cv-text strong { color:var(--gold); }
+.conversion-bar .cv-cta { display:inline-block; padding:8px 24px; border-radius:6px; background:linear-gradient(135deg,#FCD535,#EFBF04); color:#000; font-family:var(--sans); font-weight:700; font-size:13px; text-decoration:none; letter-spacing:-.01em; transition:transform .15s, box-shadow .15s; }
+.conversion-bar .cv-cta:hover { transform:translateY(-1px); box-shadow:0 4px 16px rgba(255,193,7,.3); }
+
+/* === Daily Edge + Proof === */
+.metrics-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
+.metric-box { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:18px 20px; }
+.metric-box .mb-title { font-family:var(--sans); font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--text3); margin-bottom:14px; display:flex; align-items:center; gap:6px; }
+.metric-box .mb-title .dot { width:6px; height:6px; border-radius:50%; background:var(--green); animation:pulse-dot 2s infinite; }
+.metric-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.m-stat .m-val { font-family:var(--mono); font-weight:600; font-size:22px; color:var(--text); display:block; line-height:1.2; }
+.m-stat .m-val.green { color:var(--green); }
+.m-stat .m-val.gold { color:var(--gold); }
+.m-stat .m-val.cyan { color:var(--cyan); }
+.m-stat .m-val.red { color:var(--red); }
+.m-stat .m-lbl { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:.06em; font-family:var(--sans); font-weight:600; }
+
+/* === Section headers === */
+.section-hdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+.section-hdr .sh-title { font-family:var(--sans); font-weight:700; font-size:12px; text-transform:uppercase; letter-spacing:.1em; color:var(--text3); }
+.section-hdr .sh-link { font-size:12px; font-family:var(--sans); color:var(--cyan); text-decoration:none; font-weight:600; }
+.section-hdr .sh-link:hover { text-decoration:underline; }
+
+/* === Signal feed (rich) === */
+.signal-feed { background:var(--surface); border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:28px; }
+.sf-row { display:grid; grid-template-columns:1fr auto; gap:12px; align-items:start; padding:14px 18px; border-bottom:1px solid var(--border); transition:background .15s; cursor:pointer; text-decoration:none; color:inherit; }
+.sf-row:last-child { border-bottom:none; }
+.sf-row:hover { background:var(--surface2); }
+.sf-left { display:flex; flex-direction:column; gap:4px; }
+.sf-head { display:flex; align-items:center; gap:10px; }
+.sf-sym { font-weight:600; font-size:14px; color:var(--text); }
+.sf-dir { font-family:var(--sans); font-weight:700; font-size:10px; text-transform:uppercase; padding:2px 7px; border-radius:3px; }
+.sf-dir.long { background:var(--green-dim); color:var(--green); }
+.sf-dir.short { background:var(--red-dim); color:var(--red); }
+.sf-score { font-size:10px; font-family:var(--sans); font-weight:600; padding:2px 6px; border-radius:3px; }
+.sf-score.high { background:var(--green-dim); color:var(--green); }
+.sf-score.mid { background:var(--amber-dim); color:var(--amber); }
+.sf-score.low { background:var(--surface2); color:var(--text3); }
+.sf-detail { font-size:12px; color:var(--text2); font-family:var(--mono); display:flex; gap:14px; flex-wrap:wrap; }
+.sf-detail span { display:flex; align-items:center; gap:4px; }
+.sf-detail .lbl { color:var(--text3); font-family:var(--sans); font-size:10px; text-transform:uppercase; }
+.sf-detail .val { color:var(--text); }
+.sf-detail .val.green { color:var(--green); }
+.sf-detail .val.red { color:var(--red); }
+.sf-detail .val.gold { color:var(--gold); }
+.sf-right { display:flex; flex-direction:column; align-items:flex-end; gap:4px; }
+.sf-status { font-size:10px; font-family:var(--sans); font-weight:700; text-transform:uppercase; letter-spacing:.04em; padding:3px 8px; border-radius:3px; }
+.sf-status.tp { background:var(--green-dim); color:var(--green); }
+.sf-status.sl { background:var(--red-dim); color:var(--red); }
+.sf-status.open { background:var(--gold-dim); color:var(--gold); }
+.sf-status.expired { background:var(--surface2); color:var(--text3); }
+.sf-time { font-size:11px; color:var(--text3); }
+.sf-pnl { font-family:var(--mono); font-weight:600; font-size:15px; }
+.sf-pnl.pos { color:var(--green); }
+.sf-pnl.neg { color:var(--red); }
+.sf-locked { padding:14px 18px; text-align:center; font-family:var(--sans); font-size:12px; color:var(--text3); border-top:1px solid var(--border); }
+.sf-locked a { color:var(--gold); text-decoration:underline; font-weight:600; }
+.sf-empty { padding:40px 20px; text-align:center; color:var(--text3); font-family:var(--sans); font-size:13px; }
+
+/* === Card grid === */
+.card-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:14px; margin-bottom:28px; }
+.feature-card { position:relative; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:20px; display:flex; flex-direction:column; gap:8px; transition:border-color .25s, box-shadow .25s, transform .15s; cursor:pointer; text-decoration:none; color:inherit; }
+.feature-card:hover { border-color:var(--border-hi); box-shadow:0 4px 24px rgba(0,0,0,.3); transform:translateY(-2px); }
+.feature-card.locked { cursor:pointer; }
+.feature-card.locked .card-inner { opacity:.35; filter:blur(1px); }
+.feature-card .card-icon { font-size:22px; margin-bottom:2px; }
+.feature-card .card-title { font-family:var(--sans); font-weight:700; font-size:15px; color:var(--text); letter-spacing:-.01em; }
+.feature-card .card-desc { font-size:12px; color:var(--text2); line-height:1.5; font-family:var(--sans); flex:1; }
+.feature-card .card-tier { font-size:9px; font-family:var(--sans); font-weight:700; text-transform:uppercase; letter-spacing:.08em; padding:2px 7px; border-radius:3px; align-self:flex-start; }
+.card-tier.pro { background:var(--cyan-dim); color:var(--cyan); }
+.card-tier.elite { background:var(--gold-dim); color:var(--gold); }
+.lock-overlay { display:none; position:absolute; inset:0; border-radius:8px; background:rgba(15,17,25,.75); backdrop-filter:blur(3px); flex-direction:column; align-items:center; justify-content:center; gap:6px; }
+.feature-card.locked .lock-overlay { display:flex; }
+.lock-overlay .lock-icon { font-size:20px; }
+.lock-overlay .lock-label { font-size:11px; font-family:var(--sans); font-weight:700; color:var(--gold); text-transform:uppercase; letter-spacing:.06em; }
+.lock-overlay .lock-sub { font-size:11px; font-family:var(--sans); color:var(--text2); text-align:center; line-height:1.5; max-width:200px; }
+
+/* === Upgrade modal === */
+.modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,.7); backdrop-filter:blur(4px); z-index:1000; align-items:center; justify-content:center; }
+.modal-bg.show { display:flex; }
+.modal { background:var(--surface); border:1px solid var(--border-hi); border-radius:12px; padding:32px; max-width:400px; width:90%; text-align:center; }
+.modal .m-icon { font-size:36px; margin-bottom:12px; }
+.modal .m-title { font-family:var(--sans); font-weight:900; font-size:20px; color:var(--text); margin-bottom:8px; }
+.modal .m-body { font-size:13px; font-family:var(--sans); color:var(--text2); line-height:1.7; margin-bottom:20px; }
+.modal .m-body strong { color:var(--green); }
+.modal .m-cta { display:inline-block; padding:12px 32px; border-radius:8px; background:linear-gradient(135deg,#FCD535,#EFBF04); color:#000; font-family:var(--sans); font-weight:700; font-size:14px; text-decoration:none; transition:transform .15s, box-shadow .15s; }
+.modal .m-cta:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(255,193,7,.3); }
+.modal .m-close { display:block; margin-top:14px; font-size:12px; color:var(--text3); font-family:var(--sans); cursor:pointer; background:none; border:none; }
+
+/* === Stickiness CTAs === */
+.cta-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:28px; }
+.cta-card { display:flex; align-items:center; gap:12px; padding:14px 18px; background:var(--surface); border:1px solid var(--border); border-radius:8px; text-decoration:none; color:var(--text); transition:border-color .2s; }
+.cta-card:hover { border-color:var(--cyan); }
+.cta-card .cta-icon { font-size:20px; flex-shrink:0; }
+.cta-card .cta-text { font-family:var(--sans); font-size:13px; font-weight:600; }
+.cta-card .cta-sub { font-size:11px; color:var(--text3); font-family:var(--sans); font-weight:400; }
+
+/* === Telegram standalone block === */
+.tg-block{padding:18px 24px;border-radius:10px;margin-bottom:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.tg-block.off{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2)}
+.tg-block.on{background:var(--green-dim);border:1px solid rgba(34,197,94,.2)}
+.tg-block .tg-icon{font-size:24px;flex-shrink:0}
+.tg-block .tg-info{flex:1}
+.tg-block .tg-title{font-family:var(--sans);font-weight:700;font-size:14px;margin-bottom:2px}
+.tg-block.off .tg-title{color:var(--red)}
+.tg-block.on .tg-title{color:var(--green)}
+.tg-block .tg-sub{font-size:12px;color:var(--text2);font-family:var(--sans)}
+.tg-block .tg-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 22px;border-radius:6px;font-family:var(--sans);font-weight:700;font-size:13px;text-decoration:none;transition:all .2s;flex-shrink:0}
+.tg-block.off .tg-btn{background:linear-gradient(135deg,#FCD535,#EFBF04);color:#000}
+.tg-block.off .tg-btn:hover{box-shadow:0 4px 16px rgba(255,193,7,.3);transform:translateY(-1px)}
+.tg-block.on .tg-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:12px;font-weight:600}
+
+/* === Auto Mode === */
+.auto-card{background:linear-gradient(135deg,rgba(255,193,7,.04),rgba(0,212,255,.03));border:1px solid var(--gold-mid);border-radius:10px;padding:24px;margin-bottom:24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.auto-card .ac-icon{font-size:32px;flex-shrink:0}
+.auto-card .ac-body{flex:1;min-width:200px}
+.auto-card .ac-title{font-family:var(--sans);font-weight:900;font-size:18px;margin-bottom:3px;letter-spacing:-.02em}
+.auto-card .ac-title em{color:var(--gold);font-style:normal}
+.auto-card .ac-desc{font-size:12px;color:var(--text2);font-family:var(--sans);line-height:1.6;margin-bottom:8px}
+.auto-card .ac-specs{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;font-family:var(--sans);color:var(--text3)}
+.auto-card .ac-specs span{display:flex;align-items:center;gap:3px}
+.auto-card .ac-specs .ck{color:var(--green)}
+.auto-card .ac-btn{display:inline-flex;align-items:center;gap:6px;padding:11px 26px;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:14px;text-decoration:none;transition:all .2s;flex-shrink:0;border:none;cursor:pointer}
+.ac-btn.go{background:linear-gradient(135deg,#FCD535,#EFBF04);color:#000}
+.ac-btn.go:hover{box-shadow:0 6px 20px rgba(255,193,7,.3);transform:translateY(-1px)}
+.ac-btn.done{background:var(--green-dim);color:var(--green);border:1px solid rgba(34,197,94,.25);cursor:default}
+
+/* === Mobile === */
+@media (max-width:768px) {
+  .topbar { flex-direction:column; gap:12px; padding:12px 16px; }
+  .topbar nav { flex-wrap:wrap; justify-content:center; gap:12px; }
+  .container { padding:20px 14px 48px; }
+  .card-grid { grid-template-columns:1fr; }
+  .metrics-row { grid-template-columns:1fr; }
+  .cta-row { grid-template-columns:1fr; }
+  .status-bar { flex-direction:column; align-items:flex-start; gap:8px; }
+  .live-strip { overflow-x:auto; }
+  .sf-detail { flex-direction:column; gap:2px; }
+  .tg-block{flex-direction:column;text-align:center}
+  .auto-card{flex-direction:column;text-align:center}
+  .auto-card .ac-specs{justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="/" class="brand">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span class="brand-text">Agora<span class="brand-iq">IQ</span></span>
+  </a>
+  <nav>
+    <a href="dashboard.html" class="active">Dashboard</a>
+    <a href="signals.html">Signals</a>
+    <a href="scanner.html">Scanner</a>
+    <a href="track.html">Track</a>
+    <a href="proof.html">Proof</a>
+    <a href="providers.html">Providers</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="help.html">Help</a>
+  </nav>
+</div>
+
+<div class="container">
+  <h1>Command <span class="accent">Center</span></h1>
+  <p class="subtitle">Track real signal performance. See what actually wins.<br><strong>No screenshots. No bullshit. Just verified results.</strong></p>
+
+  <!-- Status bar -->
+  <div class="status-bar" id="statusBar">
+    <span class="tier-badge free" id="tierBadge">—</span>
+    <span class="user-email" id="userEmail"></span>
+    <span class="spacer"></span>
+    <a class="help-btn" href="/help.html">❓ Help &amp; Guides</a>
+    <button class="logout-btn" id="logoutBtn">Sign out</button>
+  </div>
+
+  <!-- Live proof strip -->
+  <div class="live-strip" id="liveStrip">
+    <div class="live-placeholder">Loading live results…</div>
+  </div>
+
+  <!-- Conversion bar (hidden for paid users) -->
+  <div class="conversion-bar" id="conversionBar">
+    <div class="cv-text"></div>
+    <a class="cv-cta" href="/pricing.html">Unlock Full Feed →</a>
+  </div>
+
+  <!-- Telegram status block -->
+  <div class="tg-block off" id="tgBlock">
+    <span class="tg-icon">⚠️</span>
+    <div class="tg-info">
+      <div class="tg-title">You are NOT receiving signals</div>
+      <div class="tg-sub">Signals are delivered via Telegram in real time. Without it, you're missing every setup.</div>
+    </div>
+    <a class="tg-btn" href="/link.html">Connect Telegram →</a>
+  </div>
+
+  <!-- Daily edge + all-time proof -->
+  <div class="metrics-row">
+    <div class="metric-box">
+      <div class="mb-title"><span class="dot"></span> Today's Edge</div>
+      <div class="metric-grid">
+        <div class="m-stat"><span class="m-val" id="tSignals">—</span><span class="m-lbl">Signals</span></div>
+        <div class="m-stat"><span class="m-val green" id="tWinRate">—</span><span class="m-lbl">Win Rate</span></div>
+        <div class="m-stat"><span class="m-val gold" id="tBest">—</span><span class="m-lbl">Best Win</span></div>
+        <div class="m-stat"><span class="m-val cyan" id="tWins">—</span><span class="m-lbl">Winners</span></div>
+      </div>
+    </div>
+    <div class="metric-box">
+      <div class="mb-title">All-Time Proof</div>
+      <div class="metric-grid">
+        <div class="m-stat"><span class="m-val" id="pTotal">—</span><span class="m-lbl">Tracked</span></div>
+        <div class="m-stat"><span class="m-val green" id="pWinRate">—</span><span class="m-lbl">Win Rate</span></div>
+        <div class="m-stat"><span class="m-val gold" id="pAvg">—</span><span class="m-lbl">Avg Return</span></div>
+        <div class="m-stat"><span class="m-val" id="pResolved">—</span><span class="m-lbl">Resolved</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auto Mode -->
+  <div class="auto-card" id="autoCard">
+    <span class="ac-icon">🚀</span>
+    <div class="ac-body">
+      <div class="ac-title">Auto Mode <em>(Recommended)</em></div>
+      <div class="ac-desc">We send only high-probability signals — AI-scored, noise filtered, risk-adjusted. Nothing to configure.</div>
+      <div class="ac-specs">
+        <span><span class="ck">✓</span> AI Score &gt; 80</span>
+        <span><span class="ck">✓</span> Noise filtered</span>
+        <span><span class="ck">✓</span> Risk-adjusted</span>
+      </div>
+    </div>
+    <button class="ac-btn go" id="autoBtn">Enable Auto Mode →</button>
+  </div>
+
+  <!-- Stickiness CTAs -->
+  <div class="cta-row" id="ctaRow">
+    <a class="cta-card" href="/watchlist.html"><span class="cta-icon">⭐</span><div><div class="cta-text">Watchlist</div><div class="cta-sub">Track your favorite pairs</div></div></a>
+    <a class="cta-card" href="/alerts.html"><span class="cta-icon">🔔</span><div><div class="cta-text">Set Alerts</div><div class="cta-sub">Never miss a signal</div></div></a>
+    <a class="cta-card" href="/track.html"><span class="cta-icon">📊</span><div><div class="cta-text">Track Signals</div><div class="cta-sub">Follow live P&amp;L</div></div></a>
+  </div>
+
+  <!-- Signal feed -->
+  <div class="section-hdr">
+    <span class="sh-title">Latest Signals</span>
+    <a class="sh-link" href="/signals.html">View all →</a>
+  </div>
+  <div class="signal-feed" id="signalFeed">
+    <div class="sf-empty">Loading signals…</div>
+  </div>
+
+  <!-- PRO tools -->
+  <div class="section-hdr"><span class="sh-title">Pro Tools</span><span></span></div>
+  <div class="card-grid" id="proCards"></div>
+
+  <!-- ELITE tools -->
+  <div class="section-hdr"><span class="sh-title">Elite Tools</span><span></span></div>
+  <div class="card-grid" id="eliteCards"></div>
+</div>
+
+<!-- Upgrade modal -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <div class="m-icon" id="mIcon">🔒</div>
+    <div class="m-title" id="mTitle">Unlock this feature</div>
+    <div class="m-body" id="mBody"></div>
+    <a class="m-cta" href="/pricing.html">Upgrade Now →</a>
+    <button class="m-close" id="mClose">Maybe later</button>
+  </div>
+</div>
+
+<script>
+const API = '/api/v1';
+let token = localStorage.getItem('iq_token');
+let currentTier = null;
+
+const TIER_RANK = { free: 0, trial: 1, pro: 2, elite: 3 };
+function canAccess(t) { return currentTier && TIER_RANK[currentTier] >= TIER_RANK[t]; }
+function hdrs() { const h = {'Content-Type':'application/json'}; if(token) h['Authorization']='Bearer '+token; return h; }
+function fp(v) { if(v==null) return '—'; const n=parseFloat(v); return isNaN(n)?'—':n>=1?n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}):n.toPrecision(4); }
+function timeAgo(ts) { const d=(Date.now()-new Date(ts).getTime())/1000; if(d<60)return 'now'; if(d<3600)return Math.floor(d/60)+'m'; if(d<86400)return Math.floor(d/3600)+'h'; return Math.floor(d/86400)+'d'; }
+
+const FEATURES = [
+  { id:'signals', tier:'pro', icon:'📡', title:'Signal Feed', desc:'Logs every signal posted on our Telegram bot — entries, stops, targets, AI scores — all in one searchable feed.', href:'/signals.html' },
+  { id:'scanner', tier:'pro', icon:'🔍', title:'Market Scanner', desc:'Scans 500+ Binance pairs every 5 minutes and flags breakout setups before they happen.', href:'/scanner.html' },
+  { id:'track',   tier:'pro', icon:'📊', title:'Signal Tracker', desc:'Follows each signal from entry to exit with live P&L so you can see exactly how every call played out.', href:'/track.html' },
+  { id:'proof',   tier:'pro', icon:'🏆', title:'Proof & Stats', desc:'SHA-256 hashed results you can verify yourself — win rate, equity curve, no edits, no deletions.', href:'/proof.html' },
+  { id:'providers',tier:'pro',icon:'👥', title:'Providers', desc:'See which signal providers actually make money — ranked by IQ score, win rate, and verified track record.', href:'/providers.html' },
+  { id:'watchlist',tier:'pro',icon:'⭐', title:'Watchlist', desc:'Save the coins you care about and get pinged when the scanner detects a breakout on your list.', href:'/watchlist.html' },
+  { id:'alerts',  tier:'pro', icon:'🔔', title:'Telegram Alerts', desc:'Every signal delivered instantly to your Telegram via @SigPulseBot — formatted and ready to trade.', href:'/alerts.html' },
+  { id:'chart',   tier:'elite',icon:'📈',title:'Advanced Charts', desc:'Full interactive charts with signal entries, stop losses, and target levels drawn directly on the price action.', href:'/chart.html' },
+  { id:'flash',   tier:'elite',icon:'⚡',title:'Flash Intel', desc:'Detects on-chain anomalies in real time — whale buys, liquidity pulls, smart money movements before price reacts.', href:'/flash.html' },
+  { id:'ai',      tier:'elite',icon:'🧠',title:'AI Score Breakdown', desc:'See exactly why the AI scored a signal high or low — volume, momentum, provider history, all weighted.', href:'/signals.html' },
+  { id:'analytics',tier:'elite',icon:'📐',title:'Advanced Analytics', desc:'Deep stats: expectancy per provider, drawdown curves, average hold time, and risk-adjusted returns.', href:'/proof.html' },
+  { id:'regime',  tier:'elite',icon:'🌊',title:'Regime & Whale Overlays', desc:'Shows whether the market is trending or ranging and overlays whale transactions on the scanner view.', href:'/scanner.html' },
+  { id:'priority',tier:'elite',icon:'🚀',title:'Priority Alerts', desc:'Your alerts go out first — before Pro users — so you see signals seconds earlier when it matters.', href:'/alerts.html' },
+];
+
+// ── Modal ──────────────────────────────────────────────────────
+const modalBg = document.getElementById('modalBg');
+document.getElementById('mClose').onclick = () => modalBg.classList.remove('show');
+modalBg.onclick = e => { if(e.target===modalBg) modalBg.classList.remove('show'); };
+
+let weekAvgWin = null; // populated from API
+
+function showUpgradeModal(feature) {
+  document.getElementById('mIcon').textContent = feature.icon;
+  document.getElementById('mTitle').textContent = feature.title;
+  const perfLine = weekAvgWin != null
+    ? `<br><br>Winning signals averaged <strong>+${weekAvgWin.toFixed(1)}%</strong> this week.`
+    : '';
+  document.getElementById('mBody').innerHTML =
+    `This requires <strong>${feature.tier.toUpperCase()}</strong>.` +
+    `<br>Unlock ${feature.title} and all ${feature.tier === 'elite' ? 'Elite' : 'Pro'} tools.` +
+    perfLine +
+    `<br><br><span style="color:var(--text3);font-size:12px">You're seeing proof, not promises.</span>`;
+  modalBg.classList.add('show');
+}
+
+// ── Cards ──────────────────────────────────────────────────────
+function renderCards() {
+  const proGrid = document.getElementById('proCards');
+  const eliteGrid = document.getElementById('eliteCards');
+  proGrid.innerHTML = ''; eliteGrid.innerHTML = '';
+
+  FEATURES.forEach(f => {
+    const unlocked = canAccess(f.tier);
+    const card = document.createElement('a');
+    card.className = 'feature-card' + (unlocked ? '' : ' locked');
+    card.href = unlocked ? f.href : '#';
+    card.onclick = e => {
+      if (!unlocked) { e.preventDefault(); showUpgradeModal(f); }
+    };
+
+    card.innerHTML = `
+      <div class="card-inner">
+        <div class="card-icon">${f.icon}</div>
+        <span class="card-tier ${f.tier}">${f.tier}</span>
+        <div class="card-title">${f.title}</div>
+        <div class="card-desc">${f.desc}</div>
+      </div>
+      <div class="lock-overlay">
+        <span class="lock-icon">🔒</span>
+        <span class="lock-label">${f.tier.toUpperCase()}</span>
+        <span class="lock-sub">Tap to learn more</span>
+      </div>
+    `;
+    (f.tier === 'pro' ? proGrid : eliteGrid).appendChild(card);
+  });
+}
+
+// ── Status bar ─────────────────────────────────────────────────
+let tgConnected = false;
+
+function renderStatus(user, sub, tg) {
+  const tier = currentTier || 'free';
+  const badge = document.getElementById('tierBadge');
+  badge.textContent = tier.toUpperCase();
+  badge.className = 'tier-badge ' + tier;
+  document.getElementById('userEmail').textContent = user?.email || '';
+
+  // Standalone Telegram block
+  const block = document.getElementById('tgBlock');
+  if (tg?.telegram_username) {
+    tgConnected = true;
+    block.className = 'tg-block on';
+    block.innerHTML = `
+      <span class="tg-icon">✅</span>
+      <div class="tg-info">
+        <div class="tg-title">Alerts active — @${tg.telegram_username}</div>
+        <div class="tg-sub" id="lastAlertLine">Connected to @SigPulseBot — signals delivered in real time.</div>
+      </div>
+      <a class="tg-btn" href="/link.html">Manage</a>
+    `;
+  }
+  // If disconnected, default HTML already shows warning
+
+  // Auto Mode button
+  renderAutoBtn();
+}
+
+function renderAutoBtn() {
+  const btn = document.getElementById('autoBtn');
+  if (!btn) return;
+  if (canAccess('pro') && tgConnected) {
+    btn.className = 'ac-btn done';
+    btn.textContent = '✓ Auto Mode Active';
+    btn.onclick = null;
+  } else if (canAccess('pro') && !tgConnected) {
+    btn.className = 'ac-btn go';
+    btn.textContent = 'Connect Telegram to enable →';
+    btn.onclick = () => location.href = '/link.html';
+  } else {
+    btn.className = 'ac-btn go';
+    btn.textContent = 'Upgrade to enable →';
+    btn.onclick = () => location.href = '/pricing.html';
+  }
+}
+
+// ── Live proof strip ───────────────────────────────────────────
+function renderLiveStrip(signals) {
+  const el = document.getElementById('liveStrip');
+  const items = signals.filter(s => s.status !== 'CANCELLED').slice(0, 6);
+  if (items.length === 0) {
+    el.innerHTML = '<div class="live-placeholder">No recent signals yet — they\'ll appear here live.</div>';
+    return;
+  }
+
+  el.innerHTML = items.map(s => {
+    const dir = (s.direction||'').toLowerCase();
+    const isOpen = s.status === 'OPEN';
+    const isWin = (s.status||'').startsWith('TP');
+    const dotClass = isOpen ? 'open' : isWin ? 'win' : 'loss';
+    const statusClass = isOpen ? 'open' : isWin ? 'tp' : '';
+
+    // Use livePnl for OPEN, result for resolved
+    const pnl = isOpen && s.livePnl != null ? s.livePnl : (s.result != null ? parseFloat(s.result) : null);
+    const result = pnl != null ? (pnl > 0 ? '+' : '') + pnl.toFixed(1) + '%' : (isOpen ? 'LIVE' : '—');
+    const resultClass = pnl != null ? (pnl > 0 ? 'pos' : 'neg') : '';
+
+    // Lifecycle narrative
+    let lifecycle;
+    if (isOpen && s.livePnl != null) {
+      lifecycle = `<span class="live-arrow">→</span> Alert sent <span class="live-arrow">→</span> <span class="live-status open">● LIVE ${result}</span>`;
+    } else if (isWin) {
+      lifecycle = `<span class="live-arrow">→</span> Alert sent <span class="live-arrow">→</span> <span class="live-status tp">${s.status} HIT ${result}</span>`;
+    } else if (s.status === 'SL') {
+      lifecycle = `<span class="live-arrow">→</span> Alert sent <span class="live-arrow">→</span> <span class="live-status" style="color:var(--red)">SL ${result}</span>`;
+    } else {
+      lifecycle = `<span class="live-arrow">→</span> <span class="live-status">${s.status}</span>`;
+    }
+
+    return `<div class="live-strip-item">
+      <span class="live-dot ${dotClass}"></span>
+      <span class="live-sym">${s.symbol.replace('USDT','')}</span>
+      <span class="live-dir ${dir}">${dir}</span>
+      ${lifecycle}
+    </div>`;
+  }).join('');
+}
+
+// ── Conversion bar ─────────────────────────────────────────────
+function renderConversion(week) {
+  if (!week || week.hiddenCount <= 0) return;
+  const bar = document.getElementById('conversionBar');
+  bar.style.display = 'block';
+  bar.querySelector('.cv-text').innerHTML =
+    `🔒 <strong>${week.hiddenCount} signals hidden</strong> this week.` +
+    (week.hiddenWins > 0 ? ` <strong>${week.hiddenWins} were winners.</strong>` : '');
+}
+
+// ── Signal feed (rich) ─────────────────────────────────────────
+function renderSignalFeed(signals, tier) {
+  const wrap = document.getElementById('signalFeed');
+  if (!signals || signals.length === 0) {
+    wrap.innerHTML = '<div class="sf-empty">No signals yet — they\'ll appear here as they fire.</div>';
+    return;
+  }
+
+  const show = signals.slice(0, 8);
+  let html = '';
+
+  show.forEach(s => {
+    const dir = (s.direction||'').toLowerCase();
+    const isOpen = s.status === 'OPEN';
+    const isWin = (s.status||'').startsWith('TP');
+    const isSL = s.status === 'SL';
+
+    const score = s.confidence;
+    let scoreHtml = '';
+    if (score != null) {
+      const sc = score >= 70 ? 'high' : score >= 40 ? 'mid' : 'low';
+      scoreHtml = `<span class="sf-score ${sc}">AI ${Math.round(score)}</span>`;
+    }
+
+    let statusClass = isOpen ? 'open' : isWin ? 'tp' : isSL ? 'sl' : 'expired';
+
+    let pnlHtml = '';
+    const displayPnl = (isOpen && s.livePnl != null) ? s.livePnl : (s.result != null ? parseFloat(s.result) : null);
+    if (displayPnl != null) {
+      const cls = displayPnl > 0 ? 'pos' : 'neg';
+      pnlHtml = `<span class="sf-pnl ${cls}">${displayPnl > 0 ? '+' : ''}${displayPnl.toFixed(2)}%</span>`;
+    }
+
+    let detailHtml = '';
+    if (tier !== 'free' && s.entry != null) {
+      detailHtml = `<div class="sf-detail">`;
+      detailHtml += `<span><span class="lbl">Entry</span> <span class="val">${fp(s.entry)}</span></span>`;
+      if (s.currentPrice != null && isOpen) {
+        detailHtml += `<span><span class="lbl">Now</span> <span class="val ${s.livePnl > 0 ? 'green' : s.livePnl < 0 ? 'red' : ''}">${fp(s.currentPrice)}</span></span>`;
+      }
+      if (s.stop != null) detailHtml += `<span><span class="lbl">SL</span> <span class="val red">${fp(s.stop)}</span></span>`;
+      if (s.targets && s.targets[0]) detailHtml += `<span><span class="lbl">TP1</span> <span class="val green">${fp(s.targets[0])}</span></span>`;
+      if (s.targets && s.targets[1]) detailHtml += `<span><span class="lbl">TP2</span> <span class="val green">${fp(s.targets[1])}</span></span>`;
+      detailHtml += `</div>`;
+    } else if (tier === 'free') {
+      detailHtml = `<div class="sf-detail"><span style="color:var(--text3);font-family:var(--sans);font-size:11px">Entry, SL, TP hidden — <a href="/pricing.html" style="color:var(--gold)">upgrade to see</a></span></div>`;
+    }
+
+    html += `<a class="sf-row" href="/signals.html">
+      <div class="sf-left">
+        <div class="sf-head">
+          <span class="sf-sym">${s.symbol}</span>
+          <span class="sf-dir ${dir}">${dir}</span>
+          ${scoreHtml}
+        </div>
+        ${detailHtml}
+      </div>
+      <div class="sf-right">
+        <span class="sf-status ${statusClass}">${isOpen && s.livePnl != null ? '● LIVE' : isWin ? 'Alert → ' + s.status + ' HIT' : isSL ? 'Alert → STOPPED' : s.status}</span>
+        ${pnlHtml}
+        <span class="sf-time">${timeAgo(s.created_at)}</span>
+      </div>
+    </a>`;
+  });
+
+  if (tier === 'free') {
+    html += `<div class="sf-locked">🔒 More signals available with Pro — <a href="/pricing.html">Upgrade</a></div>`;
+  }
+
+  wrap.innerHTML = html;
+}
+
+// ── Boot ───────────────────────────────────────────────────────
+async function boot() {
+  // 1. Auth — get user info + tier
+  try {
+    const r = await fetch(API + '/auth/me', { headers: hdrs() });
+    if (!r.ok) {
+      if (r.status === 401) { localStorage.removeItem('iq_token'); location.replace('/login.html?next='+encodeURIComponent(location.href)); return; }
+      throw new Error(r.status);
+    }
+    const me = await r.json();
+    currentTier = me.subscription?.planTier || 'free';
+    renderStatus(me.user, me.subscription, me.telegram);
+  } catch(e) {
+    console.error('Auth failed:', e);
+    currentTier = 'free';
+  }
+
+  renderCards();
+
+  // 2. Dashboard data — single call for signals + week/today stats
+  try {
+    const r = await fetch(API + '/signals/dashboard', { headers: hdrs() });
+    if (r.ok) {
+      const d = await r.json();
+      renderLiveStrip(d.signals || []);
+      renderConversion(d.week);
+      if (d.week.avgWin != null) weekAvgWin = d.week.avgWin;
+      document.getElementById('tSignals').textContent = d.today.total || '0';
+      document.getElementById('tWins').textContent = d.today.wins || '0';
+      document.getElementById('tWinRate').textContent = d.today.winRate != null ? d.today.winRate + '%' : '—';
+      document.getElementById('tBest').textContent = d.today.bestWin != null ? '+' + d.today.bestWin + '%' : '—';
+      renderSignalFeed(d.signals || [], d.tier || currentTier);
+      // Update last alert time in tg block
+      if (tgConnected && d.signals?.length) {
+        const el = document.getElementById('lastAlertLine');
+        if (el) el.textContent = 'Last alert: ' + timeAgo(d.signals[0].created_at) + ' — @SigPulseBot';
+      }
+    }
+  } catch(e) { console.warn('Dashboard data:', e); }
+
+  // 3. All-time proof stats
+  try {
+    const r = await fetch(API + '/proof/stats', { headers: hdrs() });
+    if (r.ok) {
+      const s = await r.json();
+      document.getElementById('pTotal').textContent = s.total ?? s.totalSignals ?? '—';
+      document.getElementById('pResolved').textContent = s.resolved ?? '—';
+      document.getElementById('pWinRate').textContent = s.winRate != null ? s.winRate.toFixed(1) + '%' : '—';
+      const avg = s.avgReturn ?? s.avgResult;
+      document.getElementById('pAvg').textContent = avg != null ? (avg > 0 ? '+' : '') + (avg * 100).toFixed(2) + '%' : '—';
+    }
+  } catch(e) { console.warn('Proof stats:', e); }
+}
+
+document.getElementById('logoutBtn').onclick = () => {
+  localStorage.removeItem('iq_token');
+  location.replace('/login.html');
+};
+
+boot();
+</script>
+</body>
+</html>

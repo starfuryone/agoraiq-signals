@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Market Scanner — AgoraIQ Signals</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Mono:wght@400;500&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#08090d;--surface:#0e1017;--surface2:#161822;--border:#1e2230;--cyan:#00d4ff;--cyan-dim:rgba(0,212,255,.12);--cyan-glow:rgba(0,212,255,.25);--green:#22c55e;--red:#ef4444;--amber:#f59e0b;--text:#e4e7ef;--text2:#8b92a8;--syne:'Syne',sans-serif;--mono:'DM Mono',monospace;--sans:'Albert Sans',sans-serif}
+html{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:14px;-webkit-font-smoothing:antialiased}
+body{min-height:100vh}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);background:var(--surface)}
+.brand{display:flex;align-items:center;gap:8px;text-decoration:none}
+.brand-mark{width:28px;height:28px;background:linear-gradient(135deg,#55d0ff,#1a6eff);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);flex-shrink:0}
+.brand-text{font-family:var(--syne,'Syne',sans-serif);font-weight:800;font-size:18px;color:#fff;letter-spacing:-.02em}
+.brand-iq{color:var(--cyan,#00d4ff)}
+.topbar nav{display:flex;gap:20px}
+.topbar nav a{color:var(--text2);text-decoration:none;font-size:13px;transition:color .2s}
+.topbar nav a:hover,.topbar nav a.active{color:var(--cyan)}
+.container{max-width:1080px;margin:0 auto;padding:32px 24px}
+h1{font-family:var(--syne);font-weight:800;font-size:28px;margin-bottom:8px;background:linear-gradient(135deg,#fff 40%,var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{color:var(--text2);font-size:13px;margin-bottom:32px}
+.badge{display:inline-block;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;font-family:var(--sans);text-transform:uppercase}
+.badge-open{background:var(--cyan-dim);color:var(--cyan)}
+.badge-tp{background:rgba(34,197,94,.12);color:var(--green)}
+.badge-sl{background:rgba(239,68,68,.12);color:var(--red)}
+.badge-expired{background:rgba(245,158,11,.12);color:var(--amber)}
+.badge-cancelled{background:rgba(139,146,168,.12);color:var(--text2)}
+.dir-long{color:var(--green)}.dir-short{color:var(--red)}
+table{width:100%;border-collapse:collapse}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);text-align:left;padding:10px 12px;border-bottom:1px solid var(--border);font-weight:500}
+td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:13px}
+tr:hover td{background:var(--surface2)}
+.tabs{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap}
+.tab{padding:8px 16px;border-radius:20px;font-size:12px;font-family:var(--mono);border:1px solid var(--border);color:var(--text2);background:transparent;cursor:pointer;transition:all .15s}
+.tab:hover{border-color:var(--cyan);color:var(--cyan)}
+.tab.active{background:var(--cyan-dim);border-color:var(--cyan);color:var(--cyan)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;transition:border-color .2s}
+.card:hover{border-color:rgba(0,212,255,.3)}
+.card-sym{font-family:var(--syne);font-weight:700;font-size:16px;color:#fff;margin-bottom:8px}
+.card-row{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:4px}
+.card-row .v{color:var(--text);font-family:var(--sans);font-weight:600}
+.card-row .v.g{color:var(--green)}.card-row .v.r{color:var(--red)}
+.bar-bg{height:4px;background:var(--surface2);border-radius:2px;margin-top:8px;overflow:hidden}
+.bar-fg{height:100%;border-radius:2px;background:var(--cyan);transition:width .4s}
+.empty{text-align:center;padding:48px;color:var(--text2)}
+.stat-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:32px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px}
+.stat-label{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.stat-value{font-family:var(--sans);font-weight:700;font-size:22px;color:#fff}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:none;border-radius:6px;font-family:var(--sans);font-weight:600;font-size:13px;cursor:pointer;transition:all .2s;text-decoration:none}
+.btn-primary{background:var(--cyan);color:#000}.btn-primary:hover{background:#33ddff}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}.btn-ghost:hover{border-color:var(--cyan);color:var(--cyan)}
+.locked{color:var(--text2);opacity:.4;font-style:italic}
+.upgrade-bar{background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15);border-radius:10px;padding:14px 20px;margin-top:16px;font-size:13px;color:var(--text2);display:none;text-align:center}
+.upgrade-bar a{color:var(--cyan);text-decoration:none;font-weight:600}
+.auth-bar{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.auth-bar p{color:var(--text2);font-size:13px;margin:0}
+.auth-bar .actions{display:flex;gap:10px}
+@media(max-width:640px){.container{padding:20px 16px}table{display:block;overflow-x:auto}.grid{grid-template-columns:1fr}.auth-bar{flex-direction:column;text-align:center}}
+.legal-footer{background:var(--surface,#0e1017);border-top:1px solid var(--border,#1e2230);padding:32px 24px;margin-top:48px;text-align:center;font-size:12px;font-family:var(--sans,'Albert Sans',sans-serif);color:var(--text2,#8b92a8)}
+.footer-inner{max-width:860px;margin:0 auto}
+.footer-brand{font-family:var(--syne,'Syne',sans-serif);font-weight:800;font-size:16px;color:var(--cyan,#00d4ff);margin-bottom:12px}
+.footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-bottom:12px}
+.footer-links a{color:var(--text2,#8b92a8);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--cyan,#00d4ff)}
+.footer-copy{margin-bottom:8px}
+.footer-warn{font-size:11px;color:var(--text2,#8b92a8);opacity:.7;max-width:640px;margin:0 auto;line-height:1.5}
+
+.spinner{display:flex;justify-content:center;align-items:center;padding:48px}
+.spinner-ring{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--cyan);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="/" class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">Agora<span class="brand-iq">IQ</span></span></a><nav><a href="signals.html">Signals</a><a href="scanner.html" class="active">Scanner</a><a href="track.html">Track</a><a href="proof.html">Proof</a><a href="providers.html">Providers</a><a href="pricing.html">Pricing</a><a href="watchlist.html">Watchlist</a><a href="help.html">Help</a></nav></div>
+<div class="container">
+  <h1>Market Scanner</h1>
+  <p class="subtitle">Live crypto derivatives scanner — breakouts, momentum, volume, OI, funding</p>
+  
+  <div class="tabs" id="tabs"></div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none">No data for this category yet.</div>
+  <div class="spinner" id="spinner"><div class="spinner-ring"></div></div>
+
+</div>
+<script>
+(function(){
+  "use strict";
+  var API="/api/v1";
+  var cats=[{id:"top",label:"Top Breakouts",ep:"/scanner/top"},{id:"momentum",label:"Momentum",ep:"/scanner/momentum"},{id:"volume",label:"Volume",ep:"/scanner/volume"},{id:"oi",label:"Open Interest",ep:"/scanner/oi"},{id:"funding",label:"Funding",ep:"/scanner/funding"}];
+  var active="top";
+  function el(t,c,x){var n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=String(x);return n}
+
+  document.addEventListener("DOMContentLoaded",function(){
+    var tb=document.getElementById("tabs");
+    for(var i=0;i<cats.length;i++){
+      var b=el("button","tab"+(cats[i].id===active?" active":""),cats[i].label);
+      b.setAttribute("data-id",cats[i].id);
+      b.addEventListener("click",function(){active=this.getAttribute("data-id");var a=tb.querySelectorAll(".tab");for(var j=0;j<a.length;j++)a[j].classList.remove("active");this.classList.add("active");load()});
+      tb.appendChild(b)
+    }
+    load();
+  });
+
+  function load(){
+    var cat=cats.find(function(c){return c.id===active});if(!cat)return;
+    var g=document.getElementById("grid"),em=document.getElementById("empty"),sp=document.getElementById("spinner");g.innerHTML='';em.style.display='none';sp.style.display='flex';
+    while(g.firstChild)g.removeChild(g.firstChild);em.style.display="none";
+    fetch(API+cat.ep).then(function(r){return r.ok?r.json():null}).then(function(d){sp.style.display='none';
+      if(!d)return;var items=Array.isArray(d)?d:(d.data||d.items||d.pairs||[]);
+      if(!items.length){em.style.display="block";return}
+      for(var i=0;i<items.length;i++){
+        var it=items[i],c=el("div","card");
+        c.appendChild(el("div","card-sym",it.symbol||it.pair||"—"));
+        var sc=it.breakoutScore||it.score||it.value||0;
+        var vol=it.volume_change||it.volumeChange||it.volume||null;
+        if(sc){var r1=el("div","card-row");r1.appendChild(el("span",null,"Score"));var v1=el("span","v",String(Math.round(sc)));v1.style.color="var(--cyan)";r1.appendChild(v1);c.appendChild(r1)}
+        if(vol!=null){var r2=el("div","card-row");r2.appendChild(el("span",null,"Volume"));r2.appendChild(el("span","v "+(vol>=0?"g":"r"),(vol>=0?"+":"")+Number(vol).toFixed(1)+"%"));c.appendChild(r2)}
+        if(sc){var bg=el("div","bar-bg"),fg=el("div","bar-fg");fg.style.width=Math.min(100,sc)+"%";fg.style.background=sc>70?"var(--green)":sc>40?"var(--cyan)":"var(--text2)";bg.appendChild(fg);c.appendChild(bg)}
+        g.appendChild(c)
+      }
+    }).catch(function(){em.style.display="block"});
+  }
+})();
+</script>
+<footer class="legal-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">Agora<span style="color:var(--cyan,#00d4ff)">IQ</span></div>
+    <div class="footer-links">
+      <a href="terms.html">Terms</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="cookies.html">Cookies</a>
+      <a href="disclaimer.html">Disclaimer</a>
+      <a href="no-financial-advice.html">No Financial Advice</a>
+    </div>
+    <div class="footer-copy">&copy; 2026 ChatLogic Insights LTD. All rights reserved.</div>
+    <div class="footer-warn">&olarr; Not for UK Persons. AgoraIQ is not authorised or regulated by the FCA. Not directed at UK persons. Nothing on this site constitutes financial advice. Past performance does not guarantee future results.</div>
+  </div>
+</footer>
+</body>
+</html>

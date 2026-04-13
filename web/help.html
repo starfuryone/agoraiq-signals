@@ -1,5 +1,5 @@
 <html lang="en"><head>
-<!-- auth-gate --><style>body{visibility:hidden}</style><script>(function(){if(!localStorage.getItem("iq_token")){window.location.replace("/")}else{document.addEventListener("DOMContentLoaded",function(){document.body.style.visibility="visible"})}})();</script>
+<!-- public page - no auth gate -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Help — AgoraIQ</title>
@@ -102,7 +102,7 @@ h1 .accent{color:var(--gold)}
 }
 </style>
 </head>
-<body style="visibility: visible;">
+<body>
 
 <!-- Topbar -->
 <div class="topbar">
@@ -125,7 +125,9 @@ h1 .accent{color:var(--gold)}
 <div class="layout">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-title">Getting Started</div>
-    <a href="#quickstart">Quick Start</a>
+    <a href="#new-here">New Here?</a>
+    <a href="#quickstart-web">Start on the Web</a>
+    <a href="#quickstart-telegram">Start on Telegram</a>
     <a href="#account">Account Setup</a>
     <a href="#telegram">Telegram Bot</a>
     <div class="sep"></div>
@@ -147,20 +149,41 @@ h1 .accent{color:var(--gold)}
 
   <main class="content">
     <h1>Help <span class="accent">Center</span></h1>
-    <p class="subtitle">Everything you need to get started with AgoraIQ &mdash; from first login to advanced signal tracking.</p>
+    <p class="subtitle">Everything you need to get started with AgoraIQ &mdash; whether you found us on the web or through Telegram.</p>
+
+    <h2 id="new-here">New Here?</h2>
+    <p>AgoraIQ is a crypto signal intelligence platform. There are two ways to use it &mdash; pick whichever suits you best. Both give you full access to the same features.</p>
 
     <div class="card-grid">
-      <div class="card"><div class="card-icon">&#128640;</div><div class="card-title">Quick Start</div><div class="card-desc">Create an account, connect Telegram, and start receiving signals in under 5 minutes.</div></div>
-      <div class="card"><div class="card-icon">&#128225;</div><div class="card-title">Signal Tracking</div><div class="card-desc">Submit your own signals and let AgoraIQ track them against live market data.</div></div>
-      <div class="card"><div class="card-icon">&#128276;</div><div class="card-title">Smart Alerts</div><div class="card-desc">Set custom rules to get notified when market conditions match your criteria.</div></div>
-      <div class="card"><div class="card-icon">&#128179;</div><div class="card-title">Billing</div><div class="card-desc">Upgrade, manage, or cancel your plan through Stripe's secure portal.</div></div>
+      <div class="card" style="border-color:rgba(252,213,53,.25)">
+        <div class="card-icon">&#127760;</div>
+        <div class="card-title">Web Dashboard</div>
+        <div class="card-desc">Subscribe on the website, explore signals, scanner, and proof data from your browser. Link Telegram later if you want real-time alerts on your phone.</div>
+      </div>
+      <div class="card" style="border-color:rgba(0,212,255,.25)">
+        <div class="card-icon">&#9889;</div>
+        <div class="card-title">Telegram Bot</div>
+        <div class="card-desc">Open <a href="https://t.me/SigPulseBot" style="color:var(--cyan)">@SigPulseBot</a>, subscribe with <span class="code">/upgrade</span>, and get signals, alerts, and market intelligence delivered straight to your chat. No website needed.</div>
+      </div>
     </div>
 
-    <h2 id="quickstart">Quick Start Guide</h2>
-    <p>AgoraIQ Signals runs natively inside Telegram. Here's how to get started.</p>
-    <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Get Telegram</h4><p>AgoraIQ Signals runs natively inside Telegram &mdash; a free, encrypted messaging app. Download it for your device: <a href="https://play.google.com/store/apps/details?id=org.telegram.messenger" target="_blank">Android</a> &middot; <a href="https://apps.apple.com/app/telegram-messenger/id686449807" target="_blank">iOS</a> &middot; <a href="https://macos.telegram.org/" target="_blank">macOS</a> &middot; <a href="https://desktop.telegram.org/" target="_blank">Desktop</a></p><p style="margin-top:6px">Already have it on your phone? You can also use <a href="https://web.telegram.org/" target="_blank">web.telegram.org</a> from any browser &mdash; just log in with your phone number, no extra install needed.</p></div></div>
-    <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Subscribe</h4><p>Pick Pro ($29/mo) or Elite ($99/mo) on the <a href="pricing.html">pricing page</a> and complete checkout via Stripe. Your account is created automatically during checkout.</p></div></div>
-    <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Link &amp; Go</h4><p>Open <a href="https://t.me/SigPulseBot">@SigPulseBot</a> in Telegram, hit <span class="code">/start</span>, then <span class="code">/connect</span> to link your subscription. All commands unlock instantly &mdash; <span class="code">/signals</span>, <span class="code">/market</span>, <span class="code">/alerts</span>, and more.</p></div></div>
+    <div class="callout success"><strong>1-day free trial:</strong> Every new subscription includes a 24-hour trial. Cancel anytime before it ends &mdash; no charge.</div>
+
+    <h2 id="quickstart-web">Start on the Web</h2>
+    <p>For traders who prefer a browser-based experience. No Telegram required.</p>
+    <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Choose a Plan</h4><p>Head to the <a href="pricing.html">pricing page</a> and pick Pro ($29/mo) or Elite ($99/mo). Your account is created automatically during checkout.</p></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Check Your Email</h4><p>After payment, you'll receive a welcome email with your login credentials. Use these to sign in and access the full dashboard.</p></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Explore</h4><p>The <a href="dashboard.html">Dashboard</a> is your command center. From there you can browse live <a href="signals.html">Signals</a>, the <a href="scanner.html">Market Scanner</a>, <a href="proof.html">Proof</a> data, and <a href="providers.html">Provider IQ</a> rankings.</p></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Link Telegram (optional)</h4><p>Want real-time alerts on your phone? Open <a href="https://t.me/SigPulseBot">@SigPulseBot</a> in Telegram, type <span class="code">/connect</span>, and follow the prompts to link your account. All bot commands unlock instantly.</p></div></div>
+
+    <h2 id="quickstart-telegram">Start on Telegram</h2>
+    <p>For traders who want signals delivered straight to their chat. Fastest way to get started.</p>
+    <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Open the Bot</h4><p>Open <a href="https://t.me/SigPulseBot">@SigPulseBot</a> in Telegram and hit <span class="code">/start</span>. The bot works on all platforms: <a href="https://play.google.com/store/apps/details?id=org.telegram.messenger" target="_blank">Android</a> &middot; <a href="https://apps.apple.com/app/telegram-messenger/id686449807" target="_blank">iOS</a> &middot; <a href="https://macos.telegram.org/" target="_blank">macOS</a> &middot; <a href="https://desktop.telegram.org/" target="_blank">Desktop</a> &middot; <a href="https://web.telegram.org/" target="_blank">Web</a></p></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Subscribe</h4><p>Type <span class="code">/upgrade pro</span> or <span class="code">/upgrade elite</span>. You'll get a Stripe checkout link &mdash; pay securely, and your plan activates instantly. Your account is created automatically.</p></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Start Using It</h4><p>You're live. Try <span class="code">/signals</span> for the latest breakout signals, <span class="code">/market</span> for a market overview, <span class="code">/top</span> for top candidates, and <span class="code">/proof</span> for verified performance.</p></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Access the Web (optional)</h4><p>Want charts and detailed analytics? Sign in at <a href="login.html">bot.agoraiq.net</a> with the credentials from your welcome email. The web dashboard and Telegram bot share the same account.</p></div></div>
+
+    <div class="callout"><strong>Both paths lead to the same place.</strong> Whether you start on the web or on Telegram, you get the same signals, same scanner, same proof data. Link both for the complete experience.</div>
 
     <h2 id="account">Account Setup</h2>
     <h3>Registration</h3>
@@ -183,7 +206,9 @@ h1 .accent{color:var(--gold)}
     <div class="code-block">/signals        &mdash; Latest breakout signals
 /breakouts      &mdash; Current breakout candidates
 /latest         &mdash; Most recent signals feed
+/watchlist      &mdash; Your monitored pairs
 /pair BTCUSDT   &mdash; Breakout data for a specific pair
+/setup BTCUSDT  &mdash; Entry, SL, TPs, confidence
 /history        &mdash; Resolved signal history
 /wins           &mdash; Winning signals only</div>
     <h3>Tracking Commands</h3>
@@ -204,7 +229,8 @@ h1 .accent{color:var(--gold)}
 /addalert ETHUSDT &mdash; Create alert for a pair
 /removealert ID &mdash; Remove an alert rule
 /pausealerts    &mdash; Pause all alerts
-/resumealerts   &mdash; Resume all alerts</div>
+/resumealerts   &mdash; Resume all alerts
+/settings       &mdash; Alert preferences</div>
     <h3>Provider Commands</h3>
     <div class="code-block">/providers      &mdash; Signal provider list
 /top_providers  &mdash; Top-ranked providers
@@ -217,7 +243,9 @@ h1 .accent{color:var(--gold)}
 /upgrade elite  &mdash; Checkout for Elite plan
 /billing        &mdash; Manage your subscription
 /plan           &mdash; View current plan
-/pricing        &mdash; View pricing details</div>
+/pricing        &mdash; View pricing details
+/profile        &mdash; Your bot profile
+/status         &mdash; Account &amp; subscription status</div>
     <h3>Other</h3>
     <div class="code-block">/proof          &mdash; Verified platform performance
 /stats          &mdash; Detailed performance stats
@@ -318,14 +346,14 @@ SL: 63000</div>
     <p>Upgrade from <a href="pricing.html">Pricing</a> or via <span class="code">/upgrade pro</span> / <span class="code">/upgrade elite</span>. Yearly plans save up to 34%.</p>
 
     <h2 id="manage">Manage Subscription</h2>
-    <p>Managed through Stripe's customer portal. Access from <a href="pricing.html">Pricing</a> page or <span class="code">/billing</span> in Telegram.</p>
+    <p>Managed through Stripe's secure customer portal. Access from the <a href="pricing.html">Pricing</a> page or <span class="code">/billing</span> in Telegram.</p>
     <ul>
       <li><strong>Update payment method</strong></li>
       <li><strong>View invoices</strong></li>
-      <li><strong>Cancel subscription</strong> &mdash; Takes effect at end of billing period.</li>
-      <li><strong>Reactivate</strong> &mdash; Before period ends.</li>
+      <li><strong>Cancel subscription</strong> &mdash; Use the Cancel button on the <a href="pricing.html">Pricing</a> page, or <span class="code">/billing</span> &rarr; Manage Subscription in Telegram. Cancellation takes effect at the end of your billing period.</li>
+      <li><strong>Reactivate</strong> &mdash; Before your billing period ends, you can reverse a cancellation from the same portal.</li>
     </ul>
-    <div class="callout success"><strong>No lock-in:</strong> Cancel anytime. You keep full access until the end of your current billing period.</div>
+    <div class="callout success"><strong>No lock-in:</strong> Cancel anytime. You keep full access until the end of your current billing period. Every new subscription includes a 1-day free trial.</div>
 
     <p style="margin-top:48px;color:var(--text2);font-size:13px;text-align:center">Can't find what you need? Check the <a href="kb.html">Knowledge Base</a> or <a href="faq.html">FAQ</a>.</p>
   </main>

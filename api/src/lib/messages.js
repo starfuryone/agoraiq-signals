@@ -116,7 +116,7 @@ function signalOutcome(sig) {
     `⏱ Duration: <b>${dur(sig.duration_sec)}</b>\n` +
     (sig.confidence != null ? `🧠 AI Score: <b>${sig.confidence}%</b>\n` : "") +
     (sig.provider ? `👤 Provider: ${sig.provider}\n` : "") +
-    `\n📈 <a href="${APP}/proof.html">View all results →</a>`
+    `\n📈 <a href="${APP}/signals.html">View all results →</a>`
   );
 }
 
