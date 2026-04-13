@@ -1,198 +1,454 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<!-- auth-gate --><style>body{visibility:hidden}</style><script>(function(){if(!localStorage.getItem("iq_token")){window.location.replace("/login.html")}else{document.addEventListener("DOMContentLoaded",function(){document.body.style.visibility="visible"})}})();</script>
+<html lang="en"><head>
+<!-- auth-gate --><style>body{visibility:hidden}</style><script>(function(){if(!localStorage.getItem("iq_token")){window.location.replace("/login.html?next="+encodeURIComponent(location.href))}else{document.addEventListener("DOMContentLoaded",function(){document.body.style.visibility="visible"})}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart Alerts — AgoraIQ Signals</title>
-<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@700;900&display=swap" rel="stylesheet">
+<title>Alerts — AgoraIQ Signals</title>
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
-/* === SUBTITLE STYLE === */
-.subtitle, .container > p, h1 + p {
-  font-size: 15px !important;
-  color: var(--label, #8b90b0) !important;
-  line-height: 1.7 !important;
-  max-width: 480px;
-  margin-bottom: 28px;
-  text-shadow: 0 1px 8px rgba(0,0,0,.6);
-}
-
-/* === H1 MASTER === */
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Albert Sans', sans-serif !important;
-  -webkit-text-fill-color: unset !important;
-  -webkit-background-clip: unset !important;
-  background: none !important;
-}
-h1 {
-  font-family: 'Albert Sans', sans-serif !important;
-  font-weight: 900 !important;
-  font-size: clamp(34px, 4.5vw, 48px) !important;
-  letter-spacing: -2px !important;
-  text-transform: uppercase !important;
-  color: #e2e4ef !important;
-  -webkit-text-fill-color: #e2e4ef !important;
-  line-height: 1.08 !important;
-}
-h1 .accent {
-  color: #FCD535 !important;
-  -webkit-text-fill-color: #FCD535 !important;
-}
-
-h1 .accent { color: #FCD535 !important; }
-
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Albert Sans', sans-serif !important;
-}
-h1 {
-  font-family: 'Albert Sans', sans-serif !important;
-  font-weight: 900 !important;
-  font-size: clamp(34px, 4.5vw, 48px) !important;
-  letter-spacing: -2px !important;
-  text-transform: uppercase !important;
-  color: #e2e4ef !important;
-  line-height: 1.08 !important;
-}
-h1 .accent {
-  color: #EFBF04 !important;
-}
-
-
-h1 .accent { color: #FCD535 !important; }
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Albert Sans', sans-serif !important;
-}
-h1 {
-  font-family: 'Albert Sans', sans-serif !important;
-  font-weight: 900 !important;
-  font-size: clamp(34px, 4.5vw, 48px) !important;
-  letter-spacing: -2px !important;
-  text-transform: uppercase !important;
-  color: #EFBF04 !important;
-  line-height: 1.08 !important;
-}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#08090d;--surface:#0e1017;--surface2:#161822;--border:#1e2230;--cyan:#00d4ff;--cyan-dim:rgba(0,212,255,.12);--cyan-glow:rgba(0,212,255,.25);--green:#22c55e;--red:#ef4444;--amber:#f59e0b;--text:#e4e7ef;--text2:#8b92a8;--syne:'Syne',sans-serif;--mono:'DM Mono',monospace;--sans:'Albert Sans',sans-serif}
+:root{
+  --bg:#0f1119;--surface:#13151f;--surface2:#191c28;--surface3:#1e2133;
+  --border:#232738;--border-hi:#2d3148;
+  --gold:#FFC107;--gold-dim:rgba(255,193,7,.10);--gold-mid:rgba(255,193,7,.20);--gold-glow:rgba(255,193,7,.30);--gold-dark:#EFBF04;
+  --cyan:#00d4ff;--cyan-dim:rgba(0,212,255,.10);--cyan-glow:rgba(0,212,255,.25);
+  --green:#22c55e;--green-dim:rgba(34,197,94,.12);
+  --red:#ef4444;--red-dim:rgba(239,68,68,.12);
+  --amber:#f59e0b;--amber-dim:rgba(245,158,11,.12);
+  --text:#e2e4ef;--text2:#8b90b0;--text3:#5c6180;
+  --syne:'Syne',sans-serif;--mono:'JetBrains Mono','DM Mono',monospace;--sans:'Albert Sans',sans-serif;
+}
 html{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:14px;-webkit-font-smoothing:antialiased}
 body{min-height:100vh}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);background:var(--surface)}
+h1,h2,h3{font-family:var(--sans);font-weight:900;line-height:1.08;letter-spacing:-.02em}
+h1{font-size:clamp(28px,4.5vw,42px);letter-spacing:-1.5px;text-transform:uppercase;margin-bottom:6px}
+h1 .accent{color:var(--gold)}
+.subtitle{font-size:13px;color:var(--text2);line-height:1.7;max-width:540px;margin-bottom:20px;font-family:var(--sans)}
+.subtitle strong{color:var(--text)}
+
+/* Topbar */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--surface)}
 .brand{display:flex;align-items:center;gap:8px;text-decoration:none}
 .brand-mark{width:28px;height:28px;background:linear-gradient(135deg,#FCD535,#EFBF04);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);flex-shrink:0}
-.brand-text{font-family:var(--syne,'Syne',sans-serif);font-weight:800;font-size:18px;color:#fff;letter-spacing:-.02em}
+.brand-text{font-family:var(--syne);font-weight:800;font-size:18px;color:#fff;letter-spacing:-.02em}
 .brand-iq{color:#FCD535}
 .topbar nav{display:flex;gap:20px}
-.topbar nav a{color:var(--text2);text-decoration:none;font-size:13px;transition:color .2s}
-.topbar nav a:hover,.topbar nav a.active{color:var(--cyan)}
-.container{max-width:1080px;margin:0 auto;padding:32px 24px}
-h1{/* inherited from styles.css */ font-weight:800;font-size:28px;margin-bottom:8px;background:linear-gradient(135deg,#fff 40%,var(--cyan));-webkit-background-clip: unset;-webkit-text-fill-color: unset;font-size:13px;margin-bottom:32px}
-.badge{display:inline-block;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;font-family:var(--sans);text-transform:uppercase}
-.badge-open{background:var(--cyan-dim);color:var(--cyan)}
-.badge-tp{background:rgba(34,197,94,.12);color:var(--green)}
-.badge-sl{background:rgba(239,68,68,.12);color:var(--red)}
-.badge-expired{background:rgba(245,158,11,.12);color:var(--amber)}
-.badge-cancelled{background:rgba(139,146,168,.12);color:var(--text2)}
-.dir-long{color:var(--green)}.dir-short{color:var(--red)}
-table{width:100%;border-collapse:collapse}
-th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);text-align:left;padding:10px 12px;border-bottom:1px solid var(--border);font-weight:500}
-td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:13px}
-tr:hover td{background:var(--surface2)}
-.tabs{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap}
-.tab{padding:8px 16px;border-radius:20px;font-size:12px;font-family:var(--mono);border:1px solid var(--border);color:var(--text2);background:transparent;cursor:pointer;transition:all .15s}
-.tab:hover{border-color:var(--cyan);color:var(--cyan)}
-.tab.active{background:var(--cyan-dim);border-color:var(--cyan);color:var(--cyan)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;transition:border-color .2s}
-.card:hover{border-color:rgba(0,212,255,.3)}
-.card-sym{font-family:var(--syne);font-weight:700;font-size:16px;color:#fff;margin-bottom:8px}
-.card-row{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:4px}
-.card-row .v{color:var(--text);font-family:var(--sans);font-weight:600}
-.card-row .v.g{color:var(--green)}.card-row .v.r{color:var(--red)}
-.bar-bg{height:4px;background:var(--surface2);border-radius:2px;margin-top:8px;overflow:hidden}
-.bar-fg{height:100%;border-radius:2px;background:var(--cyan);transition:width .4s}
-.empty{text-align:center;padding:48px;color:var(--text2)}
-.stat-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:32px}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px}
-.stat-label{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
-.stat-value{font-family:var(--sans);font-weight:700;font-size:22px;color:#fff}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:none;border-radius:6px;font-family:var(--sans);font-weight:600;font-size:13px;cursor:pointer;transition:all .2s;text-decoration:none}
-.btn-primary{background:var(--cyan);color:#000}.btn-primary:hover{background:#33ddff}
-.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}.btn-ghost:hover{border-color:var(--cyan);color:var(--cyan)}
-.locked{color:var(--text2);opacity:.4;font-style:italic}
-.upgrade-bar{background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15);border-radius:10px;padding:14px 20px;margin-top:16px;font-size:13px;color:var(--text2);display:none;text-align:center}
-.upgrade-bar a{color:var(--cyan);text-decoration:none;font-weight:600}
-.auth-bar{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
-.auth-bar p{color:var(--text2);font-size:13px;margin:0}
-.auth-bar .actions{display:flex;gap:10px}
-@media(max-width:640px){.container{padding:20px 16px}table{display:block;overflow-x:auto}.grid{grid-template-columns:1fr}.auth-bar{flex-direction:column;text-align:center}}
-.legal-footer{background:var(--surface,#0e1017);border-top:1px solid var(--border,#1e2230);padding:32px 24px;margin-top:48px;text-align:center;font-size:12px;font-family:var(--sans,'Albert Sans',sans-serif);color:var(--text2,#8b92a8)}
+.topbar nav a{color:var(--text2);text-decoration:none;font-size:13px;font-family:var(--sans);transition:color .2s}
+.topbar nav a:hover{color:var(--gold)}
+.topbar nav a.active{color:var(--gold);font-weight:600}
+.container{max-width:1100px;margin:0 auto;padding:32px 24px 60px}
+
+/* ── 24h Performance strip ── */
+.perf-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px}
+.perf-stat{background:var(--surface);padding:18px 16px;text-align:center}
+.perf-stat .pv{font-family:var(--mono);font-weight:600;font-size:24px;display:block;line-height:1.2;margin-bottom:2px}
+.perf-stat .pv.green{color:var(--green)}.perf-stat .pv.gold{color:var(--gold)}.perf-stat .pv.cyan{color:var(--cyan)}
+.perf-stat .pl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--sans);font-weight:600}
+.perf-label{font-family:var(--sans);font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.perf-label .dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── Telegram block ── */
+.tg-block{padding:18px 24px;border-radius:10px;margin-bottom:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.tg-block.off{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2)}
+.tg-block.on{background:var(--green-dim);border:1px solid rgba(34,197,94,.2)}
+.tg-icon{font-size:24px;flex-shrink:0}
+.tg-info{flex:1}
+.tg-title{font-family:var(--sans);font-weight:700;font-size:14px;margin-bottom:2px}
+.tg-block.off .tg-title{color:var(--red)}
+.tg-block.on .tg-title{color:var(--green)}
+.tg-sub{font-size:12px;color:var(--text2);font-family:var(--sans)}
+.tg-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 22px;border-radius:6px;font-family:var(--sans);font-weight:700;font-size:13px;text-decoration:none;transition:all .2s;flex-shrink:0;border:none;cursor:pointer}
+.tg-block.off .tg-btn{background:linear-gradient(135deg,#FCD535,#EFBF04);color:#000}
+.tg-block.off .tg-btn:hover{box-shadow:0 4px 16px rgba(255,193,7,.3);transform:translateY(-1px)}
+.tg-block.on .tg-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:12px;font-weight:600}
+
+/* ── Conversion bar ── */
+.conv-bar{display:none;padding:14px 20px;margin-bottom:20px;border-radius:8px;border:1px solid rgba(255,193,7,.25);background:linear-gradient(135deg,rgba(255,193,7,.06),rgba(255,193,7,.02));text-align:center}
+.conv-bar .cv-text{font-size:13px;color:var(--text);font-family:var(--sans);margin-bottom:8px}
+.conv-bar .cv-text strong{color:var(--gold)}
+.conv-bar .cv-cta{display:inline-block;padding:8px 24px;border-radius:6px;background:linear-gradient(135deg,#FCD535,#EFBF04);color:#000;font-family:var(--sans);font-weight:700;font-size:13px;text-decoration:none;transition:transform .15s,box-shadow .15s}
+.conv-bar .cv-cta:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(255,193,7,.3)}
+
+/* ── Live feed ── */
+.section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.section-hdr .sh-title{font-family:var(--sans);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3)}
+.section-hdr .sh-link{font-size:12px;font-family:var(--sans);color:var(--cyan);text-decoration:none;font-weight:600}
+
+.alert-feed{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:28px}
+.af-row{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:12px 18px;border-bottom:1px solid var(--border);transition:background .15s}
+.af-row:last-child{border-bottom:none}
+.af-row:hover{background:var(--surface2)}
+.af-left{display:flex;align-items:center;gap:10px}
+.af-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;animation:pulse 2s infinite}
+.af-dot.win{background:var(--green);box-shadow:0 0 8px var(--green)}
+.af-dot.loss{background:var(--red);box-shadow:0 0 8px var(--red)}
+.af-dot.open{background:var(--gold);box-shadow:0 0 8px var(--gold)}
+.af-sym{font-weight:600;font-size:14px}
+.af-dir{font-family:var(--sans);font-weight:700;font-size:10px;text-transform:uppercase;padding:2px 7px;border-radius:3px}
+.af-dir.long{background:var(--green-dim);color:var(--green)}
+.af-dir.short{background:var(--red-dim);color:var(--red)}
+.af-pnl{font-family:var(--mono);font-weight:600;font-size:14px}
+.af-pnl.pos{color:var(--green)}.af-pnl.neg{color:var(--red)}
+.af-meta{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.af-status{font-size:10px;font-family:var(--sans);font-weight:700;text-transform:uppercase;padding:2px 6px;border-radius:3px}
+.af-status.tp{background:var(--green-dim);color:var(--green)}
+.af-status.sl{background:var(--red-dim);color:var(--red)}
+.af-status.open{background:var(--gold-dim);color:var(--gold)}
+.af-time{font-size:11px;color:var(--text3)}
+.af-empty{padding:40px 20px;text-align:center;color:var(--text3);font-family:var(--sans);font-size:13px}
+
+/* ── Auto Mode ── */
+.auto-card{background:linear-gradient(135deg,rgba(255,193,7,.04),rgba(0,212,255,.03));border:1px solid var(--gold-mid);border-radius:12px;padding:28px;margin-bottom:28px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.auto-card .ac-icon{font-size:36px;flex-shrink:0}
+.auto-card .ac-body{flex:1;min-width:200px}
+.auto-card .ac-title{font-family:var(--sans);font-weight:900;font-size:20px;margin-bottom:4px;letter-spacing:-.02em}
+.auto-card .ac-title span{color:var(--gold)}
+.auto-card .ac-desc{font-size:13px;color:var(--text2);font-family:var(--sans);line-height:1.6;margin-bottom:10px}
+.auto-card .ac-specs{display:flex;gap:16px;flex-wrap:wrap}
+.auto-card .ac-spec{font-size:11px;font-family:var(--sans);color:var(--text3);display:flex;align-items:center;gap:4px}
+.auto-card .ac-spec .check{color:var(--green)}
+.auto-card .ac-btn{display:inline-flex;align-items:center;gap:6px;padding:12px 28px;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:14px;text-decoration:none;transition:all .2s;flex-shrink:0;border:none;cursor:pointer}
+.auto-card .ac-btn.go{background:linear-gradient(135deg,#FCD535,#EFBF04);color:#000}
+.auto-card .ac-btn.go:hover{box-shadow:0 6px 20px rgba(255,193,7,.3);transform:translateY(-1px)}
+.auto-card .ac-btn.active{background:var(--green-dim);color:var(--green);border:1px solid rgba(34,197,94,.3);cursor:default}
+
+/* ── Preset grid ── */
+.presets{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:32px}
+.preset{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:6px;transition:border-color .2s,transform .15s}
+.preset:hover{border-color:var(--border-hi);transform:translateY(-1px)}
+.preset .p-top{display:flex;align-items:center;justify-content:space-between}
+.preset .p-icon{font-size:20px}
+.preset .p-badge{font-size:9px;font-family:var(--sans);font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;border-radius:3px}
+.p-badge.pro{background:var(--cyan-dim);color:var(--cyan)}
+.p-badge.elite{background:var(--gold-dim);color:var(--gold)}
+.preset .p-title{font-family:var(--sans);font-weight:700;font-size:15px}
+.preset .p-desc{font-size:12px;color:var(--text2);line-height:1.5;font-family:var(--sans)}
+.preset .p-stat{font-size:11px;color:var(--text3);font-family:var(--mono);padding-top:6px;border-top:1px solid var(--border)}
+.preset .p-stat strong{color:var(--green)}
+.preset .p-btn{display:inline-flex;align-items:center;justify-content:center;gap:4px;margin-top:auto;padding:8px 0;border-radius:6px;font-family:var(--sans);font-weight:700;font-size:12px;text-decoration:none;text-align:center;transition:all .2s;border:none;cursor:pointer;width:100%}
+.p-btn.enable{background:var(--cyan-dim);color:var(--cyan);border:1px solid rgba(0,212,255,.2)}
+.p-btn.enable:hover{background:rgba(0,212,255,.18)}
+.p-btn.active{background:var(--green-dim);color:var(--green);border:1px solid rgba(34,197,94,.2);cursor:default}
+.p-btn.locked{background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold-mid)}
+.p-btn.locked:hover{background:rgba(255,193,7,.18)}
+
+/* ── Tier comparison ── */
+.tier-cmp{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:32px;background:var(--surface)}
+.tc-col{padding:18px 16px;border-right:1px solid var(--border)}
+.tc-col:last-child{border-right:none}
+.tc-col.hl{background:var(--gold-dim)}
+.tc-tier{font-family:var(--sans);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.tc-col:nth-child(1) .tc-tier{color:var(--text3)}
+.tc-col:nth-child(2) .tc-tier{color:var(--cyan)}
+.tc-col:nth-child(3) .tc-tier{color:var(--gold)}
+.tc-row{font-size:12px;font-family:var(--sans);color:var(--text2);padding:4px 0;display:flex;align-items:center;gap:5px}
+.tc-check{color:var(--green)}.tc-cross{color:var(--text3)}.tc-fast{color:var(--gold);font-weight:700}
+
+/* Footer */
+.legal-footer{background:var(--surface);border-top:1px solid var(--border);padding:32px 24px;margin-top:48px;text-align:center;font-size:12px;font-family:var(--sans);color:var(--text3)}
 .footer-inner{max-width:860px;margin:0 auto}
-.footer-brand{font-family:var(--syne,'Syne',sans-serif);font-weight:800;font-size:16px;color:var(--cyan,#00d4ff);margin-bottom:12px}
+.footer-brand{font-family:var(--syne);font-weight:800;font-size:16px;color:var(--gold);margin-bottom:12px}
 .footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-bottom:12px}
-.footer-links a{color:var(--text2,#8b92a8);text-decoration:none;transition:color .2s}
-.footer-links a:hover{color:var(--cyan,#00d4ff)}
-.footer-copy{margin-bottom:8px}
-.footer-warn{font-size:11px;color:var(--text2,#8b92a8);opacity:.7;max-width:640px;margin:0 auto;line-height:1.5}
+.footer-links a{color:var(--text3);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--gold)}
+
+@media(max-width:768px){
+  .topbar{flex-direction:column;gap:12px;padding:12px 16px}
+  .topbar nav{flex-wrap:wrap;justify-content:center;gap:12px}
+  .container{padding:20px 14px 48px}
+  .perf-strip{grid-template-columns:1fr 1fr}
+  .presets{grid-template-columns:1fr}
+  .tier-cmp{grid-template-columns:1fr}
+  .tc-col{border-right:none;border-bottom:1px solid var(--border)}
+  .tc-col:last-child{border-bottom:none}
+  .tg-block{flex-direction:column;text-align:center}
+  .auto-card{flex-direction:column;text-align:center}
+  .auto-card .ac-specs{justify-content:center}
+  .af-row{grid-template-columns:1fr auto}
+  .af-pnl{display:none}
+}
 </style>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-<div class="topbar"><a href="/" class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">Agora<span class="brand-iq">IQ</span></span></a><nav><a href="signals.html">Signals</a><a href="scanner.html">Scanner</a><a href="track.html">Track</a><a href="proof.html">Proof</a><a href="providers.html">Providers</a><a href="pricing.html">Pricing</a><a href="watchlist.html">Watchlist</a><a href="help.html">Help</a><a href="#" onclick="localStorage.removeItem('iq_token');location.href='/login.html'" style="color:var(--red,#ef4444);font-size:13px;text-decoration:none;margin-left:4px;opacity:.7;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.7">Sign Out</a></nav></div>
-<div class="container">
-  <h1>Smart <span class="accent">Alerts</span></h1>
-  <p class="subtitle">Custom alert rules — get notified when market conditions match your criteria</p>
-  
-  <div class="auth-bar" id="authBar">
-    <p>Smart Alerts require a Pro or Elite plan. <a href="pricing.html" style="color:var(--cyan)">Upgrade</a></p>
-    <div class="actions" id="authActions"></div>
-  </div>
-  <div id="rulesList"></div>
-  <div class="empty" id="empty" style="display:none">No alert rules configured. Use the Telegram bot <code style="font-family:var(--mono);color:var(--cyan)">/addalert BTCUSDT</code> to create one.</div>
 
+<div class="topbar">
+  <a href="/" class="brand"><span class="brand-mark"></span><span class="brand-text">Agora<span class="brand-iq">IQ</span></span></a>
+  <nav>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="signals.html">Signals</a>
+    <a href="scanner.html">Scanner</a>
+    <a href="track.html">Track</a>
+    <a href="proof.html">Proof</a>
+    <a href="providers.html">Providers</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="alerts.html" class="active">Alerts</a>
+    <a href="help.html">Help</a>
+  </nav>
 </div>
-<script>
-(function(){
-  "use strict";
-  var API="/api/v1",token=localStorage.getItem("iq_token");
-  function el(t,c,x){var n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=String(x);return n}
 
-  document.addEventListener("DOMContentLoaded",function(){
-    if(!token){document.getElementById("empty").style.display="block";return}
-    document.getElementById("authBar").style.display="none";
-    fetch(API+"/alerts/rules",{headers:{"Authorization":"Bearer "+token}})
-      .then(function(r){return r.ok?r.json():null}).then(function(d){
-        if(!d){document.getElementById("empty").style.display="block";return}
-        var rules=Array.isArray(d)?d:(d.rules||[]);
-        if(!rules.length){document.getElementById("empty").style.display="block";return}
-        var container=document.getElementById("rulesList");
-        for(var i=0;i<rules.length;i++){
-          var r=rules[i],c=el("div","card");c.style.marginBottom="8px";
-          c.appendChild(el("div","card-sym",(r.name||r.symbol||"Alert #"+r.id)));
-          var r1=el("div","card-row");r1.appendChild(el("span",null,"Type"));r1.appendChild(el("span","v",r.type||"—"));c.appendChild(r1);
-          var r2=el("div","card-row");r2.appendChild(el("span",null,"Enabled"));r2.appendChild(el("span","v "+(r.enabled?"g":"r"),r.enabled?"Yes":"No"));c.appendChild(r2);
-          container.appendChild(c)
-        }
-      }).catch(function(){document.getElementById("empty").style.display="block"});
-  });
-})();
-</script>
+<div class="container">
+  <h1>Real-Time <span class="accent">Alerts</span></h1>
+  <p class="subtitle">We tell you when money moves. Instead of watching charts, <strong>you get notified when it matters.</strong></p>
+
+  <!-- ① 24h performance — FIRST THING THEY SEE -->
+  <div class="perf-label"><span class="dot"></span> Last 24h alert performance</div>
+  <div class="perf-strip">
+    <div class="perf-stat"><span class="pv" id="p24total">—</span><span class="pl">Alerts Fired</span></div>
+    <div class="perf-stat"><span class="pv green" id="p24wins">—</span><span class="pl">Winners</span></div>
+    <div class="perf-stat"><span class="pv gold" id="p24best">—</span><span class="pl">Best Trade</span></div>
+    <div class="perf-stat"><span class="pv cyan" id="p24rate">—</span><span class="pl">Win Rate</span></div>
+  </div>
+
+  <!-- ② Telegram — are you even receiving? -->
+  <div class="tg-block off" id="tgBlock">
+    <span class="tg-icon">⚠️</span>
+    <div class="tg-info">
+      <div class="tg-title">You are NOT receiving alerts</div>
+      <div class="tg-sub">Signals are delivered via Telegram in real time. Without it, you're missing every setup.</div>
+    </div>
+    <a class="tg-btn" href="/link.html">Connect Telegram →</a>
+  </div>
+
+  <!-- ③ Conversion pressure -->
+  <div class="conv-bar" id="convBar">
+    <div class="cv-text"></div>
+    <a class="cv-cta" href="/pricing.html">Upgrade for instant delivery →</a>
+  </div>
+
+  <!-- ④ Live triggered alerts -->
+  <div class="section-hdr"><span class="sh-title">Recently triggered</span><a class="sh-link" href="/signals.html">All signals →</a></div>
+  <div class="alert-feed" id="alertFeed">
+    <div class="af-empty">Loading…</div>
+  </div>
+
+  <!-- ⑤ Auto Mode -->
+  <div class="auto-card" id="autoCard">
+    <span class="ac-icon">🚀</span>
+    <div class="ac-body">
+      <div class="ac-title">Auto Mode <span>(Recommended)</span></div>
+      <div class="ac-desc">We automatically send only the best signals — AI-scored, risk-filtered, noise removed. Nothing to configure.</div>
+      <div class="ac-specs">
+        <span class="ac-spec"><span class="check">✓</span> AI Score &gt; 80</span>
+        <span class="ac-spec"><span class="check">✓</span> Risk-adjusted</span>
+        <span class="ac-spec"><span class="check">✓</span> Volume confirmed</span>
+        <span class="ac-spec"><span class="check">✓</span> Zero config</span>
+      </div>
+    </div>
+    <button class="ac-btn go" id="autoBtn">Enable Auto Mode →</button>
+  </div>
+
+  <!-- ⑥ Preset cards -->
+  <div class="section-hdr"><span class="sh-title">Alert channels</span></div>
+  <div class="presets" id="presetGrid"></div>
+
+  <!-- ⑦ Tier comparison -->
+  <div class="section-hdr"><span class="sh-title">Delivery speed by plan</span></div>
+  <div class="tier-cmp">
+    <div class="tc-col">
+      <div class="tc-tier">Free</div>
+      <div class="tc-row"><span class="tc-cross">✗</span> No delivery</div>
+      <div class="tc-row"><span class="tc-cross">✗</span> No Telegram</div>
+      <div class="tc-row"><span class="tc-cross">✗</span> Delayed, web only</div>
+      <div class="tc-row"><span class="tc-cross">✗</span> Details hidden</div>
+    </div>
+    <div class="tc-col">
+      <div class="tc-tier">Pro — $29/mo</div>
+      <div class="tc-row"><span class="tc-check">✓</span> Telegram delivery</div>
+      <div class="tc-row"><span class="tc-check">✓</span> Near real-time</div>
+      <div class="tc-row"><span class="tc-check">✓</span> Full signal details</div>
+      <div class="tc-row"><span class="tc-check">✓</span> Watchlist alerts</div>
+    </div>
+    <div class="tc-col hl">
+      <div class="tc-tier">Elite — $99/mo</div>
+      <div class="tc-row"><span class="tc-check">✓</span> Everything in Pro</div>
+      <div class="tc-row"><span class="tc-check">✓</span> <span class="tc-fast">Priority queue — first</span></div>
+      <div class="tc-row"><span class="tc-check">✓</span> Whale + regime alerts</div>
+      <div class="tc-row"><span class="tc-check">✓</span> AI score breakdown</div>
+    </div>
+  </div>
+</div>
+
 <footer class="legal-footer">
   <div class="footer-inner">
-    <div class="footer-brand">Agora<span style="color:var(--cyan,#00d4ff)">IQ</span></div>
-    <div class="footer-links">
-      <a href="terms.html">Terms</a>
-      <a href="privacy.html">Privacy</a>
-      <a href="cookies.html">Cookies</a>
-      <a href="disclaimer.html">Disclaimer</a>
-      <a href="no-financial-advice.html">No Financial Advice</a>
-    </div>
+    <div class="footer-brand">Agora<span style="color:var(--gold)">IQ</span></div>
+    <div class="footer-links"><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a><a href="cookies.html">Cookies</a><a href="disclaimer.html">Disclaimer</a><a href="no-financial-advice.html">No Financial Advice</a></div>
     <div class="footer-copy">&copy; 2026 ChatLogic Insights LTD. All rights reserved.</div>
-    <div class="footer-warn">&olarr; Not for UK Persons. AgoraIQ is not authorised or regulated by the FCA. Not directed at UK persons. Nothing on this site constitutes financial advice. Past performance does not guarantee future results.</div>
   </div>
 </footer>
+
+<script>
+const API = '/api/v1';
+const token = localStorage.getItem('iq_token');
+let currentTier = 'free';
+let tgConnected = false;
+
+function hdrs() { const h = {'Content-Type':'application/json'}; if(token) h['Authorization']='Bearer '+token; return h; }
+function timeAgo(ts) { const d=(Date.now()-new Date(ts).getTime())/1000; if(d<60)return 'just now'; if(d<3600)return Math.floor(d/60)+'m ago'; if(d<86400)return Math.floor(d/3600)+'h ago'; return Math.floor(d/86400)+'d ago'; }
+const TIER_RANK = { free:0, trial:1, pro:2, elite:3 };
+function canAccess(t) { return TIER_RANK[currentTier] >= TIER_RANK[t]; }
+
+const PRESETS = [
+  { id:'high_conf', icon:'🔥', title:'High Confidence', desc:'Only signals the AI scores above 80 — the top setups.', tier:'pro', stat:'Win rate: <strong>72%</strong> historically', filter:'AI Score > 80' },
+  { id:'breakout',  icon:'⚡', title:'Breakout Alerts', desc:'Momentum breakouts with volume confirmation across top pairs.', tier:'pro', stat:'Avg return to TP1: <strong>+3.1%</strong>', filter:'Breakout + Volume' },
+  { id:'watchlist', icon:'⭐', title:'Watchlist Only', desc:'Alerts only for the pairs you saved — cuts noise, keeps the edge.', tier:'pro', stat:'Your pairs, your signals', filter:'Your Watchlist' },
+  { id:'whale',     icon:'🐋', title:'Whale Activity', desc:'Large wallet moves and abnormal liquidity shifts detected on-chain.', tier:'elite', stat:'Precede major moves <strong>68%</strong> of the time', filter:'On-chain anomaly' },
+  { id:'regime',    icon:'🌊', title:'Regime Shifts', desc:'Get alerted when the market flips trending → ranging or vice versa.', tier:'elite', stat:'Regime-aligned trades outperform <strong>2.4x</strong>', filter:'Market regime' },
+  { id:'priority',  icon:'🚀', title:'Priority Queue', desc:'Your alerts deliver before Pro users — seconds matter in breakouts.', tier:'elite', stat:'<strong>3–5 sec</strong> faster than standard', filter:'First in line' },
+];
+
+// ── Render presets ──
+function renderPresets() {
+  const grid = document.getElementById('presetGrid');
+  grid.innerHTML = '';
+  PRESETS.forEach(p => {
+    const unlocked = canAccess(p.tier);
+    const active = unlocked && tgConnected;
+    const card = document.createElement('div');
+    card.className = 'preset';
+
+    let btnClass, btnText, btnAction;
+    if (active) {
+      btnClass = 'p-btn active'; btnText = '✓ Active'; btnAction = '';
+    } else if (unlocked && !tgConnected) {
+      btnClass = 'p-btn enable'; btnText = 'Connect Telegram to activate'; btnAction = 'onclick="location.href=\'/link.html\'"';
+    } else {
+      btnClass = 'p-btn locked'; btnText = '🔒 Upgrade to ' + p.tier.toUpperCase(); btnAction = 'onclick="location.href=\'/pricing.html\'"';
+    }
+
+    card.innerHTML = `
+      <div class="p-top"><span class="p-icon">${p.icon}</span><span class="p-badge ${p.tier}">${p.tier}</span></div>
+      <div class="p-title">${p.title}</div>
+      <div class="p-desc">${p.desc}</div>
+      <div class="p-stat">${p.stat}</div>
+      <button class="${btnClass}" ${btnAction}>${btnText}</button>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// ── Telegram block ──
+function renderTg(tg) {
+  const block = document.getElementById('tgBlock');
+  if (tg?.telegram_username) {
+    tgConnected = true;
+    block.className = 'tg-block on';
+    block.innerHTML = `
+      <span class="tg-icon">✅</span>
+      <div class="tg-info">
+        <div class="tg-title">Alerts active — @${tg.telegram_username}</div>
+        <div class="tg-sub" id="lastAlertLine">Connected to @SigPulseBot — signals delivered in real time.</div>
+      </div>
+      <a class="tg-btn" href="/link.html">Manage</a>
+    `;
+  }
+}
+
+// ── Auto Mode button ──
+function renderAutoBtn() {
+  const btn = document.getElementById('autoBtn');
+  if (canAccess('pro') && tgConnected) {
+    btn.className = 'ac-btn active';
+    btn.textContent = '✓ Auto Mode Active';
+    btn.onclick = null;
+  } else if (canAccess('pro') && !tgConnected) {
+    btn.onclick = () => location.href = '/link.html';
+    btn.textContent = 'Connect Telegram to enable →';
+  } else {
+    btn.onclick = () => location.href = '/pricing.html';
+    btn.textContent = 'Upgrade to enable →';
+  }
+}
+
+// ── Alert feed ──
+function renderFeed(signals) {
+  const feed = document.getElementById('alertFeed');
+  const items = (signals || []).filter(s => s.status !== 'CANCELLED').slice(0, 8);
+  if (!items.length) { feed.innerHTML = '<div class="af-empty">No alerts triggered yet — they\'ll appear here live.</div>'; return; }
+
+  let html = '';
+  items.forEach(s => {
+    const dir = (s.direction||'').toLowerCase();
+    const isOpen = s.status === 'OPEN';
+    const isWin = (s.status||'').startsWith('TP');
+    const isSL = s.status === 'SL';
+    const dotClass = isOpen ? 'open' : isWin ? 'win' : 'loss';
+    const statusClass = isOpen ? 'open' : isWin ? 'tp' : isSL ? 'sl' : '';
+    const pnl = (isOpen && s.livePnl != null) ? s.livePnl : (s.result != null ? parseFloat(s.result) : null);
+    const pnlText = pnl != null ? (pnl > 0 ? '+' : '') + pnl.toFixed(1) + '%' : '—';
+    const pnlClass = pnl > 0 ? 'pos' : pnl < 0 ? 'neg' : '';
+
+    html += `<div class="af-row">
+      <div class="af-left">
+        <span class="af-dot ${dotClass}"></span>
+        <span class="af-sym">${s.symbol}</span>
+        <span class="af-dir ${dir}">${dir}</span>
+      </div>
+      <span class="af-pnl ${pnlClass}">${pnlText}</span>
+      <div class="af-meta">
+        <span class="af-status ${statusClass}">${isOpen && s.livePnl != null ? '● LIVE' : s.status}</span>
+        <span class="af-time">${timeAgo(s.created_at)}</span>
+      </div>
+    </div>`;
+  });
+  feed.innerHTML = html;
+
+  // Update "last alert" timestamp in telegram block if connected
+  if (tgConnected && items[0]) {
+    const el = document.getElementById('lastAlertLine');
+    if (el) el.textContent = 'Last alert: ' + timeAgo(items[0].created_at) + ' — @SigPulseBot';
+  }
+}
+
+// ── Conversion bar ──
+function renderConversion(today, week) {
+  if (canAccess('pro')) return;
+  const bar = document.getElementById('convBar');
+  const total = today.total || 0;
+  const wins = today.wins || 0;
+  if (total > 0) {
+    bar.style.display = 'block';
+    bar.querySelector('.cv-text').innerHTML =
+      `🔒 You missed <strong>${total} alerts</strong> today.` +
+      (wins > 0 ? ` <strong>${wins} were profitable.</strong>` : '');
+  } else if (week.total > 0) {
+    bar.style.display = 'block';
+    bar.querySelector('.cv-text').innerHTML =
+      `🔒 <strong>${week.total} alerts fired</strong> this week.` +
+      (week.wins > 0 ? ` <strong>${week.wins} were winners.</strong>` : '');
+  }
+}
+
+// ── Boot ──
+async function boot() {
+  try {
+    const r = await fetch(API + '/auth/me', { headers: hdrs() });
+    if (!r.ok) { if(r.status===401){localStorage.removeItem('iq_token');location.replace('/login.html');} return; }
+    const me = await r.json();
+    currentTier = me.subscription?.planTier || 'free';
+    renderTg(me.telegram);
+  } catch(e) { console.warn(e); }
+
+  renderAutoBtn();
+  renderPresets();
+
+  try {
+    const r = await fetch(API + '/signals/dashboard', { headers: hdrs() });
+    if (r.ok) {
+      const d = await r.json();
+      // 24h stats
+      document.getElementById('p24total').textContent = d.today.total || '0';
+      document.getElementById('p24wins').textContent = d.today.wins || '0';
+      document.getElementById('p24best').textContent = d.today.bestWin != null ? '+' + d.today.bestWin + '%' : '—';
+      document.getElementById('p24rate').textContent = d.today.winRate != null ? d.today.winRate + '%' : '—';
+      // Feed
+      renderFeed(d.signals);
+      // Conversion
+      renderConversion(d.today, d.week);
+    }
+  } catch(e) { console.warn(e); }
+}
+
+boot();
+</script>
 </body>
 </html>

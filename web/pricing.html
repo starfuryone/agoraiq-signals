@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- auth-gate --><style>body{visibility:hidden}</style><script>(function(){if(!localStorage.getItem("iq_token")){window.location.replace("/")}else{document.addEventListener("DOMContentLoaded",function(){document.body.style.visibility="visible"})}})();</script>
+<!-- public page -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pricing — AgoraIQ</title>
@@ -143,6 +143,18 @@ body{min-height:100vh}
 .footer-links a:hover{color:var(--cyan)}
 .footer-copy{margin-bottom:8px}
 .footer-warn{font-size:11px;opacity:.7;max-width:640px;margin:0 auto;line-height:1.5}
+
+.consent-modal-backdrop{display:none;position:fixed;inset:0;background:rgba(10,12,18,.85);backdrop-filter:blur(8px);z-index:1000;align-items:center;justify-content:center}
+.consent-modal-backdrop.open{display:flex}
+.consent-modal{background:var(--surface,#0e1017);border:1px solid var(--border,#1e2230);border-radius:14px;max-width:480px;width:90%;padding:32px 28px;text-align:center;animation:cmFadeIn .3s ease}
+@keyframes cmFadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.consent-modal .cm-icon{width:56px;height:56px;border-radius:50%;background:rgba(245,158,11,.12);border:2px solid rgba(245,158,11,.25);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:26px}
+.consent-modal .cm-title{font-family:var(--syne,'Syne',sans-serif);font-weight:800;font-size:20px;color:#fff;margin-bottom:8px}
+.consent-modal .cm-text{font-family:var(--sans,'Albert Sans',sans-serif);font-size:14px;color:var(--text2,#8b92a8);line-height:1.7;margin-bottom:20px}
+.consent-modal .cm-text a{color:var(--cyan,#00d4ff);text-decoration:none;border-bottom:1px solid rgba(0,212,255,.3)}
+.consent-modal .cm-text a:hover{border-bottom-color:var(--cyan,#00d4ff)}
+.consent-modal .cm-btn{background:linear-gradient(135deg,#FCD535,#EFBF04);color:#000;border:none;padding:12px 28px;border-radius:8px;font-family:var(--sans,'Albert Sans',sans-serif);font-weight:600;font-size:14px;cursor:pointer;transition:all .2s}
+.consent-modal .cm-btn:hover{box-shadow:0 0 20px rgba(252,213,53,.35)}
 </style>
 </head>
 <body>
@@ -161,7 +173,7 @@ body{min-height:100vh}
   <div class="current-plan" id="currentPlan">
     <div class="plan-label" id="currentPlanLabel">—</div>
     <div class="plan-detail" id="currentPlanDetail"></div>
-    <div style="margin-top:12px"><button class="btn btn-outline" id="manageBtn" style="width:auto;display:inline-flex;padding:8px 20px;font-size:13px">Manage Subscription</button></div>
+    <div style="margin-top:12px"><button class="btn btn-outline" id="manageBtn" style="width:auto;display:inline-flex;padding:8px 20px;font-size:13px">Manage Subscription</button> <button class="btn btn-outline" id="cancelBtn" style="width:auto;display:inline-flex;padding:8px 20px;font-size:13px;color:var(--red);border-color:var(--red);margin-left:8px;display:none">Cancel Subscription</button></div>
   </div>
 
   <div class="page-header">
@@ -321,12 +333,12 @@ body{min-height:100vh}
 
   function syncGate(){
     var ok=consentAccepted&&consentConfig&&!consentConfigError;
-    ["btnPro","btnElite"].forEach(function(id){var b=document.getElementById(id);if(b.dataset.actionKind!=="current")b.disabled=!ok});
+    ["btnPro","btnElite"].forEach(function(id){var b=document.getElementById(id);if(b.dataset.actionKind!=="current")b.disabled=false});
   }
 
   function requireConsent(){
     if(!consentConfig){toast("Consent documents could not be loaded.","error");return null}
-    if(!consentAccepted){toast("Please accept the terms to continue.","error");return null}
+    if(!consentAccepted){document.getElementById("consentModal").classList.add("open");return null}
     return{accepted:true,timestamp:new Date().toISOString(),version:consentConfig.version,documents:consentConfig.documents.map(function(d){return d.id})};
   }
 
@@ -354,7 +366,7 @@ body{min-height:100vh}
       if(!d)return;
       currentSub.plan=d.plan||"free";currentSub.period=d.period||null;currentSub.status=d.status||null;
       if(currentSub.plan!=="free"&&d.paidAccess){
-        var panel=document.getElementById("currentPlan");panel.style.display="block";
+        var panel=document.getElementById("currentPlan");panel.style.display="block";if(d.plan!=="free"&&d.status!=="cancel_at_period_end"){document.getElementById("cancelBtn").style.display="inline-flex"}
         var pLabel=currentSub.period?" ("+cap(currentSub.period)+")":"";
         document.getElementById("currentPlanLabel").textContent=currentSub.plan.toUpperCase()+pLabel+" Plan Active";
         var detail=document.getElementById("currentPlanDetail");
@@ -373,8 +385,8 @@ body{min-height:100vh}
   }
 
   // ── Checkout flow ─────────────────────────────────────────────
-  function checkout(plan){
-    if(!token){toast("Sign in first","error");window.location.href="dashboard.html";return}
+  function executePublicCheckout(plan){var consent=requireConsent();if(!consent)return;var btn=document.getElementById(plan==="pro"?"btnPro":"btnElite");var orig=btn.textContent;btn.classList.add("btn-loading");btn.disabled=true;fetch(API+"/billing/public-checkout",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({plan:plan,period:billingPeriod,consent:consent})}).then(function(r){return r.json()}).then(function(d){if(d.url){window.location.href=d.url}else{toast(d.error||"Checkout failed","error");btn.classList.remove("btn-loading");btn.disabled=false;btn.textContent=orig}}).catch(function(){toast("Network error","error");btn.classList.remove("btn-loading");btn.disabled=false;btn.textContent=orig});}function checkout(plan){
+    if(!token){executePublicCheckout(plan);return}
     var consent=requireConsent();if(!consent)return;
     var action=getAction(currentSub,{plan:plan,period:billingPeriod});
     if(action.kind==="current")return;
@@ -545,13 +557,15 @@ body{min-height:100vh}
   // ── Init ──────────────────────────────────────────────────────
   document.addEventListener("DOMContentLoaded",function(){
     var p=new URLSearchParams(window.location.search);
-    if(p.get("status")==="success")document.getElementById("successBanner").classList.add("success");
+    if(p.get("status")==="success"){var sid=p.get("session_id")||"";window.location.replace("/welcome.html?session_id="+sid);return;}
     else if(p.get("status")==="cancelled")document.getElementById("cancelledBanner").classList.add("cancelled");
 
     document.getElementById("btnPro").addEventListener("click",function(){checkout("pro")});
     document.getElementById("btnElite").addEventListener("click",function(){checkout("elite")});
-    document.getElementById("manageBtn").addEventListener("click",openPortal);
+    document.getElementById("manageBtn").addEventListener("click",openPortal);document.getElementById("cancelBtn").addEventListener("click",openPortal);
     document.getElementById("consentCheck").addEventListener("change",onConsentChange);
+document.getElementById("consentModal").addEventListener("click",function(e){if(e.target===this)this.classList.remove("open")});
+
     document.getElementById("consentRetry").addEventListener("click",loadConsentConfig);
     document.getElementById("modalCancel").addEventListener("click",closeModal);
     document.getElementById("modalConfirm").addEventListener("click",confirmAction);
@@ -583,5 +597,22 @@ body{min-height:100vh}
     <div class="footer-warn">&olarr; Not for UK Persons. AgoraIQ is not authorised or regulated by the FCA. Not directed at UK persons. Nothing on this site constitutes financial advice. Past performance does not guarantee future results.</div>
   </div>
 </footer>
+
+<div class="consent-modal-backdrop" id="consentModal">
+  <div class="consent-modal">
+    <div class="cm-icon">⚠️</div>
+    <div class="cm-title">Agreement Required</div>
+    <div class="cm-text">
+      Before subscribing, please review and accept our legal documents:<br><br>
+      <a href="/subscription-agreement.html" target="_blank">Subscription Agreement</a> · 
+      <a href="/terms.html" target="_blank">Terms</a> · 
+      <a href="/privacy.html" target="_blank">Privacy</a> · 
+      <a href="/cookies.html" target="_blank">Cookies</a> · 
+      <a href="/no-financial-advice.html" target="_blank">No Financial Advice</a><br><br>
+      Check the <strong>"I agree"</strong> checkbox below the pricing cards to continue.
+    </div>
+    <button class="cm-btn" onclick="document.getElementById('consentModal').classList.remove('open');document.getElementById('consentCheck').scrollIntoView({behavior:'smooth',block:'center'})">Got it — take me there</button>
+  </div>
+</div>
 </body>
 </html>

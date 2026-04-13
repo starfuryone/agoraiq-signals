@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome — AgoraIQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Mono:wght@400;500&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08090d;--surface:#0e1017;--surface2:#161822;--border:#1e2230;
+  --cyan:#00d4ff;--cyan-dim:rgba(0,212,255,.12);--cyan-glow:rgba(0,212,255,.25);
+  --green:#22c55e;--green-dim:rgba(34,197,94,.12);--green-glow:rgba(34,197,94,.25);
+  --gold:#FCD535;--gold-dim:rgba(252,213,53,.12);
+  --red:#ef4444;--amber:#f59e0b;--purple:#a78bfa;
+  --text:#e4e7ef;--text2:#8b92a8;
+  --syne:'Syne',sans-serif;--mono:'DM Mono',monospace;--sans:'Albert Sans',sans-serif;
+}
+html{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:14px;-webkit-font-smoothing:antialiased}
+body{min-height:100vh;display:flex;flex-direction:column}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);background:var(--surface)}
+.brand{display:flex;align-items:center;gap:8px;text-decoration:none}
+.brand-mark{width:28px;height:28px;background:linear-gradient(135deg,#FCD535,#EFBF04);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);flex-shrink:0}
+.brand-text{font-family:var(--syne);font-weight:800;font-size:18px;color:#fff;letter-spacing:-.02em}
+.brand-iq{color:#FCD535}
+
+.container{max-width:640px;margin:0 auto;padding:60px 24px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+
+.success-icon{width:80px;height:80px;border-radius:50%;background:var(--green-dim);border:2px solid rgba(34,197,94,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 28px;animation:scaleIn .5s cubic-bezier(.175,.885,.32,1.275)}
+.success-icon svg{width:40px;height:40px;color:var(--green)}
+@keyframes scaleIn{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
+
+h1{font-family:var(--syne);font-weight:800;font-size:clamp(28px,4vw,36px);color:#fff;letter-spacing:-.02em;margin-bottom:8px;animation:fadeUp .6s ease .1s both}
+.subtitle{font-family:var(--sans);font-size:16px;color:var(--green);font-weight:600;margin-bottom:32px;animation:fadeUp .6s ease .2s both}
+@keyframes fadeUp{0%{transform:translateY(16px);opacity:0}100%{transform:translateY(0);opacity:1}}
+
+.details-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;width:100%;margin-bottom:24px;animation:fadeUp .6s ease .3s both}
+.detail-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.detail-row:last-child{border-bottom:none}
+.detail-label{font-size:13px;color:var(--text2);font-family:var(--sans)}
+.detail-value{font-size:13px;color:#fff;font-family:var(--mono);font-weight:500}
+.detail-value.plan{color:var(--cyan);font-family:var(--syne);font-weight:700;font-size:15px}
+.detail-value.status{color:var(--green)}
+.detail-value.email{color:var(--cyan)}
+.detail-value.id{font-size:11px;color:var(--text2);word-break:break-all}
+
+.email-notice{background:var(--cyan-dim);border:1px solid rgba(0,212,255,.2);border-radius:10px;padding:20px 24px;width:100%;margin-bottom:24px;animation:fadeUp .6s ease .35s both;text-align:left}
+.email-notice .notice-title{font-family:var(--sans);font-weight:600;font-size:14px;color:var(--cyan);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.email-notice .notice-title svg{width:18px;height:18px;flex-shrink:0}
+.email-notice .notice-text{font-family:var(--sans);font-size:13px;color:var(--text2);line-height:1.6}
+
+.telegram-hint{background:var(--gold-dim);border:1px solid rgba(252,213,53,.2);border-radius:10px;padding:20px 24px;width:100%;margin-bottom:32px;animation:fadeUp .6s ease .4s both;text-align:left}
+.telegram-hint .hint-title{font-family:var(--sans);font-weight:600;font-size:14px;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.telegram-hint .hint-title svg{width:18px;height:18px;flex-shrink:0}
+.telegram-hint .hint-text{font-family:var(--sans);font-size:13px;color:var(--text2);line-height:1.6}
+.telegram-hint code{background:rgba(255,255,255,.08);padding:2px 6px;border-radius:4px;font-family:var(--mono);font-size:12px;color:var(--gold)}
+
+.features-hint{font-family:var(--sans);font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:32px;max-width:480px;animation:fadeUp .6s ease .45s both}
+
+.btn-row{display:flex;gap:12px;width:100%;max-width:420px;animation:fadeUp .6s ease .5s both}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border:none;border-radius:8px;font-family:var(--sans);font-weight:600;font-size:14px;cursor:pointer;transition:all .2s;flex:1;text-decoration:none;text-align:center}
+.btn-primary{background:linear-gradient(135deg,#FCD535,#EFBF04);color:#000}
+.btn-primary:hover{background:linear-gradient(135deg,#ffe066,#FCD535);box-shadow:0 0 20px rgba(252,213,53,.35)}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text2)}
+.btn-outline:hover{border-color:var(--cyan);color:var(--cyan)}
+.btn svg{width:16px;height:16px;flex-shrink:0}
+
+.confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10;overflow:hidden}
+.confetti-piece{position:absolute;width:8px;height:8px;opacity:0;animation:confettiFall 3s ease-out forwards}
+@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+footer{padding:16px 24px;border-top:1px solid var(--border);text-align:center}
+footer a{color:var(--text2);text-decoration:none;font-size:12px;margin:0 8px}
+footer a:hover{color:var(--cyan)}
+.footer-copy{color:var(--text2);font-size:11px;margin-top:6px;font-family:var(--sans)}
+
+@media(max-width:480px){
+  .btn-row{flex-direction:column}
+  .container{padding:48px 16px}
+  .email-notice,.telegram-hint{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="brand" href="/">
+    <div class="brand-mark"></div>
+    <div class="brand-text">Agora<span class="brand-iq">IQ</span></div>
+  </a>
+</div>
+
+<div class="confetti" id="confetti"></div>
+
+<div class="container">
+  <div class="success-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 6L9 17l-5-5"/>
+    </svg>
+  </div>
+
+  <h1>Welcome to AgoraIQ!</h1>
+  <div class="subtitle" id="planLabel">Subscription Active</div>
+
+  <div class="details-card">
+    <div class="detail-row">
+      <span class="detail-label">Plan</span>
+      <span class="detail-value plan" id="detailPlan">—</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">Status</span>
+      <span class="detail-value status">Active</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">Email</span>
+      <span class="detail-value email" id="detailEmail">—</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">Session</span>
+      <span class="detail-value id" id="detailSession">—</span>
+    </div>
+  </div>
+
+  <div class="email-notice">
+    <div class="notice-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13 2 4"/></svg>
+      Check your inbox
+    </div>
+    <div class="notice-text">
+      A welcome email with your account details and login credentials has been sent to your email address. Use these to sign in and access your dashboard anytime.
+    </div>
+  </div>
+
+  <div class="telegram-hint">
+    <div class="hint-title">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.53 8.15l-1.8 8.53c-.13.6-.49.75-.99.47l-2.74-2.02-1.32 1.27c-.15.15-.27.27-.55.27l.2-2.78 5.07-4.58c.22-.2-.05-.3-.34-.12l-6.27 3.95-2.7-.84c-.59-.18-.6-.59.12-.87l10.55-4.07c.49-.18.91.12.77.79z"/></svg>
+      Get signals on Telegram
+    </div>
+    <div class="notice-text">
+      For real-time signals straight to your phone, open <strong>@SigPulseBot</strong> on Telegram and run <code>/connect</code> to link your account. You can do this anytime — no rush.
+    </div>
+  </div>
+
+  <div class="features-hint">
+    Your plan is active immediately. Explore the dashboard to see live signals, scanner data, provider rankings, and your verified performance stats.
+    <br><br>Need help getting started? <a href="/help.html" style="color:var(--cyan);text-decoration:none;font-weight:600">Visit our Help Center →</a>
+  </div>
+
+  <div class="btn-row">
+    <a class="btn btn-primary" href="/dashboard.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Go to Dashboard
+    </a>
+    <a class="btn btn-outline" href="https://t.me/SigPulseBot" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.53 8.15l-1.8 8.53c-.13.6-.49.75-.99.47l-2.74-2.02-1.32 1.27c-.15.15-.27.27-.55.27l.2-2.78 5.07-4.58c.22-.2-.05-.3-.34-.12l-6.27 3.95-2.7-.84c-.59-.18-.6-.59.12-.87l10.55-4.07c.49-.18.91.12.77.79z"/></svg>
+      Open Telegram
+    </a>
+  </div>
+</div>
+
+<footer>
+  <div><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a><a href="pricing.html">Pricing</a></div>
+  <div class="footer-copy">&copy; 2026 ChatLogic Insights LTD. All rights reserved.</div>
+</footer>
+
+<script>
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var sessionId = params.get("session_id") || "—";
+  var email = params.get("email") || "";
+
+  if (sessionId && sessionId !== "—") {
+    document.getElementById("detailSession").textContent = sessionId;
+  }
+
+  if (email) {
+    document.getElementById("detailEmail").textContent = email;
+  }
+
+  // Try to get plan from billing status if user has a token
+  var token = localStorage.getItem("iq_token");
+  if (token) {
+    var API = window.location.origin + "/api/v1";
+    fetch(API + "/billing/status", { headers: { "Authorization": "Bearer " + token } })
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        if (d.plan && d.plan !== "free") {
+          var label = d.plan.toUpperCase() + (d.period ? " " + d.period.charAt(0).toUpperCase() + d.period.slice(1) : "");
+          document.getElementById("detailPlan").textContent = label;
+          document.getElementById("planLabel").textContent = label + " — Active";
+        }
+        if (d.email && !email) {
+          document.getElementById("detailEmail").textContent = d.email;
+        }
+      })
+      .catch(function(){});
+  }
+
+  // Plan from URL param fallback
+  var plan = params.get("plan") || "";
+  if (plan) {
+    document.getElementById("detailPlan").textContent = plan.toUpperCase();
+    document.getElementById("planLabel").textContent = plan.toUpperCase() + " — Active";
+  }
+
+  // Confetti
+  var colors = ["#00d4ff","#22c55e","#FCD535","#a78bfa","#ef4444","#f59e0b"];
+  var container = document.getElementById("confetti");
+  for (var i = 0; i < 40; i++) {
+    var piece = document.createElement("div");
+    piece.className = "confetti-piece";
+    piece.style.left = Math.random() * 100 + "%";
+    piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDelay = Math.random() * 2 + "s";
+    piece.style.animationDuration = 2 + Math.random() * 2 + "s";
+    piece.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
+    piece.style.width = 6 + Math.random() * 6 + "px";
+    piece.style.height = 6 + Math.random() * 6 + "px";
+    container.appendChild(piece);
+  }
+  setTimeout(function(){ container.style.display = "none"; }, 5000);
+})();
+</script>
+</body>
+</html>

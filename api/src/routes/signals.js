@@ -4,7 +4,7 @@ const db = require("../lib/db");
 const { requireAuth, optionalAuth } = require("../middleware/auth");
 const { attachPlan } = require("../middleware/subscription");
 const { parseSignal } = require("../lib/parser");
-const { fetchPrice } = require("../lib/price");
+const { fetchPrice, fetchAllPrices } = require("../lib/price");
 const ai = require("../lib/ai");
 const Signal = require("../models/signal");
 const events = require("../lib/events");
@@ -294,6 +294,91 @@ router.get("/events", requireAuth, attachPlan, async (req, res) => {
     res.json({ events: safe });
   } catch (err) {
     console.error("[signals/events]", err.message);
+    res.status(500).json({ error: "Internal error" });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────
+// GET /signals/dashboard — aggregated dashboard data
+// MUST be before /:id to avoid Express matching "dashboard" as an ID
+// ─────────────────────────────────────────────────────────────────
+router.get("/dashboard", optionalAuth, attachPlan, async (req, res) => {
+  try {
+    const tier = req.planTier || "free";
+
+    const [weekR, todayR, recentR, weekPerfR, priceMap] = await Promise.all([
+      db.query(`
+        SELECT COUNT(*)::int AS total,
+          COUNT(*) FILTER (WHERE status LIKE 'TP%')::int AS wins,
+          COUNT(*) FILTER (WHERE status = 'SL')::int AS losses,
+          COUNT(*) FILTER (WHERE status = 'OPEN')::int AS open
+        FROM signals_v2
+        WHERE created_at >= NOW() - INTERVAL '7 days' AND source = ANY($1)
+      `, [PUBLIC_SOURCES]),
+      db.query(`
+        SELECT COUNT(*)::int AS total,
+          COUNT(*) FILTER (WHERE status LIKE 'TP%')::int AS wins,
+          COUNT(*) FILTER (WHERE status LIKE 'TP%' OR status = 'SL')::int AS decided,
+          ROUND(MAX(CASE WHEN result IS NOT NULL AND result > 0 THEN result END)::numeric, 2) AS best_win
+        FROM signals_v2
+        WHERE created_at >= CURRENT_DATE AND source = ANY($1)
+      `, [PUBLIC_SOURCES]),
+      db.query(`
+        SELECT * FROM signals_v2 WHERE source = ANY($1)
+        ORDER BY created_at DESC LIMIT 12
+      `, [PUBLIC_SOURCES]),
+      db.query(`
+        SELECT ROUND(AVG(CASE WHEN result > 0 THEN result END)::numeric, 2) AS avg_win,
+          ROUND(AVG(result)::numeric, 2) AS avg_return
+        FROM signals_v2
+        WHERE created_at >= NOW() - INTERVAL '7 days' AND result IS NOT NULL AND source = ANY($1)
+      `, [PUBLIC_SOURCES]),
+      fetchAllPrices().catch(() => ({})),
+    ]);
+
+    const week = weekR.rows[0];
+    const today = todayR.rows[0];
+    const weekPerf = weekPerfR.rows[0];
+    const todayWinRate = today.decided > 0 ? Math.round((today.wins / today.decided) * 100) : null;
+
+    const signals = recentR.rows.map(row => {
+      const s = Signal.fromDbRow(row);
+      const livePrice = priceMap[s.symbol] || null;
+      let livePnl = null;
+      if (s.entry && livePrice && s.status === "OPEN") {
+        livePnl = s.direction === "LONG"
+          ? ((livePrice - s.entry) / s.entry) * 100
+          : ((s.entry - livePrice) / s.entry) * 100;
+        livePnl = Math.round(livePnl * 100) / 100;
+      }
+      if (tier === "free") {
+        return {
+          id: s.id, symbol: s.symbol, direction: s.direction,
+          status: s.status, result: s.result, confidence: s.confidence,
+          provider: s.provider, source: s.source,
+          created_at: s.created_at, resolved_at: s.resolved_at,
+          entry: null, stop: null, targets: [],
+          currentPrice: null, livePnl: null,
+        };
+      }
+      return { ...s, currentPrice: livePrice, livePnl };
+    });
+
+    const visibleLimit = SIGNAL_LIMITS[tier] || 1;
+    const hiddenCount = tier === "free" ? Math.max(0, week.total - Math.min(visibleLimit, week.total)) : 0;
+    const hiddenWins = tier === "free" ? Math.max(0, week.wins - Math.min(Math.round(week.wins * visibleLimit / Math.max(week.total, 1)), week.wins)) : 0;
+
+    res.json({
+      tier,
+      week: { total: week.total, wins: week.wins, losses: week.losses, open: week.open, hiddenCount, hiddenWins,
+        avgWin: weekPerf.avg_win ? parseFloat(weekPerf.avg_win) : null,
+        avgReturn: weekPerf.avg_return ? parseFloat(weekPerf.avg_return) : null },
+      today: { total: today.total, wins: today.wins, winRate: todayWinRate,
+        bestWin: today.best_win ? parseFloat(today.best_win) : null },
+      signals,
+    });
+  } catch (err) {
+    console.error("[signals/dashboard]", err.message);
     res.status(500).json({ error: "Internal error" });
   }
 });

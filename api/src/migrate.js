@@ -74,6 +74,16 @@ const MIGRATIONS = [
    EXCEPTION WHEN duplicate_column THEN NULL;
    END $$`,
 
+  // ── Migration: add pending columns used by billing.js ─────────
+  `DO $$ BEGIN
+     ALTER TABLE bot_subscriptions ADD COLUMN IF NOT EXISTS pending_plan_tier TEXT;
+   EXCEPTION WHEN duplicate_column THEN NULL;
+   END $$`,
+  `DO $$ BEGIN
+     ALTER TABLE bot_subscriptions ADD COLUMN IF NOT EXISTS pending_billing_period TEXT;
+   EXCEPTION WHEN duplicate_column THEN NULL;
+   END $$`,
+
   // ── Migration: add meta JSONB column for consent/checkout links ─
   `DO $$ BEGIN
      ALTER TABLE bot_subscriptions ADD COLUMN IF NOT EXISTS meta JSONB DEFAULT '{}'::jsonb;

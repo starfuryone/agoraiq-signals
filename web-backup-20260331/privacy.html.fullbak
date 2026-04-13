@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — AgoraIQ Signals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Mono:wght@400;500&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* === FORCE H1 STYLE === */
+/* === ACCENT LAST WORD === */
+h1 .accent { color: #FCD535 !important; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Albert Sans', sans-serif !important;
+}
+h1 {
+  font-family: 'Albert Sans', sans-serif !important;
+  font-weight: 900 !important;
+  font-size: clamp(34px, 4.5vw, 48px) !important;
+  letter-spacing: -2px !important;
+  text-transform: uppercase !important;
+  color: #EFBF04 !important;
+  line-height: 1.08 !important;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#08090d;--surface:#0e1017;--surface2:#161822;--border:#1e2230;--cyan:#00d4ff;--cyan-dim:rgba(0,212,255,.12);--green:#22c55e;--red:#ef4444;--amber:#f59e0b;--text:#e4e7ef;--text2:#8b92a8;--text3:#5b6178;--syne:'Syne',sans-serif;--mono:'DM Mono',monospace;--sans:'Albert Sans',sans-serif}
+html{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;-webkit-font-smoothing:antialiased}
+body{min-height:100vh}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);background:var(--surface)}
+.brand{display:flex;align-items:center;gap:8px;text-decoration:none}
+.brand-mark{width:28px;height:28px;background:linear-gradient(135deg,#55d0ff,#1a6eff);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);flex-shrink:0}
+.brand-text{font-family:var(--syne,'Syne',sans-serif);font-weight:800;font-size:18px;color:#fff;letter-spacing:-.02em}
+.brand-iq{color:var(--cyan,#00d4ff)}
+.topbar nav{display:flex;gap:20px}
+.topbar nav a{color:var(--text2);text-decoration:none;font-size:13px;font-family:var(--mono);transition:color .2s}
+.topbar nav a:hover{color:var(--cyan)}
+.container{max-width:760px;margin:0 auto;padding:40px 24px 60px}
+.breadcrumb{font-size:13px;color:var(--text3);margin-bottom:24px}
+.breadcrumb a{color:var(--text2);text-decoration:none}
+.breadcrumb a:hover{color:var(--cyan)}
+h1{/* inherited from styles.css */ font-weight:800;font-size:32px;margin-bottom:8px;background:linear-gradient(135deg,#fff 40%,var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.updated{color:var(--text3);font-size:13px;margin-bottom:32px}
+h2{/* inherited from styles.css */ font-weight:700;font-size:18px;color:#fff;margin:32px 0 12px;padding-top:20px;border-top:1px solid var(--border)}
+h2:first-of-type{border-top:none;margin-top:24px}
+p{color:var(--text);line-height:1.7;margin-bottom:14px}
+ul,ol{margin:0 0 14px 24px;line-height:1.7}
+li{margin-bottom:6px}
+strong{color:#fff}
+a{color:var(--cyan);text-decoration:none}
+a:hover{text-decoration:underline}
+.callout{background:var(--surface);border-left:3px solid var(--amber);padding:14px 18px;border-radius:0 8px 8px 0;margin:16px 0;font-size:14px;color:var(--text)}
+
+.legal-footer{background:var(--surface,#0e1017);border-top:1px solid var(--border,#1e2230);padding:32px 24px;margin-top:48px;text-align:center;font-size:12px;font-family:var(--sans,'Albert Sans',sans-serif);color:var(--text2,#8b92a8)}
+.footer-inner{max-width:860px;margin:0 auto}
+.footer-brand{font-family:var(--syne,'Syne',sans-serif);font-weight:800;font-size:16px;color:var(--cyan,#00d4ff);margin-bottom:12px}
+.footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-bottom:12px}
+.footer-links a{color:var(--text2,#8b92a8);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--cyan,#00d4ff)}
+.footer-copy{margin-bottom:8px}
+.footer-warn{font-size:11px;color:var(--text2,#8b92a8);opacity:.7;max-width:640px;margin:0 auto;line-height:1.5}
+
+@media(max-width:768px){.container{padding:24px 16px 40px}h1{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="/" class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">Agora<span class="brand-iq">IQ</span></span></a>
+  <nav>
+    <a href="signals.html">Signals</a>
+    <a href="scanner.html">Scanner</a>
+    <a href="track.html">Track</a>
+    <a href="proof.html">Proof</a>
+    <a href="providers.html">Providers</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="watchlist.html">Watchlist</a><a href="help.html">Help</a>
+  </nav>
+</div>
+<div class="container">
+  <div class="breadcrumb"><a href="signals.html">Home</a> &rarr; Privacy Policy</div>
+  <h1>Privacy <span class="accent">Policy</span></h1>
+<p class="updated">Last updated: February 2026</p>
+
+<h2>1. Data Controller</h2>
+<p>ChatLogic Insights LTD is the data controller for personal data processed through AgoraIQ Signals.</p>
+
+<h2>2. Data We Collect</h2>
+<p>Email address and password hash (for authentication), subscription and billing data (processed by Stripe), usage logs (page views, feature usage), and optionally Telegram identifiers if you link your account.</p>
+
+<h2>3. How We Use Data</h2>
+<p>To provide and improve the Service, process payments, send service notifications, and detect abuse. We do not sell personal data.</p>
+
+<h2>4. Third Parties</h2>
+<p>We share data with: Stripe (payments) and Telegram (if you link your account). All processors are GDPR-compliant.</p>
+
+<h2>5. Data Retention</h2>
+<p>Account data is retained while your account is active. After deletion, data is purged within 30 days except where legal retention is required.</p>
+
+<h2>6. Your Rights</h2>
+<p>You may request access, correction, or deletion of your data at any time by emailing <a href="mailto:legal@agoraiq.net">legal@agoraiq.net</a>.</p>
+
+<h2>7. UK Persons</h2>
+<p>AgoraIQ is not directed at UK persons. ChatLogic Insights LTD will delete any data collected from UK persons upon identification.</p>
+
+<h2>8. Contact</h2>
+<p>Privacy inquiries: <a href="mailto:legal@agoraiq.net">legal@agoraiq.net</a></p>
+</div>
+<footer class="legal-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">Agora<span style="color:var(--cyan,#00d4ff)">IQ</span></div>
+    <div class="footer-links">
+      <a href="terms.html">Terms</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="cookies.html">Cookies</a>
+      <a href="disclaimer.html">Disclaimer</a>
+      <a href="no-financial-advice.html">No Financial Advice</a>
+    </div>
+    <div class="footer-copy">&copy; 2026 ChatLogic Insights LTD. All rights reserved.</div>
+    <div class="footer-warn">&olarr; Not for UK Persons. AgoraIQ is not authorised or regulated by the FCA. Not directed at UK persons. Nothing on this site constitutes financial advice. Past performance does not guarantee future results.</div>
+  </div>
+</footer>
+</body>
+</html>

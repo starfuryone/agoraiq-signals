@@ -331,7 +331,8 @@ async def cmd_help(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
         "/status — Account & subscription\n"
         "/profile — Bot profile\n"
         "/plan — Current plan\n"
-        "/upgrade — Upgrade access\n\n"
+        "/upgrade — Upgrade access\n"
+        "/billing — Manage subscription\n\n"
         f"{bold('👥 Providers')}\n"
         "/providers — Signal provider leaderboard\n"
         "/top\\_providers — Top rated providers\n"
@@ -1306,7 +1307,7 @@ async def cmd_plan(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
         plan = safe_get(data, "subscription", "planTier", default="free")
         await update.message.reply_text(
             f"💎 Your plan: {bold(esc(plan.upper()))}\n\n"
-            f"👉 {link('Manage subscription', APP_URL + '/settings')}",
+            f"👉 {link('Manage subscription', APP_URL + '/pricing.html')}",
             parse_mode=ParseMode.MARKDOWN_V2,
         )
     except Exception as e:
@@ -1622,19 +1623,58 @@ async def cmd_billing(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
 # ═══════════════════════════════════════════════════════════════════
 
 BOT_COMMANDS = [
+    # Core
     BotCommand("start", "Welcome message"),
     BotCommand("help", "All commands"),
+    # Breakout & Signals
     BotCommand("signals", "Latest breakout signals"),
+    BotCommand("breakouts", "Active breakout setups"),
+    BotCommand("latest", "Most recent alerts"),
+    BotCommand("watchlist", "Monitored pairs"),
+    BotCommand("pair", "Breakout data for a pair"),
+    BotCommand("setup", "Entry, SL, TPs, confidence"),
+    # Alerts
+    BotCommand("alerts", "Your active alerts"),
+    BotCommand("addalert", "Add alert"),
+    BotCommand("removealert", "Remove alert"),
+    BotCommand("pausealerts", "Pause all alerts"),
+    BotCommand("resumealerts", "Resume all alerts"),
+    BotCommand("settings", "Alert preferences"),
+    # Intelligence
     BotCommand("market", "Market overview"),
     BotCommand("top", "Top breakout candidates"),
-    BotCommand("proof", "Verified performance"),
-    BotCommand("connect", "Link Telegram to AgoraIQ"),
-    BotCommand("alerts", "Your active alerts"),
+    BotCommand("momentum", "Strongest momentum"),
+    BotCommand("volume", "Unusual volume"),
+    BotCommand("oi", "Open interest movers"),
+    BotCommand("funding", "Funding rate extremes"),
+    # Track
     BotCommand("track", "Submit a signal to track"),
+    BotCommand("my_signals", "Your tracked signals"),
+    BotCommand("signal_status", "Check signal status"),
     BotCommand("cancel_signal", "Cancel a tracked signal"),
     BotCommand("my_stats", "Your signal tracking stats"),
-    BotCommand("pair", "Breakout data for a pair"),
+    # Proof & Trust
+    BotCommand("proof", "Verified performance"),
+    BotCommand("history", "Past signals"),
+    BotCommand("wins", "Winning signals"),
+    BotCommand("stats", "Performance stats"),
+    # Account
+    BotCommand("connect", "Link Telegram to AgoraIQ"),
+    BotCommand("disconnect", "Unlink account"),
+    BotCommand("status", "Account & subscription"),
+    BotCommand("profile", "Bot profile"),
+    BotCommand("plan", "Current plan"),
+    BotCommand("upgrade", "Upgrade access"),
     BotCommand("billing", "Manage subscription"),
+    # Providers
+    BotCommand("providers", "Signal provider leaderboard"),
+    BotCommand("top_providers", "Top rated providers"),
+    BotCommand("follow", "Follow a provider"),
+    BotCommand("unfollow", "Unfollow a provider"),
+    # Support
+    BotCommand("support", "Contact support"),
+    BotCommand("faq", "Common questions"),
+    BotCommand("feedback", "Send feedback"),
     BotCommand("about", "What is AgoraIQ"),
 ]
 

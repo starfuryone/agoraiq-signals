@@ -7769,3 +7769,2030 @@
 2026-04-10 21:22:17: GET /equity-curve → 200 (314ms)
 2026-04-10 21:22:17: GET /api/proof/providers → 404 (1ms)
 2026-04-10 21:23:33: GET /verify → 200 (5ms)
+2026-04-11 22:46:28: [db] connected — Sat Apr 11 2026 22:46:28 GMT+0000 (Coordinated Universal Time)
+2026-04-11 22:46:28: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-11 22:46:28: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-11 22:47:28: GET /me → 304 (30ms)
+2026-04-11 22:47:28: GET /dashboard → 400 (2ms)
+2026-04-11 22:47:28: GET /stats → 200 (13ms)
+2026-04-11 22:47:36: GET / → 200 (3ms)
+2026-04-11 22:47:43: GET /api/v1/alerts/rules → 404 (1ms)
+2026-04-11 22:50:17: GET /user → 200 (7ms)
+2026-04-11 22:50:17: GET /user/stats → 200 (11ms)
+2026-04-11 22:50:24: GET /user → 304 (3ms)
+2026-04-11 22:50:24: GET /user/stats → 304 (4ms)
+2026-04-11 22:50:38: GET / → 304 (2ms)
+2026-04-11 22:52:11: GET / → 304 (6ms)
+2026-04-11 22:55:26: GET /dashboard → 400 (6ms)
+2026-04-11 22:55:26: GET /stats → 200 (12ms)
+2026-04-11 22:55:45: GET / → 200 (2ms)
+2026-04-11 22:56:18: GET / → 304 (7ms)
+2026-04-11 22:56:19: GET /me → 304 (2ms)
+2026-04-11 22:56:20: GET /api/v1/user/me → 404 (0ms)
+2026-04-11 22:56:20: GET /api/v1/me → 404 (0ms)
+2026-04-11 22:56:40: GET / → 304 (2ms)
+2026-04-11 22:56:52: GET / → 304 (2ms)
+2026-04-11 22:57:05: GET / → 304 (2ms)
+2026-04-11 22:57:23: GET / → 304 (2ms)
+2026-04-11 22:57:43: GET / → 304 (2ms)
+2026-04-11 22:57:54: GET / → 304 (2ms)
+2026-04-11 22:58:38: GET / → 304 (6ms)
+2026-04-11 22:59:38: GET / → 304 (6ms)
+2026-04-11 23:00:48: GET / → 200 (6ms)
+2026-04-11 23:01:43: GET / → 304 (6ms)
+2026-04-11 23:02:48: GET / → 304 (7ms)
+2026-04-11 23:03:40: GET / → 304 (6ms)
+2026-04-11 23:04:48: GET / → 304 (6ms)
+2026-04-11 23:05:48: GET / → 200 (6ms)
+2026-04-11 23:06:58: GET / → 304 (6ms)
+2026-04-11 23:07:56: GET / → 304 (6ms)
+2026-04-11 23:08:58: GET / → 304 (6ms)
+2026-04-11 23:09:58: GET / → 304 (6ms)
+2026-04-11 23:10:56: GET / → 200 (7ms)
+2026-04-11 23:22:02: GET / → 304 (7ms)
+2026-04-11 23:23:02: GET / → 304 (6ms)
+2026-04-11 23:24:02: GET / → 304 (6ms)
+2026-04-11 23:25:12: GET / → 200 (6ms)
+2026-04-11 23:25:14: GET / → 304 (2ms)
+2026-04-11 23:26:02: GET / → 304 (6ms)
+2026-04-11 23:26:14: GET / → 304 (2ms)
+2026-04-11 23:26:14: GET /dashboard → 400 (1ms)
+2026-04-11 23:26:14: GET /stats → 200 (10ms)
+2026-04-11 23:35:31: GET /me → 200 (6ms)
+2026-04-11 23:35:31: GET /dashboard → 400 (1ms)
+2026-04-11 23:35:32: GET /stats → 200 (11ms)
+2026-04-11 23:36:43: POST /telegram-auth → 200 (7ms)
+2026-04-11 23:36:48: DELETE /link → 200 (1ms)
+2026-04-11 23:36:58: POST /telegram-auth → 404 (1ms)
+2026-04-11 23:36:58: POST /link/start → 200 (1ms)
+2026-04-11 23:37:06: POST /login → 200 (58ms)
+2026-04-11 23:37:06: POST /link/confirm → 200 (2ms)
+2026-04-11 23:37:26: GET /me → 304 (2ms)
+2026-04-11 23:37:26: GET /dashboard → 400 (1ms)
+2026-04-11 23:37:26: GET /stats → 304 (11ms)
+2026-04-11 23:43:06: [db] connected — Sat Apr 11 2026 23:43:06 GMT+0000 (Coordinated Universal Time)
+2026-04-11 23:43:06: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-11 23:43:06: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-11 23:43:22: GET /dashboard → 200 (2129ms)
+2026-04-11 23:43:52: GET /me → 200 (29ms)
+2026-04-11 23:43:54: GET /dashboard → 200 (1984ms)
+2026-04-11 23:43:55: GET /stats → 200 (9ms)
+2026-04-11 23:44:03: GET / → 200 (2ms)
+2026-04-11 23:44:05: GET /dashboard → 200 (1964ms)
+2026-04-11 23:44:19: GET /me → 304 (2ms)
+2026-04-11 23:44:21: GET /dashboard → 200 (1977ms)
+2026-04-11 23:44:26: GET /status → 304 (2ms)
+2026-04-11 23:51:21: POST /telegram-auth → 200 (8ms)
+2026-04-11 23:51:37: GET /breakouts → 200 (2642ms)
+2026-04-11 23:51:45: GET /overview → 200 (1ms)
+2026-04-11 23:52:19: GET /top → 200 (2ms)
+2026-04-11 23:53:05: GET / → 200 (6ms)
+2026-04-12 00:07:09: POST /telegram-auth → 200 (7ms)
+2026-04-12 00:07:09: GET /me → 200 (1ms)
+2026-04-12 00:07:18: GET /me → 200 (2ms)
+2026-04-12 00:14:52: POST /telegram-auth → 200 (6ms)
+2026-04-12 00:14:55: GET /breakouts → 200 (2614ms)
+2026-04-12 00:15:00: GET /recent → 200 (18ms)
+2026-04-12 00:15:06: GET /overview → 200 (1ms)
+2026-04-12 00:15:37: GET /status → 200 (6ms)
+2026-04-12 00:15:43: GET /me → 200 (2ms)
+2026-04-12 00:15:50: GET /consent-config → 304 (0ms)
+2026-04-12 00:15:50: GET /status → 304 (1ms)
+2026-04-12 00:16:36: GET /status → 200 (6ms)
+2026-04-12 00:16:36: POST /portal → 200 (420ms)
+2026-04-12 00:21:23: POST /telegram-auth → 200 (6ms)
+2026-04-12 00:21:23: GET /status → 200 (1ms)
+2026-04-12 00:21:23: POST /portal → 200 (356ms)
+2026-04-12 00:29:40: POST /telegram-auth → 200 (6ms)
+2026-04-12 00:30:07: GET /stats → 200 (11ms)
+2026-04-12 00:30:24: GET /status → 200 (1ms)
+2026-04-12 00:30:25: POST /portal → 200 (349ms)
+2026-04-12 00:33:21: GET / → 200 (8ms)
+2026-04-12 00:33:23: GET /dashboard → 200 (1944ms)
+2026-04-12 00:33:29: GET / → 200 (1ms)
+2026-04-12 00:33:29: GET /live → 200 (2ms)
+2026-04-12 00:33:31: GET /dashboard → 200 (2126ms)
+2026-04-12 00:33:33: GET /user → 304 (3ms)
+2026-04-12 00:33:33: GET /user/stats → 304 (4ms)
+2026-04-12 00:33:37: GET /status → 200 (6ms)
+2026-04-12 00:33:37: GET /stats → 200 (7ms)
+2026-04-12 00:33:37: GET /outcomes → 200 (6ms)
+2026-04-12 00:33:37: GET /resolved → 200 (26ms)
+2026-04-12 00:33:37: GET /score-bands → 200 (25ms)
+2026-04-12 00:33:37: GET /resolved → 200 (24ms)
+2026-04-12 00:33:38: [equity-curve] Kraken: BTC 18 days, ETH 18 days
+2026-04-12 00:33:38: GET /equity-curve → 304 (321ms)
+2026-04-12 00:33:38: GET /api/proof/providers → 404 (1ms)
+2026-04-12 00:33:45: GET /status → 304 (2ms)
+2026-04-12 00:33:52: GET /consent-config → 304 (0ms)
+2026-04-12 00:33:52: GET /status → 304 (1ms)
+2026-04-12 00:33:57: POST /portal → 200 (389ms)
+2026-04-12 00:56:48: GET /consent-config → 304 (0ms)
+2026-04-12 00:56:48: GET /status → 304 (5ms)
+2026-04-12 00:56:51: POST /portal → 200 (354ms)
+2026-04-12 01:00:21: GET /consent-config → 304 (0ms)
+2026-04-12 01:00:21: GET /status → 304 (5ms)
+2026-04-12 01:00:25: POST /portal → 200 (350ms)
+2026-04-12 01:07:22: POST /telegram-auth → 200 (6ms)
+2026-04-12 01:07:22: GET /status → 200 (1ms)
+2026-04-12 01:07:22: POST /portal → 200 (357ms)
+2026-04-12 16:35:33: POST /telegram-auth → 200 (7ms)
+2026-04-12 16:35:33: POST /checkout → 400 (0ms)
+2026-04-12 16:36:05: GET /status → 200 (5ms)
+2026-04-12 16:36:30: POST /checkout → 400 (1ms)
+2026-04-12 16:45:01: POST /telegram-auth → 200 (6ms)
+2026-04-12 16:45:01: POST /checkout → 400 (1ms)
+2026-04-12 16:49:35: POST /telegram-auth → 200 (5ms)
+2026-04-12 16:49:35: POST /checkout → 400 (1ms)
+2026-04-12 17:02:13: POST /telegram-auth → 200 (6ms)
+2026-04-12 17:02:13: POST /checkout → 200 (589ms)
+2026-04-12 17:04:43: [stripe] activated elite/monthly for bot_user 1
+2026-04-12 17:04:44: [billing/tg] confirmation AQ-MNW0KMMF-0EC3 sent to chat 7640489257
+2026-04-12 17:04:46: GET /me → 304 (3ms)
+2026-04-12 17:04:48: GET /dashboard → 200 (1965ms)
+2026-04-12 17:04:48: GET /stats → 200 (9ms)
+2026-04-12 17:24:17: POST /telegram-auth → 200 (7ms)
+2026-04-12 17:24:17: POST /checkout → 200 (564ms)
+2026-04-12 17:24:44: [stripe] activated elite/monthly for bot_user 1
+2026-04-12 17:24:45: [billing/tg] confirmation AQ-MNW1AD98-1TL7 sent to chat 7640489257
+2026-04-12 17:24:53: GET /me → 304 (3ms)
+2026-04-12 17:24:55: GET /dashboard → 200 (2003ms)
+2026-04-12 17:24:55: GET /stats → 200 (9ms)
+2026-04-12 17:26:12: [db] connected — Sun Apr 12 2026 17:26:12 GMT+0000 (Coordinated Universal Time)
+2026-04-12 17:26:12: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-12 17:26:12: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-12 17:28:02: POST /checkout → 200 (585ms)
+2026-04-12 17:28:27: [stripe] activated elite/monthly for bot_user 1
+2026-04-12 17:28:28: [billing/tg] confirmation AQ-MNW1F56D-9H0V sent to chat 7640489257
+2026-04-12 17:28:29: GET /status → 200 (2ms)
+2026-04-12 17:28:39: GET /me → 304 (3ms)
+2026-04-12 17:28:41: GET /dashboard → 200 (1993ms)
+2026-04-12 17:28:42: GET /stats → 200 (9ms)
+2026-04-12 17:29:20: GET /me → 304 (6ms)
+2026-04-12 17:29:22: GET /dashboard → 200 (2044ms)
+2026-04-12 17:29:22: GET /stats → 200 (9ms)
+2026-04-12 17:29:41: GET / → 200 (1ms)
+2026-04-12 17:29:41: GET /live → 200 (2ms)
+2026-04-12 17:29:43: GET /dashboard → 200 (1962ms)
+2026-04-12 17:29:53: GET /live → 200 (2ms)
+2026-04-12 17:29:54: GET /live → 200 (2ms)
+2026-04-12 17:29:55: GET /live → 200 (2ms)
+2026-04-12 17:29:56: GET /live → 304 (1ms)
+2026-04-12 17:30:00: GET /live → 200 (2ms)
+2026-04-12 17:30:12: GET /live → 200 (1ms)
+2026-04-12 17:30:27: GET /live → 200 (2ms)
+2026-04-12 17:30:42: GET /live → 200 (2ms)
+2026-04-12 17:31:02: GET /live → 200 (2ms)
+2026-04-12 17:31:12: GET /live → 200 (2ms)
+2026-04-12 17:31:14: POST /telegram-auth → 200 (2ms)
+2026-04-12 17:31:14: POST /checkout → 200 (580ms)
+2026-04-12 17:31:27: GET /live → 200 (1ms)
+2026-04-12 17:31:42: [stripe] activated pro/monthly for bot_user 1
+2026-04-12 17:31:42: [billing/tg] confirmation AQ-MNW1JBAR-GEM5 sent to chat 7640489257
+2026-04-12 17:31:42: GET /live → 200 (3ms)
+2026-04-12 17:31:43: GET /status → 200 (2ms)
+2026-04-12 17:31:47: GET /me → 200 (2ms)
+2026-04-12 17:31:49: GET /dashboard → 200 (2206ms)
+2026-04-12 17:31:49: GET /stats → 200 (9ms)
+2026-04-12 17:31:57: GET /live → 200 (2ms)
+2026-04-12 17:32:09: GET /status → 200 (7ms)
+2026-04-12 17:32:09: GET /stats → 200 (7ms)
+2026-04-12 17:32:09: GET /outcomes → 200 (5ms)
+2026-04-12 17:32:09: GET /resolved → 200 (28ms)
+2026-04-12 17:32:09: GET /score-bands → 200 (28ms)
+2026-04-12 17:32:09: GET /resolved → 200 (28ms)
+2026-04-12 17:32:09: [equity-curve] Kraken: BTC 18 days, ETH 18 days
+2026-04-12 17:32:09: GET /equity-curve → 304 (312ms)
+2026-04-12 17:32:09: GET /api/proof/providers → 404 (1ms)
+2026-04-12 17:32:19: GET / → 200 (2ms)
+2026-04-12 17:32:19: GET /live → 200 (1ms)
+2026-04-12 17:32:21: GET /dashboard → 200 (2122ms)
+2026-04-12 17:32:22: GET /top → 200 (2614ms)
+2026-04-12 17:32:27: GET /live → 200 (2ms)
+2026-04-12 17:32:30: GET / → 200 (2ms)
+2026-04-12 17:32:32: GET /dashboard → 200 (1997ms)
+2026-04-12 17:33:27: GET /live → 200 (6ms)
+2026-04-12 17:33:41: GET /status → 304 (1ms)
+2026-04-12 17:33:41: GET /consent-config → 304 (0ms)
+2026-04-12 17:33:51: POST /preview-upgrade → 200 (759ms)
+2026-04-12 17:33:55: [billing/checkout] upgrade pro/monthly → elite/monthly for user 1 (immediate)
+2026-04-12 17:33:55: POST /checkout → 200 (936ms)
+2026-04-12 17:33:56: [billing/tg] confirmation AQ-MNW1M6BX-Q35B sent to chat 7640489257
+2026-04-12 17:34:01: GET /consent-config → 304 (0ms)
+2026-04-12 17:34:01: GET /status → 200 (1ms)
+2026-04-12 17:34:27: GET /live → 200 (2ms)
+2026-04-12 17:35:27: GET /live → 200 (6ms)
+2026-04-12 17:36:27: GET /live → 200 (5ms)
+2026-04-12 17:37:27: GET /live → 200 (5ms)
+2026-04-12 17:38:27: GET /live → 200 (6ms)
+2026-04-12 17:39:27: GET /live → 200 (6ms)
+2026-04-12 17:40:27: GET /live → 200 (5ms)
+2026-04-12 17:41:27: GET /live → 200 (5ms)
+2026-04-12 17:42:27: GET /live → 200 (5ms)
+2026-04-12 17:43:27: GET /live → 200 (5ms)
+2026-04-12 17:44:27: GET /live → 200 (6ms)
+2026-04-12 17:45:28: GET /live → 200 (5ms)
+2026-04-12 17:46:27: GET /live → 200 (5ms)
+2026-04-12 17:47:27: GET /live → 200 (6ms)
+2026-04-12 17:49:29: GET /live → 200 (7ms)
+2026-04-12 17:50:28: GET /live → 200 (5ms)
+2026-04-12 17:51:28: GET /live → 200 (5ms)
+2026-04-12 17:52:22: GET /consent-config → 304 (1ms)
+2026-04-12 17:52:22: GET /status → 200 (5ms)
+2026-04-12 17:52:32: GET /live → 200 (2ms)
+2026-04-12 17:52:34: POST /checkout → 200 (598ms)
+2026-04-12 17:52:53: [stripe] activated elite/monthly for bot_user 1
+2026-04-12 17:52:53: [billing/tg] confirmation AQ-MNW2AJYR-L1DL sent to chat 7640489257
+2026-04-12 17:52:54: GET /status → 200 (2ms)
+2026-04-12 17:53:29: GET /live → 200 (6ms)
+2026-04-12 17:54:29: GET /live → 200 (5ms)
+2026-04-12 17:55:29: GET /live → 200 (5ms)
+2026-04-12 17:56:20: GET /me → 200 (6ms)
+2026-04-12 17:56:22: GET /dashboard → 200 (2069ms)
+2026-04-12 17:56:29: GET /live → 200 (1ms)
+2026-04-12 17:57:29: GET /live → 200 (6ms)
+2026-04-12 17:58:39: GET /live → 200 (6ms)
+2026-04-12 17:59:29: GET /live → 200 (6ms)
+2026-04-12 18:00:29: GET /live → 200 (5ms)
+2026-04-12 18:01:29: GET /live → 200 (5ms)
+2026-04-12 18:02:39: GET /live → 200 (6ms)
+2026-04-12 18:03:29: GET /live → 200 (6ms)
+2026-04-12 18:04:29: GET /live → 200 (6ms)
+2026-04-12 18:05:29: GET /live → 200 (5ms)
+2026-04-12 18:06:29: GET /live → 200 (5ms)
+2026-04-12 18:07:39: GET /live → 200 (6ms)
+2026-04-12 18:08:39: GET /live → 200 (5ms)
+2026-04-12 18:09:29: GET /live → 200 (6ms)
+2026-04-12 18:10:29: GET /live → 200 (6ms)
+2026-04-12 18:11:29: GET /live → 200 (5ms)
+2026-04-12 18:11:42: [db] connected — Sun Apr 12 2026 18:11:42 GMT+0000 (Coordinated Universal Time)
+2026-04-12 18:11:42: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-12 18:11:42: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-12 18:12:29: GET /live → 200 (29ms)
+2026-04-12 18:13:29: GET /live → 200 (6ms)
+2026-04-12 18:14:29: GET /live → 200 (6ms)
+2026-04-12 18:15:29: GET /live → 200 (7ms)
+2026-04-12 18:16:29: GET /live → 200 (6ms)
+2026-04-12 18:17:29: GET /live → 200 (5ms)
+2026-04-12 18:18:29: GET /live → 200 (6ms)
+2026-04-12 18:19:29: GET /live → 200 (5ms)
+2026-04-12 18:20:29: GET /live → 200 (7ms)
+2026-04-12 18:21:29: GET /live → 200 (6ms)
+2026-04-12 18:22:29: GET /live → 200 (6ms)
+2026-04-12 18:23:29: GET /live → 200 (5ms)
+2026-04-12 18:24:29: GET /live → 200 (6ms)
+2026-04-12 18:25:29: GET /live → 200 (6ms)
+2026-04-12 18:26:29: GET /live → 200 (6ms)
+2026-04-12 18:27:29: GET /live → 200 (5ms)
+2026-04-12 18:28:29: GET /live → 200 (5ms)
+2026-04-12 18:29:29: GET /live → 200 (5ms)
+2026-04-12 18:30:29: GET /live → 200 (5ms)
+2026-04-12 18:31:29: GET /live → 200 (6ms)
+2026-04-12 18:32:29: GET /live → 200 (6ms)
+2026-04-12 18:33:29: GET /live → 200 (5ms)
+2026-04-12 18:34:34: GET /live → 200 (6ms)
+2026-04-12 18:35:29: GET /live → 200 (6ms)
+2026-04-12 18:36:29: GET /live → 200 (6ms)
+2026-04-12 18:37:39: GET /live → 200 (5ms)
+2026-04-12 18:38:27: GET /live → 200 (5ms)
+2026-04-12 18:38:28: GET /live → 304 (2ms)
+2026-04-12 18:38:37: POST /track → 200 (3ms)
+2026-04-12 18:38:41: GET /user/stats → 200 (4ms)
+2026-04-12 18:38:41: GET /user → 200 (2ms)
+2026-04-12 18:39:52: GET /user/stats → 200 (2ms)
+2026-04-12 18:39:52: GET /user → 200 (6ms)
+2026-04-12 18:39:57: GET /user → 200 (3ms)
+2026-04-12 18:39:57: GET /user/stats → 200 (3ms)
+2026-04-12 18:40:00: GET /consent-config → 304 (0ms)
+2026-04-12 18:40:00: GET /status → 200 (1ms)
+2026-04-12 18:40:05: GET / → 200 (10ms)
+2026-04-12 18:40:07: GET /dashboard → 200 (1962ms)
+2026-04-12 18:40:30: GET /consent-config → 304 (1ms)
+2026-04-12 18:40:30: GET /status → 304 (1ms)
+2026-04-12 18:40:41: POST /checkout → 200 (566ms)
+2026-04-12 18:41:00: [stripe] activated elite/monthly for bot_user 1
+2026-04-12 18:41:01: GET /status → 200 (2ms)
+2026-04-12 18:41:56: GET / → 304 (6ms)
+2026-04-12 18:41:58: GET /dashboard → 200 (2120ms)
+2026-04-12 18:42:18: GET / → 200 (1ms)
+2026-04-12 18:42:18: GET /live → 200 (2ms)
+2026-04-12 18:42:20: GET /dashboard → 200 (2104ms)
+2026-04-12 18:42:20: GET /top → 200 (2604ms)
+2026-04-12 18:42:24: GET /consent-config → 304 (1ms)
+2026-04-12 18:42:24: GET /status → 200 (2ms)
+2026-04-12 18:42:29: POST /checkout → 200 (589ms)
+2026-04-12 18:43:57: [stripe] activated elite/monthly for bot_user 1
+2026-04-12 18:43:58: [billing/tg] confirmation AQ-MNW448F4-JUW5 sent to chat 7640489257
+2026-04-12 18:43:58: GET /status → 200 (2ms)
+2026-04-12 18:45:23: GET /consent-config → 304 (1ms)
+2026-04-12 18:45:23: GET /status → 200 (5ms)
+2026-04-12 18:45:36: POST /checkout → 200 (595ms)
+2026-04-12 18:48:08: GET /consent-config → 304 (1ms)
+2026-04-12 18:48:08: GET /status → 304 (5ms)
+2026-04-12 18:48:13: POST /checkout → 200 (600ms)
+2026-04-12 18:50:58: GET /consent-config → 200 (0ms)
+2026-04-12 18:50:58: GET /status → 200 (6ms)
+2026-04-12 18:51:03: POST /checkout → 200 (969ms)
+2026-04-12 18:52:15: [db] connected — Sun Apr 12 2026 18:52:15 GMT+0000 (Coordinated Universal Time)
+2026-04-12 18:52:15: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-12 18:52:15: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-12 18:55:20: GET / → 200 (31ms)
+2026-04-12 18:55:21: GET /me → 200 (2ms)
+2026-04-12 18:55:21: GET /api/v1/user/me → 404 (1ms)
+2026-04-12 18:55:21: GET /api/v1/me → 404 (0ms)
+2026-04-12 18:55:43: GET /consent-config → 304 (1ms)
+2026-04-12 18:55:43: GET /status → 304 (2ms)
+2026-04-12 18:55:51: POST /checkout → 200 (993ms)
+2026-04-12 18:56:28: GET /consent-config → 200 (0ms)
+2026-04-12 18:57:13: POST /login → 401 (5ms)
+2026-04-12 18:57:26: POST /register → 201 (211ms)
+2026-04-12 18:57:28: GET /me → 200 (3ms)
+2026-04-12 18:57:31: GET /dashboard → 200 (2162ms)
+2026-04-12 18:57:31: GET /stats → 200 (10ms)
+2026-04-12 18:57:39: GET /me → 304 (2ms)
+2026-04-12 18:57:41: GET /dashboard → 304 (2026ms)
+2026-04-12 18:57:42: GET /stats → 304 (9ms)
+2026-04-12 18:58:33: GET /status → 200 (6ms)
+2026-04-12 19:15:14: [db] connected — Sun Apr 12 2026 19:15:14 GMT+0000 (Coordinated Universal Time)
+2026-04-12 19:15:14: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-12 19:15:14: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-12 19:17:23: POST /checkout → 500 (459ms)
+2026-04-12 19:21:56: [db] connected — Sun Apr 12 2026 19:21:56 GMT+0000 (Coordinated Universal Time)
+2026-04-12 19:21:56: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-12 19:21:56: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-12 19:23:56: GET /consent-config → 304 (2ms)
+2026-04-12 19:23:56: GET /status → 304 (9ms)
+2026-04-12 19:24:02: POST /checkout → 500 (23ms)
+2026-04-12 19:27:21: GET /consent-config → 304 (1ms)
+2026-04-12 19:27:21: GET /status → 304 (6ms)
+2026-04-12 19:27:30: POST /checkout → 500 (3ms)
+2026-04-12 19:38:08: GET /consent-config → 200 (0ms)
+2026-04-12 19:38:28: POST /public-checkout → 200 (582ms)
+2026-04-12 19:53:16: POST /public-checkout → 200 (623ms)
+2026-04-12 19:56:49: GET /api/v1/billing/webhook → 404 (0ms)
+2026-04-12 19:58:04: GET /api/v1/billing/webhook → 404 (0ms)
+2026-04-12 20:18:40: GET /consent-config → 304 (1ms)
+2026-04-12 20:18:48: POST /public-checkout → 200 (538ms)
+2026-04-12 20:32:17: [db] connected — Sun Apr 12 2026 20:32:17 GMT+0000 (Coordinated Universal Time)
+2026-04-12 20:32:17: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-12 20:32:17: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-12 20:35:48: [db] connected — Sun Apr 12 2026 20:35:48 GMT+0000 (Coordinated Universal Time)
+2026-04-12 20:35:48: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-12 20:35:48: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-12 20:36:51: POST /public-checkout → 200 (589ms)
+2026-04-12 20:39:41: POST /public-checkout → 200 (529ms)
+2026-04-12 20:49:32: GET /consent-config → 304 (0ms)
+2026-04-12 20:50:14: GET /consent-config → 200 (0ms)
+2026-04-12 20:50:18: POST /public-checkout → 200 (543ms)
+2026-04-12 20:59:20: [db] connected — Sun Apr 12 2026 20:59:20 GMT+0000 (Coordinated Universal Time)
+2026-04-12 20:59:20: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-12 20:59:20: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-12 21:00:12: GET /consent-config → 200 (2ms)
+2026-04-12 21:00:23: GET /consent-config → 304 (1ms)
+2026-04-12 21:00:29: GET /consent-config → 200 (1ms)
+2026-04-12 21:00:34: POST /public-checkout → 200 (615ms)
+2026-04-12 21:04:24: [db] connected — Sun Apr 12 2026 21:04:24 GMT+0000 (Coordinated Universal Time)
+2026-04-12 21:04:24: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-12 21:04:24: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-12 21:08:13: GET /consent-config → 304 (1ms)
+2026-04-12 21:08:18: GET /consent-config → 304 (1ms)
+2026-04-12 21:08:22: GET /consent-config → 200 (0ms)
+2026-04-12 21:08:22: GET /consent-config → 200 (0ms)
+2026-04-12 21:08:23: GET /consent-config → 200 (1ms)
+2026-04-12 21:08:28: POST /public-checkout → 200 (574ms)
+2026-04-12 21:11:41: [db] connected — Sun Apr 12 2026 21:11:41 GMT+0000 (Coordinated Universal Time)
+2026-04-12 21:11:41: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-12 21:11:41: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-12 21:12:00: POST /public-checkout → 200 (618ms)
+2026-04-12 21:27:31: [db] connected — Sun Apr 12 2026 21:27:31 GMT+0000 (Coordinated Universal Time)
+2026-04-12 21:27:31: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-12 21:27:31: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-12 21:29:47: POST /telegram-auth → 200 (30ms)
+2026-04-12 21:29:48: POST /checkout → 200 (924ms)
+2026-04-12 21:31:17: POST /checkout → 200 (570ms)
+2026-04-12 21:32:36: GET /status → 304 (6ms)
+2026-04-12 21:39:26: POST /telegram-auth → 200 (7ms)
+2026-04-12 21:39:26: POST /checkout → 200 (872ms)
+2026-04-12 21:40:10: GET /status → 304 (6ms)
+2026-04-12 21:41:53: [db] connected — Sun Apr 12 2026 21:41:53 GMT+0000 (Coordinated Universal Time)
+2026-04-12 21:41:53: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-12 21:41:53: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-12 21:42:19: POST /checkout → 200 (603ms)
+2026-04-12 21:42:56: GET /status → 304 (6ms)
+2026-04-12 21:49:59: [db] connected — Sun Apr 12 2026 21:49:59 GMT+0000 (Coordinated Universal Time)
+2026-04-12 21:49:59: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-12 21:49:59: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-12 21:50:11: GET /consent-config → 304 (1ms)
+2026-04-12 21:50:14: GET /consent-config → 304 (1ms)
+2026-04-12 21:50:19: POST /public-checkout → 200 (586ms)
+2026-04-12 21:54:28: GET /consent-config → 304 (0ms)
+2026-04-12 21:54:31: GET /consent-config → 304 (1ms)
+2026-04-12 21:54:36: POST /public-checkout → 200 (538ms)
+2026-04-12 21:57:26: [db] connected — Sun Apr 12 2026 21:57:26 GMT+0000 (Coordinated Universal Time)
+2026-04-12 21:57:26: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-12 21:57:26: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-12 21:59:12: [db] connected — Sun Apr 12 2026 21:59:12 GMT+0000 (Coordinated Universal Time)
+2026-04-12 21:59:12: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-12 21:59:12: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-12 22:00:30: POST /telegram-auth → 200 (30ms)
+2026-04-12 22:00:31: POST /checkout → 200 (624ms)
+2026-04-12 22:00:45: GET /consent-config → 304 (1ms)
+2026-04-12 22:00:52: GET /consent-config → 304 (0ms)
+2026-04-12 22:01:01: POST /public-checkout → 200 (444ms)
+2026-04-12 22:17:45: [db] connected — Sun Apr 12 2026 22:17:45 GMT+0000 (Coordinated Universal Time)
+2026-04-12 22:17:45: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-12 22:17:45: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-12 22:35:26: POST /telegram-auth → 200 (30ms)
+2026-04-12 22:35:36: GET /consent-config → 304 (1ms)
+2026-04-12 22:35:44: POST /public-checkout → 200 (552ms)
+2026-04-12 22:37:08: GET /status → 200 (14ms)
+2026-04-12 22:37:08: GET /stats → 200 (13ms)
+2026-04-12 22:37:08: GET /score-bands → 200 (14ms)
+2026-04-12 22:37:08: GET /resolved → 200 (25ms)
+2026-04-12 22:37:08: GET /outcomes → 200 (25ms)
+2026-04-12 22:37:08: GET /resolved → 200 (37ms)
+2026-04-12 22:37:09: [equity-curve] Kraken: BTC 18 days, ETH 18 days
+2026-04-12 22:37:09: GET /equity-curve → 200 (328ms)
+2026-04-12 22:37:10: GET /api/proof/providers → 404 (1ms)
+2026-04-12 22:39:45: [db] connected — Sun Apr 12 2026 22:39:45 GMT+0000 (Coordinated Universal Time)
+2026-04-12 22:39:45: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-12 22:39:45: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-12 22:42:11: [db] connected — Sun Apr 12 2026 22:42:11 GMT+0000 (Coordinated Universal Time)
+2026-04-12 22:42:11: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-12 22:42:11: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-12 22:44:12: POST /telegram-auth → 200 (29ms)
+2026-04-12 22:44:13: POST /checkout → 200 (902ms)
+2026-04-12 22:49:12: POST /checkout → 200 (563ms)
+2026-04-12 22:56:50: [db] connected — Sun Apr 12 2026 22:56:50 GMT+0000 (Coordinated Universal Time)
+2026-04-12 22:56:50: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-12 22:56:50: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-12 22:57:54: [stripe/webhook-debug] secret: whsec_iNVT bodyType: object isBuffer: true bodyLen: 4152
+2026-04-12 22:59:26: [db] connected — Sun Apr 12 2026 22:59:26 GMT+0000 (Coordinated Universal Time)
+2026-04-12 22:59:26: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-12 22:59:26: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-12 23:00:31: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4152
+2026-04-12 23:02:30: [db] connected — Sun Apr 12 2026 23:02:30 GMT+0000 (Coordinated Universal Time)
+2026-04-12 23:02:30: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-12 23:02:30: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-12 23:02:54: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4152
+2026-04-12 23:02:54: [stripe/webhook-debug2] sig header: t=1776034974,v1=263b8a7458a3b341ed51c6aba587cec4f64fabc02391627526eed21ee574d326
+2026-04-12 23:02:54: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLX1iKy8M3N8YLpBcV9rTHP",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:04:24: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4096
+2026-04-12 23:04:24: [stripe/webhook-debug2] sig header: t=1776035064,v1=1a45fac8ac44c5cd784cc4d94ac9313f08b948fb33a5dce977d1040aa29ea6b8
+2026-04-12 23:04:24: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLW6DKy8M3N8YLpMqLW74k7",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:04:49: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4152
+2026-04-12 23:04:49: [stripe/webhook-debug2] sig header: t=1776035088,v1=6eb307c407fe283a129a0a566f28c82f729702a0b1715e641de702507a92f368
+2026-04-12 23:04:49: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLX3cKy8M3N8YLp9hU0CABy",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:08:36: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 953
+2026-04-12 23:08:36: [stripe/webhook-debug2] sig header: t=1776035315,v1=086cbb90f6ed2e4d9628bc4c187642988e1a8ce5c973d591a9949d8d5f79c834
+2026-04-12 23:08:36: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLX7HKy8M3N8YLpNnpWi7Wl",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:08:36: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 910
+2026-04-12 23:08:36: [stripe/webhook-debug2] sig header: t=1776035316,v1=76495c325d4899b8df5568c2c7c5d95c41dd4599fdd6205256e4499510d57d8c
+2026-04-12 23:08:36: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLX7IKy8M3N8YLpPOAytvkV",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:08:36: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 2628
+2026-04-12 23:08:36: [stripe/webhook-debug2] sig header: t=1776035316,v1=f9c7067fcae37a6e21df82cd6f5c87d7fd655da01b4ceb840e9c05247053d04b
+2026-04-12 23:08:36: [stripe/webhook-debug2] body preview: {
+  "id": "evt_3TLX7IKy8M3N8YLp1O1aqroF",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:08:39: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1328
+2026-04-12 23:08:39: [stripe/webhook-debug2] sig header: t=1776035319,v1=8be762f5aebc915700ae5161762e31d5525f74414961a9fb6a9aac44999f9676
+2026-04-12 23:08:39: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLX7LKy8M3N8YLpPtGWAUpL",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:08:39: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 7756
+2026-04-12 23:08:39: [stripe/webhook-debug2] sig header: t=1776035319,v1=0949f584d5f5abed8d1e274b766cd300b0c8b73a52caf21af98837157e99bcf6
+2026-04-12 23:08:39: [stripe/webhook-debug2] body preview: {
+  "id": "evt_3TLX7IKy8M3N8YLp1fBtnkfI",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:08:39: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4327
+2026-04-12 23:08:39: [stripe/webhook-debug2] sig header: t=1776035319,v1=039f97c59918ca33b4f77fa0dc1271a799b6e49a8856291e894a6bcd90146ab0
+2026-04-12 23:08:39: [stripe/webhook-debug2] body preview: {
+  "id": "evt_3TLX7IKy8M3N8YLp1qfp6Ubl",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:08:39: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4152
+2026-04-12 23:08:39: [stripe/webhook-debug2] sig header: t=1776035319,v1=93634f5e99af604183aa5374307f67ea35e5d42ef40509f2571ae957082ed668
+2026-04-12 23:08:39: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLX7LKy8M3N8YLpdAJt74JD",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:08:39: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4152
+2026-04-12 23:08:39: [stripe/webhook-debug2] sig header: t=1776035319,v1=01b2234d35b8a621ee24b6ab676c25e7d213e8c09ddc410c2c059cd74efbd7d8
+2026-04-12 23:08:39: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLX7LKy8M3N8YLpdAJt74JD",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:28:46: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 13
+2026-04-12 23:28:46: [stripe/webhook-debug2] sig header: test
+2026-04-12 23:28:46: [stripe/webhook-debug2] body preview: {"test":true}
+2026-04-12 23:30:26: [db] connected — Sun Apr 12 2026 23:30:26 GMT+0000 (Coordinated Universal Time)
+2026-04-12 23:30:26: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-12 23:30:26: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-12 23:31:07: POST /telegram-auth → 200 (29ms)
+2026-04-12 23:31:08: [stripe/webhook-debug] secret: whsec_iNVT bodyType: object isBuffer: true bodyLen: 1198
+2026-04-12 23:31:08: [stripe/webhook-debug2] sig header: t=1776036668,v1=f263e8d92143b46dea362efa214873af89cb17f53dda6618f98d50bebff55282
+2026-04-12 23:31:08: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLXT6Ky8M3N8YLpMMdqCskH",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:31:08: POST /checkout → 200 (892ms)
+2026-04-12 23:32:39: [stripe/webhook-debug] secret: whsec_iNVT bodyType: object isBuffer: true bodyLen: 1648
+2026-04-12 23:32:39: [stripe/webhook-debug2] sig header: t=1776036759,v1=52dc7d1d8d3a44c7c95d25f712036bb4a45742d580d9abb88289790da1176a7b
+2026-04-12 23:32:39: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLXUYKy8M3N8YLp7CmdHW4d",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:32:39: [stripe/webhook-debug] secret: whsec_iNVT bodyType: object isBuffer: true bodyLen: 1547
+2026-04-12 23:32:39: [stripe/webhook-debug2] sig header: t=1776036759,v1=5aaf7f94dff65f3f98aa539d618b8b26ab3b515baaf9ee7e2ebc4cccbe065fc1
+2026-04-12 23:32:39: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLXUZKy8M3N8YLp1HCVXaXV",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:32:39: [stripe/webhook-debug] secret: whsec_iNVT bodyType: object isBuffer: true bodyLen: 1520
+2026-04-12 23:32:39: [stripe/webhook-debug2] sig header: t=1776036759,v1=e15c3b6d6faab29f9049e39527b021102c17732e25f894eb985e0638b615aadf
+2026-04-12 23:32:39: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLXUZKy8M3N8YLpJVUhkTP4",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:32:42: [stripe/webhook-debug] secret: whsec_iNVT bodyType: object isBuffer: true bodyLen: 4088
+2026-04-12 23:32:42: [stripe/webhook-debug2] sig header: t=1776036762,v1=887d9341533600bbfcadffb528651892849ba5a9153fa2756cf5e7ca25734fb2
+2026-04-12 23:32:42: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLXUcKy8M3N8YLpuqZOIwCY",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:32:42: [stripe/webhook-debug] secret: whsec_iNVT bodyType: object isBuffer: true bodyLen: 4088
+2026-04-12 23:32:42: [stripe/webhook-debug2] sig header: t=1776036762,v1=d5651ed3fc37292263bc68ac5f9809a34e10b04eca59690b9d3a4d9ded960b17
+2026-04-12 23:32:42: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLXUcKy8M3N8YLpuqZOIwCY",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:32:42: [stripe/webhook-debug] secret: whsec_iNVT bodyType: object isBuffer: true bodyLen: 1223
+2026-04-12 23:32:42: [stripe/webhook-debug2] sig header: t=1776036762,v1=faddd6ef83e4e51c2283532009cd0d6bda83e23d1d0315a6aba2cdd84d141d53
+2026-04-12 23:32:42: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLXUcKy8M3N8YLpZHGWapJF",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:32:43: [stripe/webhook-debug] secret: whsec_iNVT bodyType: object isBuffer: true bodyLen: 8523
+2026-04-12 23:32:43: [stripe/webhook-debug2] sig header: t=1776036763,v1=cb30f8f18ff897449c20883ee165a5b642fa659304a193c061e2732e3c31604e
+2026-04-12 23:32:43: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLXUcKy8M3N8YLppwVO6ZyZ",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:32:43: [stripe/webhook-debug] secret: whsec_iNVT bodyType: object isBuffer: true bodyLen: 8525
+2026-04-12 23:32:43: [stripe/webhook-debug2] sig header: t=1776036763,v1=566cff57cf7f84b04f685f41808cadb3a93c06ac8a2baba59b65e1e5e54fc690
+2026-04-12 23:32:43: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLXUdKy8M3N8YLpZeh0OX9M",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:32:43: [stripe/webhook-debug] secret: whsec_iNVT bodyType: object isBuffer: true bodyLen: 8520
+2026-04-12 23:32:43: [stripe/webhook-debug2] sig header: t=1776036763,v1=201bf4bdb0397ea873ccefb86c217cbda490c56edb6756089bf92de697df370b
+2026-04-12 23:32:43: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLXUdKy8M3N8YLpK9RF67tw",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:32:43: [stripe/webhook-debug] secret: whsec_iNVT bodyType: object isBuffer: true bodyLen: 8533
+2026-04-12 23:32:43: [stripe/webhook-debug2] sig header: t=1776036763,v1=b0d4b212f8728da5d592b1bf29774dca2eda32136766509c863d995b7f499934
+2026-04-12 23:32:43: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLXUdKy8M3N8YLps6kI4rgz",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:32:44: [stripe/webhook-debug] secret: whsec_iNVT bodyType: object isBuffer: true bodyLen: 6055
+2026-04-12 23:32:44: [stripe/webhook-debug2] sig header: t=1776036763,v1=77383c141c22990ed3fc5da061eecc12954e81ab2da85687df37187f3afb528a
+2026-04-12 23:32:44: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLXUdKy8M3N8YLpNB2J2UbF",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:32:55: [stripe/webhook-debug] secret: whsec_iNVT bodyType: object isBuffer: true bodyLen: 6062
+2026-04-12 23:32:55: [stripe/webhook-debug2] sig header: t=1776036775,v1=066962d39a05d79f0465f341ff96362462a03a86bff9d2030cc778575e6bfb2e
+2026-04-12 23:32:55: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLXUoKy8M3N8YLppYVzqav8",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:37:15: [stripe/webhook-debug] secret: whsec_iNVT bodyType: object isBuffer: true bodyLen: 4097
+2026-04-12 23:37:15: [stripe/webhook-debug2] sig header: t=1776037035,v1=ec3bc0bd6317ce4f69c0f174d9ac2e3bda2256095be45d63856705608fb5ece7
+2026-04-12 23:37:15: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLWcMKy8M3N8YLpLraS0Guf",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:39:45: [stripe/webhook-debug] secret: whsec_iNVT bodyType: object isBuffer: true bodyLen: 4100
+2026-04-12 23:39:45: [stripe/webhook-debug2] sig header: t=1776037185,v1=c372e86a2f9044bf7ecb8fe1d3c71f5ca9fd5264533369f85a369c1eac2f1290
+2026-04-12 23:39:45: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLUnxKy8M3N8YLp7oqhFMJq",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:40:17: POST /telegram-auth → 200 (7ms)
+2026-04-12 23:40:18: POST /checkout → 200 (596ms)
+2026-04-12 23:41:11: [stripe/webhook-debug] secret: whsec_iNVT bodyType: object isBuffer: true bodyLen: 4089
+2026-04-12 23:41:11: [stripe/webhook-debug2] sig header: t=1776037271,v1=4220a192eb4e4822044ed33c5bbe926e420e0e7702193bb330d8f3e2bd535ed4
+2026-04-12 23:41:11: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLXcpKy8M3N8YLp4GcUqwOb",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:42:01: [stripe/webhook-debug] secret: whsec_iNVT bodyType: object isBuffer: true bodyLen: 13
+2026-04-12 23:42:01: [stripe/webhook-debug2] sig header: test
+2026-04-12 23:42:01: [stripe/webhook-debug2] body preview: {"test":true}
+2026-04-12 23:44:38: [stripe/webhook-debug] secret: whsec_iNVT bodyType: object isBuffer: true bodyLen: 4089
+2026-04-12 23:44:38: [stripe/webhook-debug2] sig header: t=1776037478,v1=40185fb9db1622753c6bcfebe6f42833d92782e2eed0de54f99c4a0044957a9e
+2026-04-12 23:44:38: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLWkbKy8M3N8YLpfu6RIaos",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:51:13: [stripe/webhook-debug] secret: whsec_iNVT bodyType: object isBuffer: true bodyLen: 4088
+2026-04-12 23:51:13: [stripe/webhook-debug2] sig header: t=1776037873,v1=a33fac6525c63f2bc840061b7498b9031a7d4c0d68fe53b83ccda47d041a9684
+2026-04-12 23:51:13: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLWpZKy8M3N8YLpjsLRtUXY",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:51:19: [stripe/webhook-debug] secret: whsec_iNVT bodyType: object isBuffer: true bodyLen: 4105
+2026-04-12 23:51:19: [stripe/webhook-debug2] sig header: t=1776037879,v1=ebbbac563ea1923bedcd4529d303f15c4ad0026db57388e278f9c1c52fd1b9c6
+2026-04-12 23:51:19: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLUyYKy8M3N8YLp2laNxvpU",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-12 23:58:41: [stripe/webhook-debug] secret: whsec_iNVT bodyType: object isBuffer: true bodyLen: 4152
+2026-04-12 23:58:41: [stripe/webhook-debug2] sig header: t=1776038321,v1=cf2fbf0242ba16cc0344ac206de1a3a02cdcf6cda6e54c5127c1fb291c259ae6
+2026-04-12 23:58:41: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLWwwKy8M3N8YLpL9oJ6nPq",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 00:00:35: [db] connected — Mon Apr 13 2026 00:00:35 GMT+0000 (Coordinated Universal Time)
+2026-04-13 00:00:35: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-13 00:00:35: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-13 00:00:59: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4152
+2026-04-13 00:00:59: [stripe/webhook-debug2] sig header: t=1776038459,v1=aade69d2040c53e5e89b83f0a4fceae76125347c8ea2fca0105d782e97d6d2b7
+2026-04-13 00:00:59: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLWzTKy8M3N8YLpZx60AxVN",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 00:02:44: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4152
+2026-04-13 00:02:44: [stripe/webhook-debug2] sig header: t=1776038564,v1=aae2391713c233d33a71b7e8f2f9dba91d7eb4743091d43ce7717652173736ef
+2026-04-13 00:02:44: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLX1iKy8M3N8YLpBcV9rTHP",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 00:03:27: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4096
+2026-04-13 00:03:27: [stripe/webhook-debug2] sig header: t=1776038607,v1=9b85fabf187fa300575d4efd7efd4cd1d899ec9f41bac361a0ec170051df8c4a
+2026-04-13 00:03:27: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLV90Ky8M3N8YLpljx04LZ5",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 00:04:54: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4152
+2026-04-13 00:04:54: [stripe/webhook-debug2] sig header: t=1776038694,v1=7556c1ecb578e6b5cc46e6a4b87ab6110278079b15312fb2f51bae2f7a0eb921
+2026-04-13 00:04:54: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLX3cKy8M3N8YLp9hU0CABy",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 00:08:27: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4152
+2026-04-13 00:08:27: [stripe/webhook-debug2] sig header: t=1776038907,v1=fd4deff1b4d5568be9da2b5c1f36547feb150ab792871caac4438bea5d31b844
+2026-04-13 00:08:27: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLX7LKy8M3N8YLpdAJt74JD",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 00:11:04: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4102
+2026-04-13 00:11:04: [stripe/webhook-debug2] sig header: t=1776039063,v1=53b0e96c2bd4de958ba5c5931741ee574535f65f004bdcf4f7938edc200f39da
+2026-04-13 00:11:04: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLVGlKy8M3N8YLpClH9pbLB",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 00:11:14: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4096
+2026-04-13 00:11:14: [stripe/webhook-debug2] sig header: t=1776039073,v1=8b76704eca602127618a0ff8d41b81ebfa1dac491fb45c1174008e6bf7dc1313
+2026-04-13 00:11:14: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLVJPKy8M3N8YLpMiT4gqqN",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 00:32:31: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4088
+2026-04-13 00:32:31: [stripe/webhook-debug2] sig header: t=1776040351,v1=e8dd88640c8cdcafce2eee69c377e6b06086ae2876e3cc8c2e5487a7db2db2ff
+2026-04-13 00:32:31: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLXUcKy8M3N8YLpuqZOIwCY",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 00:33:44: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4088
+2026-04-13 00:33:44: [stripe/webhook-debug2] sig header: t=1776040424,v1=20fb5c024b4ff36f8c0889335d2f6833cd7ab1ac394f68975d1469813756d88a
+2026-04-13 00:33:44: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLVc7Ky8M3N8YLpw8dc2xVZ",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 00:39:28: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4088
+2026-04-13 00:39:28: [stripe/webhook-debug2] sig header: t=1776040768,v1=1b565224b0f912ef7db1f27f758c3ba902809c902cadf66093bc439ec0717359
+2026-04-13 00:39:28: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLVjWKy8M3N8YLpxrmmrDBa",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 00:41:29: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4088
+2026-04-13 00:41:29: [stripe/webhook-debug2] sig header: t=1776040889,v1=8647bd66e17af6100eb46167cf01b4da06d204347b6efb677ce8081e0bb46ebb
+2026-04-13 00:41:29: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLVmCKy8M3N8YLpH41smRWE",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 00:41:30: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4089
+2026-04-13 00:41:30: [stripe/webhook-debug2] sig header: t=1776040890,v1=d8a5610af78ad22388a28a41b6b55ce9922457e6d318677e1c54d0eefa773f6a
+2026-04-13 00:41:30: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLXcpKy8M3N8YLp4GcUqwOb",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 00:50:05: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4095
+2026-04-13 00:50:05: [stripe/webhook-debug2] sig header: t=1776041405,v1=36dc8c221caad82a3c32baa1f7b8ff441689346cf6c4890c234049c592ec2e52
+2026-04-13 00:50:05: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLVuzKy8M3N8YLpN02z6qiG",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 00:53:29: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4096
+2026-04-13 00:53:29: [stripe/webhook-debug2] sig header: t=1776041609,v1=bad7fd599fbf6d4d48d9d7c8a73d3143aa5e94b21425320904a70118862d9f04
+2026-04-13 00:53:29: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLVyiKy8M3N8YLpKPb06vdJ",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 01:03:36: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4096
+2026-04-13 01:03:36: [stripe/webhook-debug2] sig header: t=1776042216,v1=dc4ed2606e4202bd5d9c97191828a23da0a083009aabadf5b54e526d3f3aab90
+2026-04-13 01:03:36: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLW6DKy8M3N8YLpMqLW74k7",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 01:29:36: POST /telegram-auth → 200 (28ms)
+2026-04-13 01:29:37: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1198
+2026-04-13 01:29:37: [stripe/webhook-debug2] sig header: t=1776043776,v1=e4d5635b33e59254bd055bdd3fe45ebf6b2d3433bc30e2d0830dbc9d0dd32dfd
+2026-04-13 01:29:37: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLZJkKy8M3N8YLpuliBgRjB",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 01:29:37: POST /checkout → 200 (1057ms)
+2026-04-13 01:30:01: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1666
+2026-04-13 01:30:01: [stripe/webhook-debug2] sig header: t=1776043801,v1=4515b7714398998f1bc5ad5f57bdddb5da4b2cf7c5a28b4562821bdb493e9b41
+2026-04-13 01:30:01: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLZK9Ky8M3N8YLpr6Iy7s1m",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 01:30:01: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1547
+2026-04-13 01:30:01: [stripe/webhook-debug2] sig header: t=1776043801,v1=74c1976d56dd680520a9d813c053b74d93c36a62b015b881bc0ce987db046beb
+2026-04-13 01:30:01: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLZK9Ky8M3N8YLpk8lcrow4",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 01:30:01: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1520
+2026-04-13 01:30:01: [stripe/webhook-debug2] sig header: t=1776043801,v1=070d0b94948ecf9bc577674554354f4c4ed1b30f69e4564459651bc69b562a9e
+2026-04-13 01:30:01: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLZK9Ky8M3N8YLpITKveeNf",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 01:30:05: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4088
+2026-04-13 01:30:05: [stripe/webhook-debug2] sig header: t=1776043805,v1=48c61a2c3d11aec06a67ef8053c92e05b1aa0d5d7aebef1b476579f492ed3d05
+2026-04-13 01:30:05: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLZKDKy8M3N8YLp9fxsHEvQ",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 01:30:05: [stripe] activated elite/monthly for bot_user 1
+2026-04-13 01:30:06: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8523
+2026-04-13 01:30:06: [stripe/webhook-debug2] sig header: t=1776043806,v1=951fa82995ec5276fc31c69d2b714fbfb3b673f66e2389c0152843eb60e2e7f5
+2026-04-13 01:30:06: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLZKEKy8M3N8YLptzZp04d4",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 01:30:06: [billing/tg] confirmation AQ-MNWIMJ7J-7M6V sent to chat 7640489257
+2026-04-13 01:30:06: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8525
+2026-04-13 01:30:06: [stripe/webhook-debug2] sig header: t=1776043806,v1=dee23f7e163ac67ca8630ab80f65451c1b1b351c09e40a422c397566d733c4e0
+2026-04-13 01:30:06: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLZKEKy8M3N8YLpt61VJWyz",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 01:30:06: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8520
+2026-04-13 01:30:06: [stripe/webhook-debug2] sig header: t=1776043806,v1=1813355b20f75b0d73b6875c6f38e8d210e774509784520bc317275b5bdb6fef
+2026-04-13 01:30:06: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLZKEKy8M3N8YLp9nVEoIuQ",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 01:30:07: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8533
+2026-04-13 01:30:07: [stripe/webhook-debug2] sig header: t=1776043806,v1=0cee45ebb4d29fad6c1e657cd18ee598beff47f09adc2ceb67557af4ca6ec8b6
+2026-04-13 01:30:07: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLZKEKy8M3N8YLpj8f4fqW9",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 01:30:07: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1223
+2026-04-13 01:30:07: [stripe/webhook-debug2] sig header: t=1776043807,v1=166a3402c009472f53ee2c9810f8d761adc1d95170cc60e9d7da2c2d5e24f79a
+2026-04-13 01:30:07: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLZKDKy8M3N8YLp93nZYNCu",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 01:30:07: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 6055
+2026-04-13 01:30:07: [stripe/webhook-debug2] sig header: t=1776043807,v1=76d4b05c18ecdf84e9d4e933b020854debbefd5be3891efa5f159741f135ed64
+2026-04-13 01:30:07: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLZKFKy8M3N8YLpRC2ZUsIj",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 01:30:12: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4088
+2026-04-13 01:30:12: [stripe/webhook-debug2] sig header: t=1776043812,v1=c42cedeff66117767cd421059897bf9daf2163df7509f29b486b4c414886c827
+2026-04-13 01:30:12: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLZKDKy8M3N8YLp9fxsHEvQ",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 01:30:18: GET /status → 200 (2ms)
+2026-04-13 01:30:44: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 6062
+2026-04-13 01:30:44: [stripe/webhook-debug2] sig header: t=1776043844,v1=3526bcdf75660a720b9b9e9852fac4285c26ba7592cb33f7c85c166e94c2672e
+2026-04-13 01:30:44: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLZKqKy8M3N8YLpL01syIQj",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 01:36:49: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4097
+2026-04-13 01:36:49: [stripe/webhook-debug2] sig header: t=1776044209,v1=3dbbb5d51951fbd6d82e82056c0ae891450705bf8979837142cc5ce61afe6b61
+2026-04-13 01:36:49: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLWcMKy8M3N8YLpLraS0Guf",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 01:46:18: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4089
+2026-04-13 01:46:18: [stripe/webhook-debug2] sig header: t=1776044778,v1=825d1e6612f9ada7bc8d6789d40f5537c39089515f733e178b479f49d5380ae8
+2026-04-13 01:46:18: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLWkbKy8M3N8YLpfu6RIaos",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 01:51:01: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4088
+2026-04-13 01:51:01: [stripe/webhook-debug2] sig header: t=1776045061,v1=20fcb4aba716c89d9036403c9aa46ec136a35dda7114a9f6988355a1309563b1
+2026-04-13 01:51:01: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLWpZKy8M3N8YLpjsLRtUXY",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 01:58:10: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4152
+2026-04-13 01:58:10: [stripe/webhook-debug2] sig header: t=1776045490,v1=b050b9a3d1c3c0c7d51b55e4eac4451495f37b2a72278167cad108db55c2bf61
+2026-04-13 01:58:10: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLWwwKy8M3N8YLpL9oJ6nPq",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 01:58:37: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4152
+2026-04-13 01:58:37: [stripe/webhook-debug2] sig header: t=1776045517,v1=00aee502cbe8f391a58dba8cea56bb8b476191bdd5a5aed7539832e4a02bacc8
+2026-04-13 01:58:37: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLWzTKy8M3N8YLpZx60AxVN",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 02:04:13: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4152
+2026-04-13 02:04:13: [stripe/webhook-debug2] sig header: t=1776045853,v1=a2f08e3e881ef7ee383bb3f41afb66bb1f11750030657d57c63260f0a5184627
+2026-04-13 02:04:13: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLX1iKy8M3N8YLpBcV9rTHP",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 02:06:00: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4152
+2026-04-13 02:06:00: [stripe/webhook-debug2] sig header: t=1776045960,v1=fdd0053621a0e0126cbb708788b56346f54423056976ad994e34a02cf4a4f8ef
+2026-04-13 02:06:00: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLX3cKy8M3N8YLp9hU0CABy",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 02:08:24: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4152
+2026-04-13 02:08:24: [stripe/webhook-debug2] sig header: t=1776046104,v1=fa28d726d6d58cb0f837089d87d6f1877119a83f2d7e2cd371b8e4c7a95e462f
+2026-04-13 02:08:24: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLX7LKy8M3N8YLpdAJt74JD",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 02:30:25: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4088
+2026-04-13 02:30:25: [stripe/webhook-debug2] sig header: t=1776047425,v1=eca3a7be3ecb31db32b0d3d52158cd9a136ef4c0b3a834dd39056968e5a684a1
+2026-04-13 02:30:25: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLZKDKy8M3N8YLp9fxsHEvQ",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 02:33:15: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4088
+2026-04-13 02:33:15: [stripe/webhook-debug2] sig header: t=1776047595,v1=13a42e92a89e70ad46ad5c54860b68a3d245a0cab650499dfa134f95bd0cf4a2
+2026-04-13 02:33:15: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLXUcKy8M3N8YLpuqZOIwCY",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 02:39:21: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4089
+2026-04-13 02:39:21: [stripe/webhook-debug2] sig header: t=1776047961,v1=601b1ccc0b7614e80b7fcb6a7908a996b791156d9d5b5deab05a18d22886e43b
+2026-04-13 02:39:21: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLXcpKy8M3N8YLp4GcUqwOb",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:02:40: GET /consent-config → 200 (1ms)
+2026-04-13 03:02:46: POST /public-checkout → 200 (628ms)
+2026-04-13 03:03:10: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1531
+2026-04-13 03:03:10: [stripe/webhook-debug2] sig header: t=1776049390,v1=4f49888085b8437194d15f4ca20aace9a355e0324129c43c23124e9cd9bb6dcc
+2026-04-13 03:03:10: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLamIKy8M3N8YLpgFmd6Joe",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:03:10: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1504
+2026-04-13 03:03:10: [stripe/webhook-debug2] sig header: t=1776049390,v1=bdfb22316fb52aa3bcea4d948e8d6d74ebf11128505a0fac089de31e082c0d20
+2026-04-13 03:03:10: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLamIKy8M3N8YLpkelokuQe",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:03:14: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4096
+2026-04-13 03:03:14: [stripe/webhook-debug2] sig header: t=1776049394,v1=1dcf882d75b44bafd6a94a18296e8e6bad254372f13d42b70880337652d6fbc6
+2026-04-13 03:03:14: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLamMKy8M3N8YLpRJiwNSB5",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:03:14: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4096
+2026-04-13 03:03:14: [stripe/webhook-debug2] sig header: t=1776049394,v1=aef9ca25f61b3de727d0ee541b15d6ce290d26ad4303684db81301a01a9e45d3
+2026-04-13 03:03:14: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLamMKy8M3N8YLpRJiwNSB5",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:03:14: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1278
+2026-04-13 03:03:14: [stripe/webhook-debug2] sig header: t=1776049394,v1=e46d821730e63d58dbb6e9f37816e3d6d9740fecbb5a6529f85c1575dbc209e4
+2026-04-13 03:03:14: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLamMKy8M3N8YLprFQz1r5R",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:03:14: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1634
+2026-04-13 03:03:14: [stripe/webhook-debug2] sig header: t=1776049394,v1=c6505d9563718356f173acd78346963617cee3b5a8011a70faf8a0fc2df36093
+2026-04-13 03:03:14: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLamMKy8M3N8YLpth1IBk4f",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:03:15: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1371
+2026-04-13 03:03:15: [stripe/webhook-debug2] sig header: t=1776049395,v1=60cd58daa1fed082328ebd51a6ad9c50a293fccdbbd4bae86b4c467f66317bac
+2026-04-13 03:03:15: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLamMKy8M3N8YLpzHHQqX0z",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:03:15: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8586
+2026-04-13 03:03:15: [stripe/webhook-debug2] sig header: t=1776049395,v1=904264cb3b92e689a508b93896c6cc22dcf54330647dd27ee47cd74eac76e6c6
+2026-04-13 03:03:15: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLamNKy8M3N8YLpNiYwdOCN",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:03:15: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8588
+2026-04-13 03:03:15: [stripe/webhook-debug2] sig header: t=1776049395,v1=441c0e26c8a04e369eb70aeb9ed4df1bec91d2faa8a966b0023cb2695c82863c
+2026-04-13 03:03:15: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLamNKy8M3N8YLpXb0Q5Oyv",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:03:15: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8583
+2026-04-13 03:03:15: [stripe/webhook-debug2] sig header: t=1776049395,v1=d1d125ae32242e29b1328f6281bbea77cbe1b436bf46aee0aa8b237a36bb5a8a
+2026-04-13 03:03:15: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLamNKy8M3N8YLpLCNcn6FP",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:03:15: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8596
+2026-04-13 03:03:15: [stripe/webhook-debug2] sig header: t=1776049395,v1=0bfca808b74af91c2fb869423e94b5308a8cae52f15a0647f6a41d3e7ca249f9
+2026-04-13 03:03:15: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLamNKy8M3N8YLptQ8IN1Z7",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:03:16: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 6027
+2026-04-13 03:03:16: [stripe/webhook-debug2] sig header: t=1776049396,v1=bd2fd1663067cb41cf59b8f06f1522d8ce8ca6ed89268be63fee55f514c35859
+2026-04-13 03:03:16: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLamOKy8M3N8YLpjVusthGc",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:03:39: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 6034
+2026-04-13 03:03:39: [stripe/webhook-debug2] sig header: t=1776049419,v1=84b8c34eb14ba25b19981bd36b21eb6761b02e448c660a00939f7e1a68a85fd6
+2026-04-13 03:03:39: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLamkKy8M3N8YLp56zb1weT",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:13:09: [db] connected — Mon Apr 13 2026 03:13:09 GMT+0000 (Coordinated Universal Time)
+2026-04-13 03:13:09: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-13 03:13:09: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-13 03:14:40: GET /consent-config → 304 (2ms)
+2026-04-13 03:14:46: POST /public-checkout → 200 (561ms)
+2026-04-13 03:15:04: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1531
+2026-04-13 03:15:04: [stripe/webhook-debug2] sig header: t=1776050104,v1=9f9a75731c095fc4cc7d94fc66fa8fcfd6af7159f53b9dbc2495f2f20d1b9502
+2026-04-13 03:15:04: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLaxnKy8M3N8YLp9QKURkPN",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:15:04: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1504
+2026-04-13 03:15:04: [stripe/webhook-debug2] sig header: t=1776050104,v1=a12f0d87ac57a2ba20d40320c18e9b4fc0c2fd6c979733ff5ae49bd622e78f92
+2026-04-13 03:15:04: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLaxoKy8M3N8YLpOZwQR8Rj",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:15:08: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4096
+2026-04-13 03:15:08: [stripe/webhook-debug2] sig header: t=1776050107,v1=9b2decf9db6cc2bd9b220273927376f0377a6f9d75611af95a219f83c5917304
+2026-04-13 03:15:08: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLaxrKy8M3N8YLpyDJXyzFD",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:15:08: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4096
+2026-04-13 03:15:08: [stripe/webhook-debug2] sig header: t=1776050107,v1=766986d7abd43cfd0f49f93e27cbf6ad9d9419b5d4bf163dda9d56a50f9d55e4
+2026-04-13 03:15:08: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLaxrKy8M3N8YLpyDJXyzFD",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:15:08: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1278
+2026-04-13 03:15:08: [stripe/webhook-debug2] sig header: t=1776050108,v1=d250f76ad3decedd8c935986cf2be5bbe08ed5e8c03e47be9c1854da6c9da275
+2026-04-13 03:15:08: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLaxsKy8M3N8YLpTlOSHOlg",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:15:08: [stripe/webhook] cold visitor: created bot_user 6 for fredericd@gmail.com
+2026-04-13 03:15:08: [stripe/webhook] cold visitor: activated elite/monthly for bot_user 6 (fredericd@gmail.com)
+2026-04-13 03:15:08: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1634
+2026-04-13 03:15:08: [stripe/webhook-debug2] sig header: t=1776050108,v1=e9e0af982f4bfcff4fd9b54bb408c26e202d4f22dc0b150665c3e67eba2daaac
+2026-04-13 03:15:08: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLaxsKy8M3N8YLpr3QDKdMA",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:15:08: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1371
+2026-04-13 03:15:08: [stripe/webhook-debug2] sig header: t=1776050108,v1=a33f949e066edb132bf2647f9899b9a7dd92853429017da9360fe582ccd0c5c6
+2026-04-13 03:15:08: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLaxsKy8M3N8YLpeTEp2FsC",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:15:08: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8586
+2026-04-13 03:15:08: [stripe/webhook-debug2] sig header: t=1776050108,v1=9367c10e4bbf4eeb1094696f3ba8539f77780a61bcbe18abe0709fefeea20848
+2026-04-13 03:15:08: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLaxsKy8M3N8YLp93ssLhmb",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:15:09: [stripe/webhook] cold visitor: welcome email sent to fredericd@gmail.com
+2026-04-13 03:15:09: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8588
+2026-04-13 03:15:09: [stripe/webhook-debug2] sig header: t=1776050109,v1=e9242acd0829c5853f0d7631a8d39a4d9c305d8bce58a1111894b1c3b2701465
+2026-04-13 03:15:09: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLaxtKy8M3N8YLpY8n7bgCp",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:15:09: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8583
+2026-04-13 03:15:09: [stripe/webhook-debug2] sig header: t=1776050109,v1=b497aef2cdd811688951e7f71b006cef5dd65f758944b28f1949b94e3fa7c6cf
+2026-04-13 03:15:09: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLaxtKy8M3N8YLpx2KOW8hy",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:15:09: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8596
+2026-04-13 03:15:09: [stripe/webhook-debug2] sig header: t=1776050109,v1=22ec701c373ba344b729b5aa2db07be5b210f92714108c0516cb0f22bb8a1b55
+2026-04-13 03:15:09: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLaxtKy8M3N8YLpKJXVAQQc",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:15:09: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 6027
+2026-04-13 03:15:09: [stripe/webhook-debug2] sig header: t=1776050109,v1=078be021c2af8ac152f2650a874a38508eadfa81622c98b3221d7c5c1f512505
+2026-04-13 03:15:09: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLaxtKy8M3N8YLpHAEqrhOA",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:15:53: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 6034
+2026-04-13 03:15:53: [stripe/webhook-debug2] sig header: t=1776050153,v1=fde88738ae101aaa658303bf1b8eda654bcb83c8586319d2624812330686668a
+2026-04-13 03:15:53: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLaybKy8M3N8YLpSikSKSVb",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:17:20: [db] connected — Mon Apr 13 2026 03:17:20 GMT+0000 (Coordinated Universal Time)
+2026-04-13 03:17:20: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-13 03:17:20: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-13 03:17:43: GET /consent-config → 304 (1ms)
+2026-04-13 03:17:48: POST /public-checkout → 200 (612ms)
+2026-04-13 03:18:05: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1531
+2026-04-13 03:18:05: [stripe/webhook-debug2] sig header: t=1776050285,v1=a4cdbab9a3c095eb30043d3093d0d3c175a128d4d75a02a17783f3e0a48f732a
+2026-04-13 03:18:05: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLb0jKy8M3N8YLpyqJ4kbAa",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:18:05: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1504
+2026-04-13 03:18:05: [stripe/webhook-debug2] sig header: t=1776050285,v1=722a32102cf779ae2844880a36e1c462d01b7bcd88e0bdd90f8a24e1d7347c21
+2026-04-13 03:18:05: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLb0jKy8M3N8YLpF9vsalge",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:18:08: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4096
+2026-04-13 03:18:08: [stripe/webhook-debug2] sig header: t=1776050288,v1=2ba3c79212cf59dcde0677f720170241687ba38a5524b8d1eb8ab444e5e1db6b
+2026-04-13 03:18:08: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLb0mKy8M3N8YLpr61MirXs",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:18:08: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4096
+2026-04-13 03:18:08: [stripe/webhook-debug2] sig header: t=1776050288,v1=d1f3d2ed7e7913ec76ef47f44859331ff0ad4e1bfb755acd76fb0ff11f5c478e
+2026-04-13 03:18:08: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLb0mKy8M3N8YLpr61MirXs",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:18:09: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1278
+2026-04-13 03:18:09: [stripe/webhook-debug2] sig header: t=1776050289,v1=75764c2a34aaa5eab84268da2a343a8fdbad412cfa103dc2cc078534b4d9f3a4
+2026-04-13 03:18:09: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLb0mKy8M3N8YLpRLV1eSNo",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:18:09: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1634
+2026-04-13 03:18:09: [stripe/webhook-debug2] sig header: t=1776050289,v1=d3a45182746e2cdba6b75458692f429d909335b982286b3890a5793906bae4f4
+2026-04-13 03:18:09: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLb0nKy8M3N8YLpIbJWr5pz",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:18:09: [stripe/webhook] cold visitor: activated elite/monthly for bot_user 6 (fredericd@gmail.com)
+2026-04-13 03:18:09: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1371
+2026-04-13 03:18:09: [stripe/webhook-debug2] sig header: t=1776050289,v1=a892f91714c855f3054d9d5a49270b3ad72bca5ac78a27cc1ea44e71cfa6ddbf
+2026-04-13 03:18:09: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLb0nKy8M3N8YLprIO0pNqP",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:18:09: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8586
+2026-04-13 03:18:09: [stripe/webhook-debug2] sig header: t=1776050289,v1=b35d0b66bde6ab757b2f277fb38fc90c4f466a81dd6b7c5f736758ad57473009
+2026-04-13 03:18:09: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLb0nKy8M3N8YLp37iiXWLm",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:18:09: [stripe/webhook] cold visitor: welcome email sent to fredericd@gmail.com
+2026-04-13 03:18:09: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8588
+2026-04-13 03:18:09: [stripe/webhook-debug2] sig header: t=1776050289,v1=9de87b55c71969930409f2c8c138bd5fe6e8be57a9f47cab82b5857ca3fd911f
+2026-04-13 03:18:09: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLb0nKy8M3N8YLp9Bn0GSG6",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:18:10: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8583
+2026-04-13 03:18:10: [stripe/webhook-debug2] sig header: t=1776050290,v1=8e4585e78bcbf0de8d76d97706a5c952edce5c3eecd0ce01b04070c38205163c
+2026-04-13 03:18:10: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLb0nKy8M3N8YLpCOqPQtO5",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:18:10: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8596
+2026-04-13 03:18:10: [stripe/webhook-debug2] sig header: t=1776050290,v1=de7476d6cdde2dddd4872817f081351cea492b3ad59a71bfcf85786cfac18361
+2026-04-13 03:18:10: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLb0oKy8M3N8YLpZZKW268R",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:18:10: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 6027
+2026-04-13 03:18:10: [stripe/webhook-debug2] sig header: t=1776050290,v1=5658a239f63f2e4e46b0950c31789c8c95985a199a7b3f895003861b8b4ca943
+2026-04-13 03:18:10: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLb0oKy8M3N8YLp7g68Z3de",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:18:53: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 6034
+2026-04-13 03:18:53: [stripe/webhook-debug2] sig header: t=1776050332,v1=baad27d1303b1c04ff6c4eced39bae91cc8ac9c77411e63980fce43ed1761259
+2026-04-13 03:18:53: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLb1UKy8M3N8YLp9pwRro6N",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:27:50: [db] connected — Mon Apr 13 2026 03:27:50 GMT+0000 (Coordinated Universal Time)
+2026-04-13 03:27:50: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-13 03:27:50: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-13 03:28:12: GET /consent-config → 304 (2ms)
+2026-04-13 03:28:18: POST /public-checkout → 200 (572ms)
+2026-04-13 03:28:37: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1531
+2026-04-13 03:28:37: [stripe/webhook-debug2] sig header: t=1776050917,v1=cc93a73b482549738e7a032b035b89cde9c7c8be721f938c8593bb3205be2051
+2026-04-13 03:28:37: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbAvKy8M3N8YLpzQgkSJYH",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:28:37: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1504
+2026-04-13 03:28:37: [stripe/webhook-debug2] sig header: t=1776050917,v1=19d38f60f70872b71ba15820b3369e0c60d29ec1adc1476b9b36ef5888de986e
+2026-04-13 03:28:37: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbAvKy8M3N8YLpGXKxT7zG",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:28:41: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4096
+2026-04-13 03:28:41: [stripe/webhook-debug2] sig header: t=1776050921,v1=379cb84e5b16130c0a6f83134d0a657ecc4624275d5642f59019e7d9988d6363
+2026-04-13 03:28:41: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbAzKy8M3N8YLpyOJyvMNd",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:28:42: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4096
+2026-04-13 03:28:42: [stripe/webhook-debug2] sig header: t=1776050921,v1=843d1b6f19afba117541c7dd8bdf07227f086c3ca43f4286a975404c1a8e5863
+2026-04-13 03:28:42: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbAzKy8M3N8YLpyOJyvMNd",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:28:42: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1278
+2026-04-13 03:28:42: [stripe/webhook-debug2] sig header: t=1776050921,v1=a66c221be5a5d76dda4c60e651fe14f9fc5cd6a49b4a23049ae994d1aa83803d
+2026-04-13 03:28:42: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbAzKy8M3N8YLpzo1UExsV",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:28:42: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1371
+2026-04-13 03:28:42: [stripe/webhook-debug2] sig header: t=1776050921,v1=02ec20537654221883ec31b95c3c7ff426f2b2e03dc3751fff075b7e83568883
+2026-04-13 03:28:42: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbAzKy8M3N8YLp7LKucHqX",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:28:42: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8586
+2026-04-13 03:28:42: [stripe/webhook-debug2] sig header: t=1776050922,v1=2e6c81888bac6cd10f8e5eaeb0d9f7c69a58d137cf2443317a24f43c12cc5508
+2026-04-13 03:28:42: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbAzKy8M3N8YLpF6pUwa1M",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:28:42: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8588
+2026-04-13 03:28:42: [stripe/webhook-debug2] sig header: t=1776050922,v1=0ef5af2da2ba6d388eb91e38fd22fce7f3c2644242addbb3554cb9a1107adc64
+2026-04-13 03:28:42: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbB0Ky8M3N8YLpGjvHN7pt",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:28:42: [stripe/webhook] cold visitor: activated elite/monthly for bot_user 6 (fredericd@gmail.com)
+2026-04-13 03:28:42: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8583
+2026-04-13 03:28:42: [stripe/webhook-debug2] sig header: t=1776050922,v1=55be180c7e6c31d2d7268c7d915823b3208ebfcc228805cf884146f565c8760f
+2026-04-13 03:28:42: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbB0Ky8M3N8YLp4dBelQVm",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:28:42: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8596
+2026-04-13 03:28:42: [stripe/webhook-debug2] sig header: t=1776050922,v1=8b23e8c49f41bd57a3ecfda57bd94f07254aa50aeadcfc2b95a8d616a04103f9
+2026-04-13 03:28:42: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbB0Ky8M3N8YLp4eiPWQqS",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:28:42: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1634
+2026-04-13 03:28:42: [stripe/webhook-debug2] sig header: t=1776050922,v1=b1cdfbcb5d0968e2de22144de29c9d24455567d5bf67b6373d3dbb22e554e2c8
+2026-04-13 03:28:42: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbAzKy8M3N8YLpgml7w7ou",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:28:42: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 6027
+2026-04-13 03:28:42: [stripe/webhook-debug2] sig header: t=1776050922,v1=6d6e00ec2278c6f641ed1206295839f8d084cab9b7b4a8108b9794393218dab4
+2026-04-13 03:28:42: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbB0Ky8M3N8YLp0D1NH7gi",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:28:42: [stripe/webhook] cold visitor: welcome email sent to fredericd@gmail.com
+2026-04-13 03:28:49: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 6034
+2026-04-13 03:28:49: [stripe/webhook-debug2] sig header: t=1776050929,v1=c09e3b704234678ecc97908a21b5949f9f39ccd0aac90fb8e6c699980953277a
+2026-04-13 03:28:49: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbB6Ky8M3N8YLpzua64Mzb",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:29:38: GET /consent-config → 304 (1ms)
+2026-04-13 03:29:43: POST /public-checkout → 200 (418ms)
+2026-04-13 03:30:04: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1504
+2026-04-13 03:30:04: [stripe/webhook-debug2] sig header: t=1776051004,v1=ff896099cce1b3e7401b15bd80cf260fd05a5bc1081f67d0e36baabc5641e3a8
+2026-04-13 03:30:04: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbCKKy8M3N8YLpitUzhnCi",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:30:05: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1531
+2026-04-13 03:30:05: [stripe/webhook-debug2] sig header: t=1776051005,v1=ea0cf433f816d4b5d5060f056febc67ddfd4ac3ac15c0c0c7b870c837dd82fd3
+2026-04-13 03:30:05: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbCKKy8M3N8YLp53LIiffq",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:30:08: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4098
+2026-04-13 03:30:08: [stripe/webhook-debug2] sig header: t=1776051008,v1=aff03d53bb32b0a4631d40d15e841d13fa0931da8166fa8a7f3686c7550ac92d
+2026-04-13 03:30:08: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbCNKy8M3N8YLpRAJ6h7Af",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:30:08: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4098
+2026-04-13 03:30:08: [stripe/webhook-debug2] sig header: t=1776051008,v1=2fa7e440673b384f27b2c07ce1120e5ef6d76e8c1c25dc0678e79bb4885c2e73
+2026-04-13 03:30:08: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbCNKy8M3N8YLpRAJ6h7Af",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:30:08: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1280
+2026-04-13 03:30:08: [stripe/webhook-debug2] sig header: t=1776051008,v1=5b75a6576353ea6e1699bc087cb83008abe6c3d8c7b652755d690802b31517cd
+2026-04-13 03:30:08: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbCOKy8M3N8YLpypSXqsej",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:30:08: [stripe/webhook] cold visitor: created bot_user 7 for fndstarfury@gmail.com
+2026-04-13 03:30:08: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1636
+2026-04-13 03:30:08: [stripe/webhook-debug2] sig header: t=1776051008,v1=daecb6488547825eda9d36cbf6cc07e06f656d4d32af6f0ff45acaa1d74c81a4
+2026-04-13 03:30:08: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbCOKy8M3N8YLpBnTWqlvD",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:30:08: [stripe/webhook] cold visitor: activated elite/monthly for bot_user 7 (fndstarfury@gmail.com)
+2026-04-13 03:30:08: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1373
+2026-04-13 03:30:08: [stripe/webhook-debug2] sig header: t=1776051008,v1=5c3cf80fc559cefdc055b947b4c1bb68198c82f071fac59362f2f6e2f8e123e9
+2026-04-13 03:30:08: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbCOKy8M3N8YLpsmEDPtEN",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:30:09: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8588
+2026-04-13 03:30:09: [stripe/webhook-debug2] sig header: t=1776051009,v1=4884f7e84065224aed74f0faf8173788be388f155bca48a6a2fd227b1b51eefd
+2026-04-13 03:30:09: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbCOKy8M3N8YLpWbJfy9zh",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:30:09: [stripe/webhook] cold visitor: welcome email sent to fndstarfury@gmail.com
+2026-04-13 03:30:09: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8585
+2026-04-13 03:30:09: [stripe/webhook-debug2] sig header: t=1776051009,v1=3363daceb45fbdb7d1229f38037d2d0cc6fb369415ddc131d38d9adb1cb25bb7
+2026-04-13 03:30:09: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbCPKy8M3N8YLpQXlNQ62m",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:30:09: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8598
+2026-04-13 03:30:09: [stripe/webhook-debug2] sig header: t=1776051009,v1=ad4253d353688d632d810bb0c134d562958ebf6cadeb30eed005078c653882d9
+2026-04-13 03:30:09: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbCPKy8M3N8YLpv5E8TWii",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:30:10: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 6027
+2026-04-13 03:30:10: [stripe/webhook-debug2] sig header: t=1776051010,v1=7296dcf25bcbfcf95287e959786ed8dae907f12db7ffbdc3634a143d442b1c0c
+2026-04-13 03:30:10: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbCPKy8M3N8YLpty5h6IV6",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:30:10: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8590
+2026-04-13 03:30:10: [stripe/webhook-debug2] sig header: t=1776051010,v1=d29d84e16c1b3f0ca267787a77b41693b6ce66287b01b79dade952d6e0d88523
+2026-04-13 03:30:10: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbCPKy8M3N8YLp7LDCQlE1",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:30:49: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 6034
+2026-04-13 03:30:49: [stripe/webhook-debug2] sig header: t=1776051049,v1=0e7c4782198b156cb69d94b561748409ede0fab09fdaecde77d342603919dce6
+2026-04-13 03:30:49: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbD3Ky8M3N8YLpPDC0ONbE",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:38:21: [db] connected — Mon Apr 13 2026 03:38:21 GMT+0000 (Coordinated Universal Time)
+2026-04-13 03:38:21: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-13 03:38:21: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-13 03:38:58: GET /consent-config → 304 (2ms)
+2026-04-13 03:39:04: POST /public-checkout → 200 (582ms)
+2026-04-13 03:39:23: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1531
+2026-04-13 03:39:23: [stripe/webhook-debug2] sig header: t=1776051563,v1=7640d723aa61e05be2d123f9191d909e7dabbaadf688b68b71b27f1307ca28bb
+2026-04-13 03:39:23: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbLLKy8M3N8YLpb4zjnvx2",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:39:24: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1504
+2026-04-13 03:39:24: [stripe/webhook-debug2] sig header: t=1776051564,v1=feca57d67d3adf86d8f7f1492bc127822eebe8950d689539dcf8a7f7ce71fe1d
+2026-04-13 03:39:24: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbLLKy8M3N8YLpbeYNuVit",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:39:27: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4098
+2026-04-13 03:39:27: [stripe/webhook-debug2] sig header: t=1776051567,v1=900a98d40af1479b4208ab2be1294ac04a83e1db9f4148547ec876ec3468342a
+2026-04-13 03:39:27: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbLPKy8M3N8YLppAfdHXNt",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:39:27: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4098
+2026-04-13 03:39:27: [stripe/webhook-debug2] sig header: t=1776051567,v1=9b6d011134e2aab52c3ae1f4bc1641feee18d68cf13e5435f2c04ea55f9bbb66
+2026-04-13 03:39:27: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbLPKy8M3N8YLppAfdHXNt",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:39:27: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1280
+2026-04-13 03:39:27: [stripe/webhook-debug2] sig header: t=1776051567,v1=9c1ecb9686c9af075d34a5ac3a3e99c38546dac067ee198c3b3bb0dccf1e70c2
+2026-04-13 03:39:27: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbLPKy8M3N8YLpIcOONmDf",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:39:27: [stripe/webhook] cold visitor: activated elite/monthly for bot_user 7 (fndstarfury@gmail.com)
+2026-04-13 03:39:27: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1636
+2026-04-13 03:39:27: [stripe/webhook-debug2] sig header: t=1776051567,v1=2827ecf933479f3e280046f87288a29963f6a6298cc41fa8483ac6041c91f12e
+2026-04-13 03:39:27: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbLPKy8M3N8YLpWCoV2TFq",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:39:28: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1373
+2026-04-13 03:39:28: [stripe/webhook-debug2] sig header: t=1776051568,v1=a9420013fd660b14bee5bf2526f326cea907d31733808abb17e4dd9b3b455edf
+2026-04-13 03:39:28: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbLPKy8M3N8YLprZqoDmfA",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:39:28: [stripe/webhook] cold visitor: welcome email sent to fndstarfury@gmail.com
+2026-04-13 03:39:28: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8588
+2026-04-13 03:39:28: [stripe/webhook-debug2] sig header: t=1776051568,v1=cbb4096c4660a625ebccded1c9a44d550a071785cf394d28e300c4952864a3c3
+2026-04-13 03:39:28: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbLQKy8M3N8YLpauGxLnHH",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:39:28: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8590
+2026-04-13 03:39:28: [stripe/webhook-debug2] sig header: t=1776051568,v1=64991c9c193e65562e492ebfe0277e532b06f65dbef2038334c7e2747639447d
+2026-04-13 03:39:28: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbLQKy8M3N8YLp07X0m9iz",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:39:28: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8585
+2026-04-13 03:39:28: [stripe/webhook-debug2] sig header: t=1776051568,v1=caccd6dac9a8546a0dfdffd2bf5b22718c3f9f6fda99d813d279c3d865a67c33
+2026-04-13 03:39:28: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbLQKy8M3N8YLp83NPgqpi",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:39:29: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8598
+2026-04-13 03:39:29: [stripe/webhook-debug2] sig header: t=1776051569,v1=c7ea5dde99b181637c630f3aae842e7d8160aa55b0bb19c0dbed1bb7e186b012
+2026-04-13 03:39:29: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbLQKy8M3N8YLpDua2NL8p",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:39:29: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 6027
+2026-04-13 03:39:29: [stripe/webhook-debug2] sig header: t=1776051569,v1=5149dbf8f3edf462e71599577a3f4a741682bf6c41a747fe85825e27158f5969
+2026-04-13 03:39:29: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbLRKy8M3N8YLpZsCbrz4r",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 03:40:01: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 6034
+2026-04-13 03:40:01: [stripe/webhook-debug2] sig header: t=1776051601,v1=7fd82c63b81be37d9f699800077692e05465a2e7b6b629a8393faef1e2425c7f
+2026-04-13 03:40:01: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbLxKy8M3N8YLpHWWXC6Ri",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 04:04:09: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4096
+2026-04-13 04:04:09: [stripe/webhook-debug2] sig header: t=1776053048,v1=35a3160191ef08ab2e6694afd2afbe2689c1ad39c4617e8fd150503794c30e22
+2026-04-13 04:04:09: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLamMKy8M3N8YLpRJiwNSB5",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 04:14:23: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4096
+2026-04-13 04:14:23: [stripe/webhook-debug2] sig header: t=1776053663,v1=500f00714e281ab423a2a683cdbbb86ce78765cb78b5bf9d1aadf4218a1a9e54
+2026-04-13 04:14:23: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLaxrKy8M3N8YLpyDJXyzFD",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 04:19:10: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4096
+2026-04-13 04:19:10: [stripe/webhook-debug2] sig header: t=1776053950,v1=c039c71c3e14207b3c8456d689014251abf0b1f6bf4390f8d7b5032b5f2a1b67
+2026-04-13 04:19:10: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLb0mKy8M3N8YLpr61MirXs",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 04:28:45: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4096
+2026-04-13 04:28:45: [stripe/webhook-debug2] sig header: t=1776054525,v1=e89d9056e010d5f4aa2c0a30a456fed464679d05fa08ef0a8304e36cd57a1cbe
+2026-04-13 04:28:45: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbAzKy8M3N8YLpyOJyvMNd",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 04:30:42: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4098
+2026-04-13 04:30:42: [stripe/webhook-debug2] sig header: t=1776054642,v1=0efd49be32c65d88b473cd99143a3b1aca8f8b684dfe53d1916f883985b19294
+2026-04-13 04:30:42: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbCNKy8M3N8YLpRAJ6h7Af",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 04:31:23: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4088
+2026-04-13 04:31:23: [stripe/webhook-debug2] sig header: t=1776054683,v1=e9fe8172587ae2ae20b918cdfdd0b3863d3a66bbc56ce6a14a9d339f19720521
+2026-04-13 04:31:23: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLZKDKy8M3N8YLp9fxsHEvQ",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 04:39:09: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4098
+2026-04-13 04:39:09: [stripe/webhook-debug2] sig header: t=1776055148,v1=680d47a565381bd7ce19cbe12ea292879173a3268299d025b07af11e03d04393
+2026-04-13 04:39:09: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbLPKy8M3N8YLppAfdHXNt",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 06:04:50: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4096
+2026-04-13 06:04:50: [stripe/webhook-debug2] sig header: t=1776060290,v1=b34170e280b5349358b57b4d8180161584ab3cb3eeaf3fe6a5faa326447d1954
+2026-04-13 06:04:50: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLamMKy8M3N8YLpRJiwNSB5",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 06:15:01: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4096
+2026-04-13 06:15:01: [stripe/webhook-debug2] sig header: t=1776060901,v1=d5974694c33fdd451b63a84b3213165152f800623fb413c5dd34e75830afd0f1
+2026-04-13 06:15:01: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLaxrKy8M3N8YLpyDJXyzFD",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 06:18:28: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4096
+2026-04-13 06:18:28: [stripe/webhook-debug2] sig header: t=1776061108,v1=578bd8544549c2e28c9c2b01c64aea106dc5a980f6a0b27686273bce1c9ae174
+2026-04-13 06:18:28: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLb0mKy8M3N8YLpr61MirXs",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 06:27:39: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4096
+2026-04-13 06:27:39: [stripe/webhook-debug2] sig header: t=1776061659,v1=3b3e9cd252564464f6d4925410b887542255b443571ee8d1b3e9d6e9168e8451
+2026-04-13 06:27:39: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbAzKy8M3N8YLpyOJyvMNd",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 06:30:35: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4098
+2026-04-13 06:30:35: [stripe/webhook-debug2] sig header: t=1776061835,v1=7c9b91a364a3e25936c4ce59cf8df2ef015b4535ea344077f52692f4dd6e31e5
+2026-04-13 06:30:35: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbCNKy8M3N8YLpRAJ6h7Af",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 06:39:28: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4098
+2026-04-13 06:39:28: [stripe/webhook-debug2] sig header: t=1776062368,v1=eb0c9de116643fa83227a78b003073d0ff4d2a620040a1295a2ccc66fbe0f0b9
+2026-04-13 06:39:28: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLbLPKy8M3N8YLppAfdHXNt",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 09:36:03: GET /me → 200 (7ms)
+2026-04-13 09:36:05: GET /dashboard → 200 (2109ms)
+2026-04-13 09:36:05: GET /stats → 200 (9ms)
+2026-04-13 11:20:51: GET / → 200 (8ms)
+2026-04-13 11:20:54: GET /dashboard → 200 (2417ms)
+2026-04-13 18:45:36: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 3840
+2026-04-13 18:45:36: [stripe/webhook-debug2] sig header: t=1776105936,v1=45833c56b6f4f2abe9ebcafcda5b77bc82f43d6c01ac9ad6b528bd7ee3a533c7
+2026-04-13 18:45:36: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLpUKKy8M3N8YLptArfMfvZ",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 18:47:11: POST /telegram-auth → 200 (7ms)
+2026-04-13 18:47:11: GET /status → 200 (1ms)
+2026-04-13 18:47:24: GET /status → 200 (10ms)
+2026-04-13 18:47:24: GET /stats → 200 (10ms)
+2026-04-13 18:47:24: GET /score-bands → 200 (18ms)
+2026-04-13 18:47:24: GET /outcomes → 200 (4ms)
+2026-04-13 18:47:24: GET /resolved → 200 (25ms)
+2026-04-13 18:47:24: [equity-curve] Kraken: BTC 18 days, ETH 18 days
+2026-04-13 18:47:24: GET /equity-curve → 304 (333ms)
+2026-04-13 18:47:24: GET /api/proof/providers → 404 (1ms)
+2026-04-13 18:47:25: GET /resolved → 200 (15ms)
+2026-04-13 18:48:13: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 3840
+2026-04-13 18:48:13: [stripe/webhook-debug2] sig header: t=1776106093,v1=499710614c8edb82de6b27a2195a4999a3207358f316c8a2294f98b4e435bf7f
+2026-04-13 18:48:13: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLpWrKy8M3N8YLpbfONfcnl",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 18:51:03: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 3840
+2026-04-13 18:51:03: [stripe/webhook-debug2] sig header: t=1776106263,v1=fa49c01b25d116129558b577deed89ced02bbce571de822150b544d0ae3c6905
+2026-04-13 18:51:03: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLpZbKy8M3N8YLpm10LK6Bu",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 18:51:24: [db] connected — Mon Apr 13 2026 18:51:24 GMT+0000 (Coordinated Universal Time)
+2026-04-13 18:51:24: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-13 18:51:24: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-13 18:52:10: GET / → 200 (31ms)
+2026-04-13 18:52:13: GET /dashboard → 200 (2177ms)
+2026-04-13 18:52:20: GET / → 304 (4ms)
+2026-04-13 18:52:22: GET /dashboard → 200 (1973ms)
+2026-04-13 18:55:50: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 3840
+2026-04-13 18:55:50: [stripe/webhook-debug2] sig header: t=1776106550,v1=fa1f7099888d738d52973c2c5410512a692301cc519c47f513173e01044f139e
+2026-04-13 18:55:50: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLpeEKy8M3N8YLpAJXTGS34",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 18:58:15: GET / → 200 (8ms)
+2026-04-13 18:58:17: GET /dashboard → 200 (2023ms)
+2026-04-13 18:58:27: GET / → 304 (6ms)
+2026-04-13 18:58:29: GET /dashboard → 200 (2350ms)
+2026-04-13 19:00:42: GET / → 200 (7ms)
+2026-04-13 19:01:45: GET /api/proof/providers → 404 (0ms)
+2026-04-13 19:02:41: GET /consent-config → 304 (1ms)
+2026-04-13 19:04:10: POST /login → 401 (61ms)
+2026-04-13 19:17:38: GET / → 200 (7ms)
+2026-04-13 19:17:49: GET /status → 200 (8ms)
+2026-04-13 19:17:49: GET /stats → 200 (8ms)
+2026-04-13 19:17:49: GET /score-bands → 200 (27ms)
+2026-04-13 19:17:49: GET /outcomes → 200 (19ms)
+2026-04-13 19:17:49: GET /resolved → 200 (22ms)
+2026-04-13 19:17:49: GET /resolved → 200 (25ms)
+2026-04-13 19:17:49: [equity-curve] Kraken: BTC 18 days, ETH 18 days
+2026-04-13 19:17:49: GET /equity-curve → 304 (314ms)
+2026-04-13 19:17:50: GET /api/proof/providers → 404 (0ms)
+2026-04-13 19:40:36: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8303
+2026-04-13 19:40:36: [stripe/webhook-debug2] sig header: t=1776109236,v1=e89a8a34a57e745f71c64b145e42bc82dcd912ef5ece5b994da00ef9645de1ba
+2026-04-13 19:40:36: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLqLYKy8M3N8YLpoT19ayQ7",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 19:40:36: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8494
+2026-04-13 19:40:36: [stripe/webhook-debug2] sig header: t=1776109236,v1=3c3f428336bf4d6c4611728fbaea4f832fc0902de9c80b8d6983b7af91b28704
+2026-04-13 19:40:36: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLqLYKy8M3N8YLpNe2a8BPx",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 19:40:37: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8494
+2026-04-13 19:40:37: [stripe/webhook-debug2] sig header: t=1776109236,v1=17636abdb72020c6720038415b3d20e2c20dab6667bbd295e0465f90228d9465
+2026-04-13 19:40:37: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLqLYKy8M3N8YLpNe2a8BPx",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 19:40:51: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8494
+2026-04-13 19:40:51: [stripe/webhook-debug2] sig header: t=1776109251,v1=188ba87eb875dd28959c0efb213a55a9da490910e55d1c74c8146d532785dde7
+2026-04-13 19:40:51: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLqLYKy8M3N8YLpNe2a8BPx",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 19:54:14: POST /telegram-auth → 200 (7ms)
+2026-04-13 19:54:17: GET /breakouts → 200 (2797ms)
+2026-04-13 19:54:28: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8301
+2026-04-13 19:54:28: [stripe/webhook-debug2] sig header: t=1776110068,v1=1da1fe295cd8bcacf29a27725e1f134b828d7f46da48f1e25322f14a75d566fb
+2026-04-13 19:54:28: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLqYyKy8M3N8YLp4vvXTQNt",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 19:54:28: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8494
+2026-04-13 19:54:28: [stripe/webhook-debug2] sig header: t=1776110068,v1=3874645b93832c2f0206c34b38ac44c579a89bceeefbe4dfa7b44754086378e8
+2026-04-13 19:54:28: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLqYyKy8M3N8YLpiWUX28VN",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 19:54:28: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8494
+2026-04-13 19:54:28: [stripe/webhook-debug2] sig header: t=1776110068,v1=ae595e881f731bae927ba60e5cca6f7c7337f4f2c7260ca605b272c99fd3cbee
+2026-04-13 19:54:28: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLqYyKy8M3N8YLpiWUX28VN",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 19:56:25: GET /status → 200 (13ms)
+2026-04-13 19:56:25: GET /outcomes → 200 (12ms)
+2026-04-13 19:56:25: GET /score-bands → 200 (13ms)
+2026-04-13 19:56:25: GET /stats → 200 (16ms)
+2026-04-13 19:56:25: GET /resolved → 200 (29ms)
+2026-04-13 19:56:25: GET /resolved → 200 (27ms)
+2026-04-13 19:56:25: [equity-curve] Kraken: BTC 18 days, ETH 18 days
+2026-04-13 19:56:25: GET /equity-curve → 304 (382ms)
+2026-04-13 19:56:25: GET /api/proof/providers → 404 (0ms)
+2026-04-13 19:57:21: GET /equity-curve → 304 (0ms)
+2026-04-13 19:57:21: GET /status → 304 (13ms)
+2026-04-13 19:57:21: GET /outcomes → 304 (14ms)
+2026-04-13 19:57:21: GET /stats → 304 (15ms)
+2026-04-13 19:57:21: GET /resolved → 304 (20ms)
+2026-04-13 19:57:21: GET /resolved → 304 (18ms)
+2026-04-13 19:57:21: GET /score-bands → 304 (19ms)
+2026-04-13 19:57:21: GET /api/proof/providers → 404 (1ms)
+2026-04-13 19:57:27: GET /status → 304 (2ms)
+2026-04-13 19:57:27: GET /consent-config → 304 (1ms)
+2026-04-13 20:04:56: GET /consent-config → 304 (0ms)
+2026-04-13 20:04:56: GET /status → 304 (5ms)
+2026-04-13 20:07:25: GET /consent-config → 304 (0ms)
+2026-04-13 20:07:25: GET /status → 304 (5ms)
+2026-04-13 20:09:27: GET /consent-config → 304 (0ms)
+2026-04-13 20:09:27: GET /status → 304 (5ms)
+2026-04-13 20:09:31: GET /consent-config → 304 (0ms)
+2026-04-13 20:09:31: GET /status → 304 (1ms)
+2026-04-13 20:10:49: GET /consent-config → 304 (0ms)
+2026-04-13 20:10:49: GET /status → 304 (5ms)
+2026-04-13 20:20:32: GET /consent-config → 304 (0ms)
+2026-04-13 20:20:32: GET /status → 304 (5ms)
+2026-04-13 20:21:03: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8300
+2026-04-13 20:21:03: [stripe/webhook-debug2] sig header: t=1776111662,v1=523cc5a1c2fdcb86a672c2cc410ba42d578d218d62caa42cf1849d8595eb4f52
+2026-04-13 20:21:03: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLqygKy8M3N8YLpvSpYDNbb",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:21:03: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8494
+2026-04-13 20:21:03: [stripe/webhook-debug2] sig header: t=1776111663,v1=4ce7d8a13cf5da527e390bea0aec890293cc55a4f9d14d6da2ea9ae587a0212a
+2026-04-13 20:21:03: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLqygKy8M3N8YLpzvNFGgCw",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:21:03: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8494
+2026-04-13 20:21:03: [stripe/webhook-debug2] sig header: t=1776111663,v1=0132b260881d7cb15ca7a07187344a7bab5fe6a4fb2272108a834d25897e0038
+2026-04-13 20:21:03: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLqygKy8M3N8YLpzvNFGgCw",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:24:49: [db] connected — Mon Apr 13 2026 20:24:49 GMT+0000 (Coordinated Universal Time)
+2026-04-13 20:24:49: [api] agoraiq-signals-api v3.0.0 on 127.0.0.1:4300
+2026-04-13 20:24:49: [api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai
+2026-04-13 20:38:32: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8303
+2026-04-13 20:38:32: [stripe/webhook-debug2] sig header: t=1776112712,v1=b746033116262048621ce7aa5e798476557c8d587d2b7ca15a7ecff21b23c58c
+2026-04-13 20:38:32: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLrFcKy8M3N8YLpFeLZY3O3",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:38:32: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8494
+2026-04-13 20:38:32: [stripe/webhook-debug2] sig header: t=1776112712,v1=6ddecf8ab69277f84e8566fd539e3b2eec19603aee62760a814e6bd673991f12
+2026-04-13 20:38:32: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLrFcKy8M3N8YLpXmAMr6ej",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:38:32: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8494
+2026-04-13 20:38:32: [stripe/webhook-debug2] sig header: t=1776112712,v1=431832220ca4d1bbb99029982318d49b6f8e9832f31350803232e7fa224d85c8
+2026-04-13 20:38:32: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLrFcKy8M3N8YLpXmAMr6ej",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:41:13: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8294
+2026-04-13 20:41:13: [stripe/webhook-debug2] sig header: t=1776112873,v1=ad10129ded709b15d8452bbf246bbd297ab1599d672fd403693f382d4e2cc99d
+2026-04-13 20:41:13: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLrIDKy8M3N8YLprnm9xGAq",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:41:13: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8496
+2026-04-13 20:41:13: [stripe/webhook-debug2] sig header: t=1776112873,v1=4963f2098ed3830dd8a92a4fa6b8543ba99fff09d220da1c0e63bdd76c17b4bc
+2026-04-13 20:41:13: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLrIDKy8M3N8YLpJpWRMTFq",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:41:13: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8496
+2026-04-13 20:41:13: [stripe/webhook-debug2] sig header: t=1776112873,v1=a04413251d5ce00d540bcb6b5238abf97c7fc6dcbc992b5bd17e06d99fa872f2
+2026-04-13 20:41:13: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLrIDKy8M3N8YLpJpWRMTFq",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:41:28: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 6961
+2026-04-13 20:41:28: [stripe/webhook-debug2] sig header: t=1776112888,v1=a7a451e01cacb7c3d9b04c152ecd23c83c39d899c6bbd0f14737debd4530b8f8
+2026-04-13 20:41:28: [stripe/webhook-debug2] body preview: {
+  "id": "evt_3TLrIPKy8M3N8YLp0GuLGoSl",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:41:28: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4043
+2026-04-13 20:41:28: [stripe/webhook-debug2] sig header: t=1776112888,v1=0b4153f8fc465bb91afc82538e09d6871d97b66677dcdee42f95d6a4d38a6b77
+2026-04-13 20:41:28: [stripe/webhook-debug2] body preview: {
+  "id": "evt_3TLrIPKy8M3N8YLp0uYTI4yd",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:41:29: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 2305
+2026-04-13 20:41:29: [stripe/webhook-debug2] sig header: t=1776112889,v1=bd044cf50957edeb8eb5ef9618148798dd45f8cd00892d75c556084755cd3c6c
+2026-04-13 20:41:29: [stripe/webhook-debug2] body preview: {
+  "id": "evt_3TLrIPKy8M3N8YLp07FGCbkI",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:41:29: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1358
+2026-04-13 20:41:29: [stripe/webhook-debug2] sig header: t=1776112889,v1=477fb89960ecc30cdafee68055979c9a33131bb2b9ae52d9ef2408f1b8aa6cc0
+2026-04-13 20:41:29: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLrITKy8M3N8YLpX0EjrcpM",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:41:29: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 9284
+2026-04-13 20:41:29: [stripe/webhook-debug2] sig header: t=1776112889,v1=36045afb38a7b53a56e36b526a5b96f7ae25c5c457b3b6f39cd04196d79c98af
+2026-04-13 20:41:29: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLrITKy8M3N8YLpx4JrmVUG",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:41:30: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8693
+2026-04-13 20:41:30: [stripe/webhook-debug2] sig header: t=1776112890,v1=249119e4b6ad0cd88e29e8b75c33ca289f9e86bb4869ca7676113f026b4eb070
+2026-04-13 20:41:30: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLrITKy8M3N8YLpDl1zXkC8",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:41:30: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8688
+2026-04-13 20:41:30: [stripe/webhook-debug2] sig header: t=1776112890,v1=41398f049df580c39d0564f83935596e0eddb37c8fecbcbab59520d476618a68
+2026-04-13 20:41:30: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLrIUKy8M3N8YLpeErKxHmn",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:41:30: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8701
+2026-04-13 20:41:30: [stripe/webhook-debug2] sig header: t=1776112890,v1=b0c9b19d3dce4a615ce1aac2e519449da339935946198e910bfb0fcd5f5d54b0
+2026-04-13 20:41:30: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLrIUKy8M3N8YLpgHTriddi",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:41:34: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8494
+2026-04-13 20:41:34: [stripe/webhook-debug2] sig header: t=1776112894,v1=ae871b197496bf66e23c45dc637563d836eb0d4fdf7bf408464b403fbdd123de
+2026-04-13 20:41:34: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLqLYKy8M3N8YLpNe2a8BPx",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:41:35: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 834
+2026-04-13 20:41:35: [stripe/webhook-debug2] sig header: t=1776112895,v1=a85d514a64f06035279512bfa677f1d93b65605375eb18c67147c39c951d0d2c
+2026-04-13 20:41:35: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLrIYKy8M3N8YLpDroTarYX",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:52:09: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8303
+2026-04-13 20:52:09: [stripe/webhook-debug2] sig header: t=1776113529,v1=69b30dcd25d16db491b6deb0a106792a3c605b159184185d23e32f742c1ce206
+2026-04-13 20:52:09: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLrSnKy8M3N8YLpDkpSS3MA",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:52:09: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8494
+2026-04-13 20:52:09: [stripe/webhook-debug2] sig header: t=1776113529,v1=5bbca0e5b12727e664fc4c95eb0c01fffe97aefea4ae9095dc9688e4a35450bf
+2026-04-13 20:52:09: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLrSnKy8M3N8YLpX3BJd799",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:52:09: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8494
+2026-04-13 20:52:09: [stripe/webhook-debug2] sig header: t=1776113529,v1=2f217269642fefabb78c7be8b041872c5c71f7db46f35af5d8af4782496c0d61
+2026-04-13 20:52:09: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLrSnKy8M3N8YLpX3BJd799",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:55:30: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 6960
+2026-04-13 20:55:30: [stripe/webhook-debug2] sig header: t=1776113729,v1=adfb3b039e26006b227abd8d1d50134ca188c62697d4d0f4430dbc880bc019da
+2026-04-13 20:55:30: [stripe/webhook-debug2] body preview: {
+  "id": "evt_3TLrVzKy8M3N8YLp01GOuc8I",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:55:30: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 4042
+2026-04-13 20:55:30: [stripe/webhook-debug2] sig header: t=1776113730,v1=3bf743aa30f5364c4780e4a8d7a8ab6766b9a36e78d484f51ac774b61ea59de5
+2026-04-13 20:55:30: [stripe/webhook-debug2] body preview: {
+  "id": "evt_3TLrVzKy8M3N8YLp0QmyEkfw",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:55:30: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 2305
+2026-04-13 20:55:30: [stripe/webhook-debug2] sig header: t=1776113730,v1=b65809e6db3a39071343b885284ee4f3c9a47d6e00604db32cbadf0b624a8ad2
+2026-04-13 20:55:30: [stripe/webhook-debug2] body preview: {
+  "id": "evt_3TLrVzKy8M3N8YLp01SMovgv",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:55:30: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 1356
+2026-04-13 20:55:30: [stripe/webhook-debug2] sig header: t=1776113730,v1=1e25d60129f01de2f69328edc3847a88660f6731f959259f089cc0462df885c2
+2026-04-13 20:55:30: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLrW2Ky8M3N8YLpiCYwhZTa",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:55:31: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 9282
+2026-04-13 20:55:31: [stripe/webhook-debug2] sig header: t=1776113731,v1=747f18198f09e0118582198cdf4efc7cdafec4cd11235e55ca1bd4d957912f4f
+2026-04-13 20:55:31: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLrW3Ky8M3N8YLpRtNnP0Hq",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:55:31: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8691
+2026-04-13 20:55:31: [stripe/webhook-debug2] sig header: t=1776113731,v1=de2e7baee24b30b68bb54d6408d46fcbd37433f45674cecc39f5e5f090b51d3f
+2026-04-13 20:55:31: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLrW3Ky8M3N8YLpM8LkefBf",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:55:31: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8686
+2026-04-13 20:55:31: [stripe/webhook-debug2] sig header: t=1776113731,v1=e315ebd1641eb16d4f987a07ec82f7e5c694da1cb72ee10b05204bdcaeb16170
+2026-04-13 20:55:31: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLrW3Ky8M3N8YLpBWtYlfY8",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:55:31: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8699
+2026-04-13 20:55:31: [stripe/webhook-debug2] sig header: t=1776113731,v1=205f7542293f1d9700b4e190c71542f7db449df707dfaefa53a9ef6b97c29fde
+2026-04-13 20:55:31: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLrW3Ky8M3N8YLpoMkWbPsS",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:55:34: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 8494
+2026-04-13 20:55:34: [stripe/webhook-debug2] sig header: t=1776113734,v1=e89390ee46c771c9fdf042427d9734738bf3321ff1b5dd4ec8c3019ffcfa6dec
+2026-04-13 20:55:34: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLqYyKy8M3N8YLpiWUX28VN",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre
+2026-04-13 20:55:36: [stripe/webhook-debug] secret: whsec_bc16 bodyType: object isBuffer: true bodyLen: 834
+2026-04-13 20:55:36: [stripe/webhook-debug2] sig header: t=1776113736,v1=287da1087f1f284951bfd0628ec09b825eab23386b0f9266882a2834138731b9
+2026-04-13 20:55:36: [stripe/webhook-debug2] body preview: {
+  "id": "evt_1TLrW8Ky8M3N8YLpf1eswKIO",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "cre

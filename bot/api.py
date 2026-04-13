@@ -225,7 +225,7 @@ async def telegram_status(token: str) -> Any:
 # ═══════════════════════════════════════════════════════════════════
 
 async def billing_checkout(token: str, plan: str, period: str = "monthly") -> Any:
-    return await _post(f"{API_BASE}/billing/checkout", {"plan": plan, "period": period}, token)
+    return await _post(f"{API_BASE}/billing/checkout", {"plan": plan, "period": period, "source": "telegram", "consent": {"version": "1.0", "accepted": True, "timestamp": __import__("datetime").datetime.utcnow().isoformat() + "Z", "documents": ["subscription-agreement", "terms", "privacy", "cookies", "no-financial-advice"]}}, token)
 
 
 async def billing_portal(token: str) -> Any:

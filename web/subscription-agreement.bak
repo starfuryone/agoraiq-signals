@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subscription Agreement — AgoraIQ Signals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Albert+Sans:wght@400;500;600;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#08090d;--surface:#0e1017;--surface2:#161822;--border:#1e2230;--cyan:#00d4ff;--cyan-dim:rgba(0,212,255,.12);--green:#22c55e;--red:#ef4444;--amber:#f59e0b;--text:#e4e7ef;--text2:#8b92a8;--text3:#5b6178;--syne:'Syne',sans-serif;--mono:'DM Mono',monospace;--sans:'Albert Sans',sans-serif}
+html{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;-webkit-font-smoothing:antialiased}
+body{min-height:100vh}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);background:var(--surface)}
+.brand{display:flex;align-items:center;gap:8px;text-decoration:none}
+.brand-mark{width:28px;height:28px;background:linear-gradient(135deg,#FCD535,#EFBF04);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);flex-shrink:0}
+.brand-text{font-family:var(--syne);font-weight:800;font-size:18px;color:#fff;letter-spacing:-.02em}
+.brand-iq{color:#FCD535}
+.topbar nav{display:flex;gap:20px}
+.topbar nav a{color:var(--text2);text-decoration:none;font-size:13px;font-family:var(--mono);transition:color .2s}
+.topbar nav a:hover{color:var(--cyan)}
+.container{max-width:760px;margin:0 auto;padding:40px 24px 60px}
+.breadcrumb{font-size:13px;color:var(--text3);margin-bottom:24px}
+.breadcrumb a{color:var(--text2);text-decoration:none}
+.breadcrumb a:hover{color:var(--cyan)}
+h1{font-family:'Albert Sans',sans-serif;font-weight:900;font-size:clamp(26px,4vw,36px);letter-spacing:-1px;text-transform:uppercase;color:#EFBF04;line-height:1.1;margin-bottom:32px}
+h1 .accent{color:#FCD535}
+h2{font-weight:700;font-size:18px;color:#fff;margin:32px 0 12px;padding-top:20px;border-top:1px solid var(--border)}
+h2:first-of-type{border-top:none;margin-top:24px}
+h3{font-weight:600;font-size:15px;color:var(--cyan);margin:20px 0 8px}
+p{color:var(--text);line-height:1.7;margin-bottom:14px}
+ul,ol{margin:0 0 14px 24px;line-height:1.7}
+li{margin-bottom:6px}
+strong{color:#fff}
+a{color:var(--cyan);text-decoration:none}
+a:hover{text-decoration:underline}
+.callout{background:var(--surface);border-left:3px solid var(--amber);padding:14px 18px;border-radius:0 8px 8px 0;margin:16px 0;font-size:14px;color:var(--text)}
+.callout.info{border-left-color:var(--cyan)}
+.callout.green{border-left-color:var(--green)}
+table.plan-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+table.plan-table th{text-align:left;padding:10px 12px;background:var(--surface);color:var(--cyan);font-weight:600;border-bottom:2px solid var(--border)}
+table.plan-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text)}
+table.plan-table tr:last-child td{border-bottom:none}
+.updated{font-size:13px;color:var(--text3);margin-bottom:24px}
+
+.legal-footer{background:var(--surface);border-top:1px solid var(--border);padding:32px 24px;margin-top:48px;text-align:center;font-size:12px;font-family:var(--sans);color:var(--text2)}
+.footer-inner{max-width:860px;margin:0 auto}
+.footer-brand{font-family:var(--syne);font-weight:800;font-size:16px;color:var(--cyan);margin-bottom:12px}
+.footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-bottom:12px}
+.footer-links a{color:var(--text2);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--cyan)}
+.footer-copy{margin-bottom:8px}
+.footer-warn{font-size:11px;opacity:.7;max-width:640px;margin:0 auto;line-height:1.5}
+@media(max-width:768px){.container{padding:24px 16px 40px}table.plan-table{font-size:12px}table.plan-table th,table.plan-table td{padding:8px 6px}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="/" class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">Agora<span class="brand-iq">IQ</span></span></a>
+  <nav><a href="signals.html">Signals</a><a href="scanner.html">Scanner</a><a href="track.html">Track</a><a href="proof.html">Proof</a><a href="providers.html">Providers</a><a href="pricing.html">Pricing</a><a href="watchlist.html">Watchlist</a><a href="help.html">Help</a></nav>
+</div>
+<div class="container">
+  <div class="breadcrumb"><a href="signals.html">Home</a> &rarr; Subscription Agreement</div>
+  <h1>Subscription <span class="accent">Agreement</span></h1>
+  <p class="updated">Last updated: April 2026</p>
+
+<p>This Subscription Agreement ("Agreement") governs your paid subscription to AgoraIQ Signals ("Service"), operated by <strong>ChatLogic Insights LTD</strong> ("we," "us," "our"). By subscribing, you agree to the terms below in addition to our <a href="terms.html">Terms of Use</a>.</p>
+
+<h2>1. Plans and Pricing</h2>
+
+<h3>1.1 Available Plans</h3>
+<p>AgoraIQ offers two paid subscription tiers:</p>
+<table class="plan-table">
+  <tr><th>Plan</th><th>Monthly</th><th>Yearly</th></tr>
+  <tr><td><strong>Pro</strong></td><td>$29/month</td><td>$228/year ($19/mo equivalent)</td></tr>
+  <tr><td><strong>Elite</strong></td><td>$99/month</td><td>$790/year ($65.83/mo equivalent)</td></tr>
+</table>
+<p>Prices are in US Dollars and may be updated with 30 days' notice. Current pricing is always displayed at <a href="pricing.html">bot.agoraiq.net/pricing.html</a>.</p>
+
+<h3>1.2 Billing Intervals</h3>
+<p>Subscriptions are billed either <strong>monthly</strong> (recurring every calendar month) or <strong>yearly</strong> (recurring every 12 months). Your billing interval is selected at checkout and may be changed as described in Section 3.</p>
+
+<h2>2. Payment and Billing</h2>
+
+<h3>2.1 Payment Processing</h3>
+<p>All payments are processed securely through <strong>Stripe</strong>. AgoraIQ does not store credit card numbers. By subscribing, you authorise Stripe to charge your payment method on a recurring basis according to your selected billing interval.</p>
+
+<h3>2.2 Billing Cycle</h3>
+<p>Your billing cycle begins on the date of your initial subscription. Subsequent charges occur on the same day each month (for monthly plans) or the same date each year (for yearly plans). If a charge fails, your subscription status becomes "past due" and access may be suspended after a 3-day grace period.</p>
+
+<h3>2.3 Taxes</h3>
+<p>Prices are exclusive of applicable taxes unless otherwise stated. Stripe may collect taxes as required by your jurisdiction.</p>
+
+<h2>3. Plan Changes</h2>
+
+<div class="callout info">
+  <strong>Summary:</strong> Upgrades and switches to yearly billing take effect immediately. Downgrades and switches to monthly billing take effect at the end of your current billing period. You keep full access to your current plan until any scheduled change takes effect.
+</div>
+
+<h3>3.1 Upgrades (Immediate)</h3>
+<p>An upgrade is a change from a lower-tier plan to a higher-tier plan (e.g., Pro to Elite). Upgrades take effect <strong>immediately</strong>. You gain instant access to the features of your new plan. Prorated charges are applied for the remainder of your current billing period — you are credited for the unused portion of your previous plan and charged for the remaining time at the new plan's rate.</p>
+
+<h3>3.2 Downgrades (Scheduled at Period End)</h3>
+<p>A downgrade is a change from a higher-tier plan to a lower-tier plan (e.g., Elite to Pro). Downgrades are <strong>scheduled to take effect at the end of your current billing period</strong>. You retain full access to all features of your current plan until the scheduled change date. On that date, your subscription automatically transitions to the new plan at the new rate.</p>
+
+<h3>3.3 Billing Interval Changes — Same Tier</h3>
+
+<p><strong>Monthly to Yearly (Immediate):</strong> Switching from monthly to yearly billing on the same plan takes effect <strong>immediately</strong>. Prorated charges are applied — you receive a credit for the unused portion of your current monthly period and are charged the yearly rate.</p>
+
+<p><strong>Yearly to Monthly (Scheduled at Period End):</strong> Switching from yearly to monthly billing on the same plan is <strong>scheduled to take effect at the end of your current yearly billing period</strong>. You retain access for the full year you have already paid for. Monthly billing begins at the next renewal.</p>
+
+<h3>3.4 Combined Changes</h3>
+<p>A plan change may involve both a tier change and a billing interval change simultaneously (e.g., Pro Monthly to Elite Yearly). The rules follow the dominant direction:</p>
+<ul>
+  <li>If the change includes an upgrade or a switch to yearly billing: <strong>immediate</strong> with proration.</li>
+  <li>If the change is a downgrade or a switch to monthly billing: <strong>scheduled</strong> at period end.</li>
+</ul>
+
+<h3>3.5 Plan Change Summary Table</h3>
+<table class="plan-table">
+  <tr><th>From</th><th>To</th><th>When</th><th>Billing</th></tr>
+  <tr><td>Pro Monthly</td><td>Pro Yearly</td><td>Immediate</td><td>Prorated credit + yearly charge</td></tr>
+  <tr><td>Pro Monthly</td><td>Elite Monthly</td><td>Immediate</td><td>Prorated credit + new rate</td></tr>
+  <tr><td>Pro Monthly</td><td>Elite Yearly</td><td>Immediate</td><td>Prorated credit + yearly charge</td></tr>
+  <tr><td>Pro Yearly</td><td>Pro Monthly</td><td>At renewal</td><td>Monthly billing starts at renewal</td></tr>
+  <tr><td>Pro Yearly</td><td>Elite Monthly</td><td>Immediate</td><td>Prorated credit + new rate</td></tr>
+  <tr><td>Pro Yearly</td><td>Elite Yearly</td><td>Immediate</td><td>Prorated credit + yearly charge</td></tr>
+  <tr><td>Elite Monthly</td><td>Elite Yearly</td><td>Immediate</td><td>Prorated credit + yearly charge</td></tr>
+  <tr><td>Elite Monthly</td><td>Pro Monthly</td><td>At renewal</td><td>New rate at renewal</td></tr>
+  <tr><td>Elite Monthly</td><td>Pro Yearly</td><td>At renewal</td><td>Yearly charge at renewal</td></tr>
+  <tr><td>Elite Yearly</td><td>Elite Monthly</td><td>At renewal</td><td>Monthly billing starts at renewal</td></tr>
+  <tr><td>Elite Yearly</td><td>Pro Monthly</td><td>At renewal</td><td>Monthly billing starts at renewal</td></tr>
+  <tr><td>Elite Yearly</td><td>Pro Yearly</td><td>At renewal</td><td>New yearly rate at renewal</td></tr>
+</table>
+
+<h3>3.6 Proration</h3>
+<p>When an immediate plan change involves proration, Stripe calculates the unused time remaining on your current plan and credits that amount against the charge for your new plan. The net difference is either charged immediately or applied to your next invoice. Prorated amounts are calculated to the day.</p>
+
+<h3>3.7 Pending Changes</h3>
+<p>When a plan change is scheduled (not immediate), your account displays the pending change. You may cancel or modify a pending change before it takes effect by selecting a different plan. Selecting an immediate change (e.g., an upgrade) while a downgrade is pending will cancel the pending downgrade and apply the upgrade immediately.</p>
+
+<h2>4. Confirmation and Notifications</h2>
+
+<h3>4.1 Telegram Confirmation</h3>
+<p>Every billing event — including new subscriptions, upgrades, downgrades, interval switches, and cancellations — generates a unique confirmation number (format: <strong>AQ-XXXXX-XXXX</strong>). This confirmation is automatically delivered to the Telegram account linked to your AgoraIQ account.</p>
+
+<h3>4.2 Email Confirmation (Optional)</h3>
+<p>After any plan change, you may request an email copy of the confirmation by entering an email address in the confirmation dialog. Email confirmations are sent via transactional email and contain the same confirmation number, plan details, and effective date as the Telegram notification.</p>
+
+<h3>4.3 Confirmation Contents</h3>
+<p>Each confirmation includes: the confirmation number, the date and time of the transaction, the plan and billing interval, the effective date (immediate or scheduled), and for upgrades, the prorated charge amount.</p>
+
+<h2>5. Cancellation</h2>
+
+<h3>5.1 How to Cancel</h3>
+<p>You may cancel your subscription at any time through the <strong>Manage Subscription</strong> button on the pricing page, which opens the Stripe Customer Portal. You may also contact <a href="mailto:support@agoraiq.net">support@agoraiq.net</a>.</p>
+
+<h3>5.2 Effect of Cancellation</h3>
+<p>Cancellation takes effect at the end of your current billing period. You retain full access to all features of your current plan until that date. After the billing period ends, your account reverts to an inactive state.</p>
+
+<h3>5.3 No Refunds</h3>
+<p>No refunds are issued for partial billing periods, except where required by applicable law. If you upgrade and then cancel within the same billing period, the prorated charge for the upgrade is not refunded.</p>
+
+<h2>6. Consent</h2>
+
+<h3>6.1 Checkout Consent</h3>
+<p>Before completing any purchase or plan change, you must explicitly consent to this Subscription Agreement, the <a href="terms.html">Terms of Use</a>, the <a href="privacy.html">Privacy Policy</a>, the <a href="cookies.html">Cookie Policy</a>, and the <a href="no-financial-advice.html">No Financial Advice Disclaimer</a>. Your consent is recorded with a timestamp, consent version, and the specific documents you agreed to.</p>
+
+<h3>6.2 Consent Records</h3>
+<p>We maintain a log of all consent events for compliance purposes. Consent records include the user ID, consent version, document IDs, timestamp, and the plan associated with the transaction.</p>
+
+<h2>7. Service Level</h2>
+<p>AgoraIQ aims to provide continuous service availability but does not guarantee specific uptime. Planned maintenance is performed during low-usage hours when possible. Service interruptions do not entitle you to refunds or billing credits.</p>
+
+<h2>8. Dispute Resolution</h2>
+<p>If you believe a charge is incorrect, contact <a href="mailto:support@agoraiq.net">support@agoraiq.net</a> with your confirmation number. We will review the transaction and respond within 5 business days. Chargebacks filed without first contacting us may result in account suspension.</p>
+
+<h2>9. Governing Law</h2>
+<p>This Agreement is governed by the laws of England and Wales. Any disputes shall be subject to the exclusive jurisdiction of the courts of England and Wales.</p>
+
+<h2>10. Contact</h2>
+<p>ChatLogic Insights LTD<br>
+Email: <a href="mailto:legal@agoraiq.net">legal@agoraiq.net</a><br>
+Support: <a href="mailto:support@agoraiq.net">support@agoraiq.net</a></p>
+
+</div>
+<footer class="legal-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">Agora<span style="color:var(--cyan)">IQ</span></div>
+    <div class="footer-links"><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a><a href="cookies.html">Cookies</a><a href="disclaimer.html">Disclaimer</a><a href="no-financial-advice.html">No Financial Advice</a></div>
+    <div class="footer-copy">&copy; 2026 ChatLogic Insights LTD. All rights reserved.</div>
+    <div class="footer-warn">&olarr; Not for UK Persons. AgoraIQ is not authorised or regulated by the FCA. Not directed at UK persons. Nothing on this site constitutes financial advice. Past performance does not guarantee future results.</div>
+  </div>
+</footer>
+</body>
+</html>

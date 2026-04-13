@@ -1,5 +1,10 @@
 <html lang="en"><head>
-<!-- auth-gate --><style>body{visibility:hidden}</style><script>(function(){if(!localStorage.getItem("iq_token")){window.location.replace("/login.html")}else{document.addEventListener("DOMContentLoaded",function(){document.body.style.visibility="visible"})}})();</script>
+<!-- auth-gate --><style>body{visibility:hidden}
+/* === Global Conversion Bar (injected) === */
+.global-conv{display:none;padding:12px 18px;margin-bottom:20px;border-radius:8px;border:1px solid rgba(255,193,7,.25);background:linear-gradient(135deg,rgba(255,193,7,.06),rgba(255,193,7,.02));text-align:center;font-family:var(--sans,'Albert Sans',sans-serif);font-size:13px;color:var(--text,#e2e4ef)}
+.global-conv strong{color:#FFC107}
+.global-conv a{display:inline-block;margin-left:8px;padding:6px 18px;border-radius:5px;background:linear-gradient(135deg,#FCD535,#EFBF04);color:#000;font-weight:700;font-size:12px;text-decoration:none}
+</style><script>(function(){if(!localStorage.getItem("iq_token")){window.location.replace("/login.html")}else{document.addEventListener("DOMContentLoaded",function(){document.body.style.visibility="visible"})}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Market Scanner — AgoraIQ Signals</title>
@@ -236,6 +241,9 @@ h1 .accent{color:var(--gold)!important;-webkit-text-fill-color:var(--gold)!impor
   <a href="#" onclick="localStorage.removeItem('iq_token');location.href='/login.html'" style="color:var(--red);font-size:13px;text-decoration:none;margin-left:4px;opacity:.7" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.7">Sign Out</a></nav>
 </div>
 <div class="container">
+<!-- Global conversion bar -->
+<div class="global-conv" id="globalConv"></div>
+
   <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:4px">
     <h1>Market <span class="accent">Scanner</span></h1>
     <span class="tier-label" id="tierBadge"></span>
@@ -1024,6 +1032,30 @@ document.addEventListener("DOMContentLoaded",function(){
     load();
   });
 });
+})();
+</script>
+
+<!-- Global conversion bar loader -->
+<script>
+(function(){
+  var t=localStorage.getItem('iq_token');
+  if(!t)return;
+  fetch('/api/v1/signals/dashboard',{headers:{'Authorization':'Bearer '+t,'Content-Type':'application/json'}})
+    .then(function(r){return r.ok?r.json():null})
+    .then(function(d){
+      if(!d||!d.week)return;
+      var tier=d.tier||'free';
+      if(tier!=='free'&&tier!=='trial')return;
+      var bar=document.getElementById('globalConv');
+      if(!bar)return;
+      var w=d.week;
+      if(w.hiddenCount>0){
+        bar.style.display='block';
+        bar.innerHTML='\ud83d\udd12 <strong>'+w.hiddenCount+' signals hidden</strong> this week.'
+          +(w.hiddenWins>0?' <strong>'+w.hiddenWins+' were winners.</strong>':'')
+          +' <a href="/pricing.html">Unlock \u2192</a>';
+      }
+    }).catch(function(){});
 })();
 </script>
 </body></html>

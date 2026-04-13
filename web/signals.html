@@ -1,5 +1,10 @@
 <html lang="en"><head>
-<!-- auth-gate --><style>body{visibility:hidden}</style><script>(function(){if(!localStorage.getItem("iq_token")){window.location.replace("/login.html?next="+encodeURIComponent(location.href))}else{document.addEventListener("DOMContentLoaded",function(){document.body.style.visibility="visible"})}})();</script>
+<!-- auth-gate --><style>body{visibility:hidden}
+/* === Global Conversion Bar (injected) === */
+.global-conv{display:none;padding:12px 18px;margin-bottom:20px;border-radius:8px;border:1px solid rgba(255,193,7,.25);background:linear-gradient(135deg,rgba(255,193,7,.06),rgba(255,193,7,.02));text-align:center;font-family:var(--sans,'Albert Sans',sans-serif);font-size:13px;color:var(--text,#e2e4ef)}
+.global-conv strong{color:#FFC107}
+.global-conv a{display:inline-block;margin-left:8px;padding:6px 18px;border-radius:5px;background:linear-gradient(135deg,#FCD535,#EFBF04);color:#000;font-weight:700;font-size:12px;text-decoration:none}
+</style><script>(function(){if(!localStorage.getItem("iq_token")){window.location.replace("/login.html?next="+encodeURIComponent(location.href))}else{document.addEventListener("DOMContentLoaded",function(){document.body.style.visibility="visible"})}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Signal Feed — AgoraIQ Signals</title>
@@ -497,15 +502,18 @@ tbody tr:hover td { background: var(--surface2); cursor: pointer; }
     <a href="signals.html" class="active">Signals</a>
     <a href="scanner.html">Scanner</a>
     <a href="track.html">Track</a>
-    <a href="proof.html">Proof</a>
     <a href="providers.html">Providers</a>
     <a href="pricing.html">Pricing</a>
     <a href="watchlist.html">Watchlist</a>
     <a href="help.html">Help</a>
+    <a href="#" onclick="localStorage.removeItem('iq_token');window.location.href='/login.html'" style="color:var(--red)">Sign Out</a>
   </nav>
 </div>
 
 <div class="container">
+<!-- Global conversion bar -->
+<div class="global-conv" id="globalConv"></div>
+
   <h1>Signal <span class="accent">Feed</span></h1>
   <p class="subtitle">Real-time AI-scored trading signals from the scanner and verified providers</p>
 
@@ -582,6 +590,12 @@ tbody tr:hover td { background: var(--surface2); cursor: pointer; }
   </div>
 
   <!-- Signal table -->
+  <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+    <button id="csvBtn" style="background:var(--surface2);border:1px solid var(--border);color:var(--cyan);padding:8px 16px;border-radius:6px;font-family:var(--mono);font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s" onmouseover="this.style.borderColor='var(--cyan)'" onmouseout="this.style.borderColor='var(--border)'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Export CSV
+    </button>
+  </div>
   <table>
     <thead>
       <tr>
@@ -599,6 +613,7 @@ tbody tr:hover td { background: var(--surface2); cursor: pointer; }
 <footer class="legal-footer">
   <div class="footer-inner">
     <div class="footer-brand">Agora<span style="color:var(--gold)">IQ</span></div>
+    <div style="margin-bottom:12px"><a href="proof.html" style="color:var(--gold);text-decoration:none;font-size:13px;font-family:var(--sans);font-weight:600;border:1px solid rgba(255,193,7,.25);padding:6px 16px;border-radius:6px;display:inline-block;transition:all .2s" onmouseover="this.style.background='rgba(255,193,7,.1)'" onmouseout="this.style.background='transparent'">📊 View Proof Dashboard →</a></div>
     <div class="footer-links">
       <a href="terms.html">Terms</a>
       <a href="privacy.html">Privacy</a>
@@ -1252,6 +1267,22 @@ async function loadSignals() {
     }
     const data = await res.json();
     allSignals = data.signals || [];
+    document.getElementById("csvBtn").onclick = function(){
+      if(!allSignals||!allSignals.length){alert("No signals to export");return}
+      var headers=["Symbol","Direction","Entry","TP1","TP2","TP3","SL","AI Score","Status","Tags","Provider","Posted"];
+      var rows=allSignals.map(function(s){
+        return [s.symbol||"",s.direction||"",s.entry_price||"",s.tp1||"",s.tp2||"",s.tp3||"",s.sl||"",
+          s.ai_score||s.confidence||"",s.status||"",(s.tags||[]).join(";"),
+          s.provider_name||s.provider||"",s.created_at||s.posted_at||""
+        ].map(function(v){return '"'+String(v).replace(/"/g,'""')+'"'}).join(",");
+      });
+      var csv="\uFEFF"+headers.join(",")+String.fromCharCode(10)+rows.join(String.fromCharCode(10));
+      var blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
+      var url=URL.createObjectURL(blob);
+      var a=document.createElement("a");
+      a.href=url;a.download="agoraiq-signals-"+new Date().toISOString().slice(0,10)+".csv";
+      document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+    };
     currentTier = data.tier || 'free';
 
     showState('clear');
@@ -1280,5 +1311,54 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 })();
+</script>
+
+<!-- Global conversion bar loader -->
+<script>
+(function(){
+  var t=localStorage.getItem('iq_token');
+  if(!t)return;
+  fetch('/api/v1/signals/dashboard',{headers:{'Authorization':'Bearer '+t,'Content-Type':'application/json'}})
+    .then(function(r){return r.ok?r.json():null})
+    .then(function(d){
+      if(!d||!d.week)return;
+      var tier=d.tier||'free';
+      if(tier!=='free'&&tier!=='trial')return;
+      var bar=document.getElementById('globalConv');
+      if(!bar)return;
+      var w=d.week;
+      if(w.hiddenCount>0){
+        bar.style.display='block';
+        bar.innerHTML='\ud83d\udd12 <strong>'+w.hiddenCount+' signals hidden</strong> this week.'
+          +(w.hiddenWins>0?' <strong>'+w.hiddenWins+' were winners.</strong>':'')
+          +' <a href="/pricing.html">Unlock \u2192</a>';
+      }
+    }).catch(function(){});
+})();
+
+  var headers=["Symbol","Direction","Entry","TP1","TP2","TP3","SL","AI Score","Status","Tags","Provider","Posted"];
+  var rows=allSignals.map(function(s){
+    return [
+      s.symbol||"",
+      s.direction||"",
+      s.entry_price||"",
+      s.tp1||"",
+      s.tp2||"",
+      s.tp3||"",
+      s.sl||"",
+      s.ai_score||s.confidence||"",
+      s.status||"",
+      (s.tags||[]).join(";"),
+      s.provider_name||s.provider||"",
+      s.created_at||s.posted_at||""
+    ].map(function(v){return '"'+String(v).replace(/"/g,'""')+'"'}).join(",");
+  });
+  var csv="\uFEFF"+headers.join(",")+String.fromCharCode(10)+rows.join(String.fromCharCode(10));
+  var blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");
+  a.href=url;a.download="agoraiq-signals-"+new Date().toISOString().slice(0,10)+".csv";
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
 </script>
 </body></html>
