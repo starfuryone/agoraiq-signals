@@ -2,7 +2,7 @@ const crypto = require("crypto");
 const { Router } = require("express");
 const db = require("../lib/db");
 const { requireAuth, optionalAuth } = require("../middleware/auth");
-const { attachPlan } = require("../middleware/subscription");
+const { attachPlan, requirePlan } = require("../middleware/subscription");
 const { parseSignal } = require("../lib/parser");
 const { fetchPrice, fetchAllPrices } = require("../lib/price");
 const ai = require("../lib/ai");
@@ -57,43 +57,12 @@ function toSafeEvent(e) {
   };
 }
 
-// ── requirePlan ───────────────────────────────────────────────────
-
-function requirePlan(...plans) {
-  return async (req, res, next) => {
-    try {
-      const { rows } = await db.query(
-        `SELECT bs.plan_tier, bs.status, bs.expires_at
-         FROM bot_subscriptions bs
-         JOIN bot_users bu ON bu.id = bs.bot_user_id
-         WHERE bu.id = $1
-         ORDER BY
-           CASE WHEN bs.status = 'active' THEN 0 ELSE 1 END,
-           bs.expires_at DESC NULLS LAST,
-           bs.created_at DESC
-         LIMIT 1`,
-        [req.userId]
-      );
-      const sub = rows[0];
-      if (!sub) return res.status(403).json({ error: 'No active subscription' });
-      const plan = sub.plan_tier;
-      const active = sub.status === 'active' && (!sub.expires_at || new Date() < new Date(sub.expires_at));
-      if (!active || !plans.includes(plan)) {
-        return res.status(403).json({ error: `Requires ${plans.join(' or ')} plan` });
-      }
-      next();
-    } catch (err) {
-      res.status(500).json({ error: 'Plan check failed' });
-    }
-  };
-}
-
 const SIGNAL_LIMITS = { free: 20, pro: 50, elite: 50 };
 
 // ─────────────────────────────────────────────────────────────────
 // POST /signals/submit
 // ─────────────────────────────────────────────────────────────────
-router.post("/submit", requireAuth, async (req, res) => {
+router.post("/submit", requireAuth, requirePlan("pro"), async (req, res) => {
   try {
     const { raw_text } = req.body;
     if (!raw_text || typeof raw_text !== "string" || !raw_text.trim()) {
@@ -236,7 +205,7 @@ router.post("/submit", requireAuth, async (req, res) => {
 // ─────────────────────────────────────────────────────────────────
 // GET /signals/user?limit=10
 // ─────────────────────────────────────────────────────────────────
-router.get("/user", requireAuth, async (req, res) => {
+router.get("/user", requireAuth, requirePlan("pro"), async (req, res) => {
   try {
     const limit = Math.min(parseInt(req.query.limit) || 10, 50);
     const result = await db.query(
@@ -448,7 +417,7 @@ router.get("/:id", optionalAuth, attachPlan, async (req, res) => {
 // Owner: raw events. Non-owner + public: sanitized events.
 // Non-owner + private: 403.
 // ─────────────────────────────────────────────────────────────────
-router.get("/:id/events", requireAuth, async (req, res) => {
+router.get("/:id/events", requireAuth, requirePlan("pro"), async (req, res) => {
   try {
     const id = parseId(req.params.id);
     if (!id) return res.status(400).json({ error: "Invalid signal ID" });
@@ -530,7 +499,7 @@ router.get("/", optionalAuth, attachPlan, async (req, res) => {
 });
 
 // ── POST /api/v1/signals/format ──────────────────────────────────
-router.post('/format', requireAuth, async (req, res) => {
+router.post('/format', requireAuth, requirePlan("pro"), async (req, res) => {
   const { text } = req.body;
   if (!text || !text.trim()) return res.status(400).json({ error: 'text required' });
 

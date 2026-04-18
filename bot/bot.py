@@ -44,6 +44,72 @@ APP_URL = os.environ.get("APP_URL", "https://bot.agoraiq.net")
 LANDING = os.environ.get("LANDING_URL", "https://bot.agoraiq.net")
 
 
+# ── Consent + price-catalog caches ─────────────────────────────────
+# The bot MUST NOT synthesize consent or hardcode prices. Both come
+# from the API. Caches refresh lazily on miss.
+
+import datetime as _dt
+import uuid as _uuid
+
+_consent_cfg: Optional[dict] = None
+_consent_cfg_at: float = 0.0
+_prices_cfg: Optional[dict] = None
+_prices_cfg_at: float = 0.0
+_CATALOG_TTL = 600  # seconds
+
+
+async def get_consent_cfg(force: bool = False) -> Optional[dict]:
+    global _consent_cfg, _consent_cfg_at
+    if not force and _consent_cfg and (time.time() - _consent_cfg_at) < _CATALOG_TTL:
+        return _consent_cfg
+    try:
+        cfg = await api.billing_consent_config()
+        if cfg and cfg.get("version") and isinstance(cfg.get("documents"), list):
+            _consent_cfg = cfg
+            _consent_cfg_at = time.time()
+    except Exception as e:
+        log.warning("consent_config fetch failed: %s", e)
+    return _consent_cfg
+
+
+async def get_prices_cfg(force: bool = False) -> Optional[dict]:
+    global _prices_cfg, _prices_cfg_at
+    if not force and _prices_cfg and (time.time() - _prices_cfg_at) < _CATALOG_TTL:
+        return _prices_cfg
+    try:
+        cat = await api.billing_prices()
+        if cat and isinstance(cat.get("plans"), dict):
+            _prices_cfg = cat
+            _prices_cfg_at = time.time()
+    except Exception as e:
+        log.warning("billing_prices fetch failed: %s", e)
+    return _prices_cfg
+
+
+def _fmt_price(price_obj: Optional[dict]) -> str:
+    if not price_obj or not isinstance(price_obj, dict):
+        return "—"
+    amt = price_obj.get("unitAmount")
+    if amt is None:
+        return "—"
+    cur = (price_obj.get("currency") or "usd").upper()
+    symbol = "$" if cur == "USD" else f"{cur} "
+    whole = amt / 100.0
+    return f"{symbol}{whole:,.0f}" if whole == int(whole) else f"{symbol}{whole:,.2f}"
+
+
+def build_consent_payload(cfg: dict) -> dict:
+    """Build a consent object that matches the API's /billing/consent-config
+    exactly. Must only be called after the user has tapped an explicit
+    'I accept' button in Telegram."""
+    return {
+        "version": cfg["version"],
+        "accepted": True,
+        "timestamp": _dt.datetime.now(_dt.timezone.utc).isoformat().replace("+00:00", "Z"),
+        "documents": [d["id"] for d in cfg.get("documents", [])],
+    }
+
+
 # ═══════════════════════════════════════════════════════════════════
 #  RATE LIMITER
 # ═══════════════════════════════════════════════════════════════════
@@ -366,6 +432,12 @@ async def cmd_login(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
     )
 
 
+def _price_line(label: str, emoji: str, plans: dict, tier: str) -> str:
+    monthly = _fmt_price((plans.get(tier) or {}).get("monthly"))
+    yearly = _fmt_price((plans.get(tier) or {}).get("yearly"))
+    return f"{emoji} {bold(label)} \u2014 {esc(monthly)}/mo \\| {esc(yearly)}/yr"
+
+
 @rate_limited
 async def cmd_pricing(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
     token = store.get_token(update.effective_user.id)
@@ -377,12 +449,21 @@ async def cmd_pricing(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
         except Exception:
             pass
 
+    catalog = await get_prices_cfg()
+    plans = (catalog or {}).get("plans", {}) or {}
+    trial_days = (catalog or {}).get("trialDays", 0)
+    trial_line = (
+        f"\U0001f381 {bold(f'{trial_days}-day free trial')} on new subscriptions\n\n"
+        if trial_days and trial_days > 0 else ""
+    )
+
     text = (
         f"\U0001f48e {bold('SigPulseBot Plans')}\n\n"
         f"Current: {bold(esc(current_plan.upper()))}\n\n"
-        f"\u26a1 {bold('Pro')} \u2014 $29/mo \\| $228/yr\n"
+        f"{trial_line}"
+        f"{_price_line('Pro', '⚡', plans, 'pro')}\n"
         f"Full signals, alerts, scanner, /format\n\n"
-        f"\U0001f3c6 {bold('Elite')} \u2014 $99/mo \\| $790/yr\n"
+        f"{_price_line('Elite', '🏆', plans, 'elite')}\n"
         f"Everything \\+ priority alerts \\+ API\n\n"
         f"\u2728 Upgrades are prorated \u2014 pay only the difference"
     )
@@ -798,39 +879,174 @@ async def cmd_funding(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
 TRACK_INPUT = range(1)
 
 
+def _docs_md(cfg: dict) -> str:
+    """Render the required-consent document list for display."""
+    parts = []
+    for d in cfg.get("documents", []):
+        url = d.get("url") or "#"
+        if url.startswith("/"):
+            url = f"{APP_URL}{url}"
+        parts.append(link(d.get("label") or d["id"], url))
+    return ", ".join(parts)
+
+
 async def upgrade_callback(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    """Step 1 of upgrade: show the consent documents and require an
+    explicit in-chat acceptance before any billing call is made. No
+    synthetic consent here — the API will reject a checkout that doesn't
+    carry a real user-confirmed consent object."""
     query = update.callback_query
-    await query.answer("Processing...")
+    await query.answer()
     parts = (query.data or "").split(":")
     if len(parts) != 3:
         await query.message.reply_text("Invalid upgrade request.")
         return
     _, plan, period = parts
+    if plan not in ("pro", "elite") or period not in ("monthly", "yearly"):
+        await query.message.reply_text("Invalid upgrade request.")
+        return
+
     token = store.get_token(query.from_user.id)
     if not token:
         await query.message.reply_text("Log in first with /login")
         return
+
+    cfg = await get_consent_cfg()
+    if not cfg:
+        await query.message.reply_text(
+            "Checkout is temporarily unavailable — consent documents could not be loaded. "
+            "Please try again in a moment."
+        )
+        return
+
+    catalog = await get_prices_cfg()
+    price_obj = (catalog or {}).get("plans", {}).get(plan, {}).get(period)
+    price_str = _fmt_price(price_obj)
+    trial_days = (catalog or {}).get("trialDays", 0)
+
+    # Stash pending choice keyed by user_id so the accept button can only
+    # run the specific plan/period that was just shown.
+    ctx.user_data.setdefault("pending_upgrade", {})
+    ctx.user_data["pending_upgrade"] = {
+        "plan": plan,
+        "period": period,
+        "consent_version": cfg["version"],
+        "idempotency_key": _uuid.uuid4().hex,
+        "at": time.time(),
+    }
+
+    docs_line = _docs_md(cfg)
+    period_label = "yearly" if period == "yearly" else "monthly"
+    trial_line = (
+        f"\U0001f381 {bold(f'{trial_days}-day free trial')} before any charge\\.\n\n"
+        if trial_days and trial_days > 0 else ""
+    )
+
+    text = (
+        f"\U0001f4dc {bold('Review & agree before checkout')}\n\n"
+        f"Plan: {bold(esc(plan.upper()))} \u2014 {esc(price_str)}/{esc(period_label[:2])}\n"
+        f"{trial_line}"
+        f"By continuing you agree to the {docs_line}\\.\n\n"
+        f"These documents are authoritative\\. Tap {bold('I agree')} below only after reviewing them\\."
+    )
+    buttons = [
+        [cards.InlineKeyboardButton("✅ I agree — continue", callback_data=f"upgrade_go:{plan}:{period}")],
+        [cards.InlineKeyboardButton("📖 Open full pricing & terms", url=f"{APP_URL}/pricing.html")],
+        [cards.InlineKeyboardButton("✖ Cancel", callback_data="upgrade_cancel")],
+    ]
+    await query.message.reply_text(
+        text,
+        parse_mode=ParseMode.MARKDOWN_V2,
+        reply_markup=cards.InlineKeyboardMarkup(buttons),
+        disable_web_page_preview=True,
+    )
+
+
+async def upgrade_go_callback(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    """Step 2 of upgrade: user has just tapped 'I agree'. Build a fresh
+    consent payload, call the API, and surface whichever response shape
+    the backend returned — checkout URL, immediate change, or scheduled change."""
+    query = update.callback_query
+    await query.answer("Processing…")
+    parts = (query.data or "").split(":")
+    if len(parts) != 3:
+        await query.message.reply_text("Invalid upgrade confirmation.")
+        return
+    _, plan, period = parts
+
+    token = store.get_token(query.from_user.id)
+    if not token:
+        await query.message.reply_text("Log in first with /login")
+        return
+
+    pending = ctx.user_data.get("pending_upgrade") or {}
+    if pending.get("plan") != plan or pending.get("period") != period:
+        await query.message.reply_text("Please restart the upgrade with /upgrade.")
+        return
+    if (time.time() - pending.get("at", 0)) > 600:
+        await query.message.reply_text("This upgrade confirmation expired. Please start again with /upgrade.")
+        ctx.user_data.pop("pending_upgrade", None)
+        return
+
+    cfg = await get_consent_cfg()
+    if not cfg or cfg.get("version") != pending.get("consent_version"):
+        await query.message.reply_text(
+            "Consent documents have changed since you started. Please restart with /upgrade."
+        )
+        ctx.user_data.pop("pending_upgrade", None)
+        return
+
+    consent = build_consent_payload(cfg)
+    idem = pending.get("idempotency_key") or _uuid.uuid4().hex
+
     try:
-        result = await api.billing_checkout(token, plan, period)
-        if result.get("upgraded"):
-            await query.message.reply_text(
-                f"\u2705 Upgraded to {plan.upper()}!\n\n"
-                "Your subscription has been updated with prorated billing.\n"
-                "New features are available immediately.",
-            )
-            return
-        url = result.get("url")
-        if url:
-            await query.message.reply_text(
-                f"\U0001f4b3 {plan.upper()} {period.capitalize()} Checkout\n\n"
-                f"Complete your subscription:\n{url}\n\n"
-                "Secure payment via Stripe.",
-            )
-        else:
-            await query.message.reply_text("Couldn't create checkout. Try again.")
+        result = await api.billing_checkout(token, plan, period, consent=consent, idempotency_key=idem)
     except Exception as e:
-        log.error(f"Upgrade callback failed: {e}")
-        await query.message.reply_text("Upgrade failed. Try /upgrade manually.")
+        log.error(f"Upgrade go failed: {e}")
+        await query.message.reply_text("Upgrade failed. Try /upgrade again in a moment.")
+        return
+    finally:
+        # Single-shot — clear the pending slot so an accept button can't be replayed.
+        ctx.user_data.pop("pending_upgrade", None)
+
+    if result.get("changed"):
+        direction = result.get("direction", "upgrade")
+        await query.message.reply_text(
+            f"✅ {plan.upper()} {period.capitalize()} active now.\n\n"
+            f"Confirmation #: {result.get('confirmationId', '—')}\n"
+            f"Change: {direction}. Prorated charges apply for the remainder of the billing period.",
+        )
+        return
+    if result.get("scheduled"):
+        eff = result.get("effectiveAt", "")[:10] or "your next renewal"
+        await query.message.reply_text(
+            f"📋 {plan.upper()} {period.capitalize()} scheduled.\n\n"
+            f"Confirmation #: {result.get('confirmationId', '—')}\n"
+            f"Your current plan stays active until {eff}, then switches to the new plan.",
+        )
+        return
+    url = result.get("url")
+    if url:
+        trial_days = result.get("trialDays")
+        trial_note = f"  {trial_days}-day free trial applies.\n\n" if trial_days else ""
+        await query.message.reply_text(
+            f"💳 {plan.upper()} {period.capitalize()} Checkout\n\n"
+            f"{trial_note}"
+            f"Complete your subscription:\n{url}\n\n"
+            "Secure payment via Stripe.",
+        )
+        return
+    await query.message.reply_text("Couldn't create checkout. Try again.")
+
+
+async def upgrade_cancel_callback(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    query = update.callback_query
+    await query.answer("Cancelled")
+    ctx.user_data.pop("pending_upgrade", None)
+    try:
+        await query.message.reply_text("Upgrade cancelled. No changes were made.")
+    except Exception:
+        pass
 
 
 async def billing_portal_callback(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
@@ -1328,27 +1544,33 @@ async def cmd_upgrade(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
         elif a_low in ("monthly", "month"):
             period = "monthly"
 
-    if not plan:
-        token = store.get_token(update.effective_user.id)
-        current_plan = "free"
-        if token:
-            try:
-                status = await api.billing_status(token)
-                current_plan = status.get("plan", "free")
-            except Exception:
-                pass
+    token = store.get_token(update.effective_user.id)
+    current_plan = "free"
+    if token:
+        try:
+            status = await api.billing_status(token)
+            current_plan = status.get("plan", "free")
+        except Exception:
+            pass
 
+    catalog = await get_prices_cfg()
+    plans_cat = (catalog or {}).get("plans", {}) or {}
+    trial_days = (catalog or {}).get("trialDays", 0)
+
+    if not plan:
         lines_msg = [
             f"\U0001f680 {bold('Upgrade your plan')}\n",
             f"Current plan: {bold(esc(current_plan.upper()))}\n",
         ]
+        if trial_days and trial_days > 0:
+            lines_msg.append(f"\U0001f381 {bold(f'{trial_days}-day free trial')} on new subscriptions\n")
         if current_plan in ("free", "trial"):
-            lines_msg.append(f"\u26a1 {bold('Pro')} \u2014 $29/mo or $228/yr")
+            lines_msg.append(_price_line("Pro", "⚡", plans_cat, "pro"))
             lines_msg.append("Full signals, alerts, scanner, /format\n")
-            lines_msg.append(f"\U0001f3c6 {bold('Elite')} \u2014 $99/mo or $790/yr")
+            lines_msg.append(_price_line("Elite", "🏆", plans_cat, "elite"))
             lines_msg.append("Everything \\+ priority alerts \\+ API\n")
         elif current_plan == "pro":
-            lines_msg.append(f"\U0001f3c6 {bold('Elite')} \u2014 $99/mo or $790/yr")
+            lines_msg.append(_price_line("Elite", "🏆", plans_cat, "elite"))
             lines_msg.append("Everything \\+ priority alerts \\+ API")
             lines_msg.append("\n\u2728 Prorated upgrade \u2014 pay only the difference\n")
 
@@ -1373,33 +1595,52 @@ async def cmd_upgrade(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
         )
         return
 
-    token = store.get_token(update.effective_user.id)
+    # `/upgrade pro monthly` — route through the same consent-confirm flow.
     if not token:
         await update.message.reply_text("\u26a0\ufe0f Log in first with /login")
         return
-    try:
-        result = await api.billing_checkout(token, plan, period)
-        if result.get("upgraded"):
-            await update.message.reply_text(
-                f"\u2705 {bold('Upgraded to ' + esc(plan.upper()) + '!')}\n\n"
-                f"Your subscription has been updated with prorated billing\\.\n"
-                f"New features are available immediately\\.",
-                parse_mode=ParseMode.MARKDOWN_V2,
-            )
-            return
-        url = result.get("url")
-        if not url:
-            await update.message.reply_text("\u26a0\ufe0f Couldn\'t create checkout\\. Try again\\.", parse_mode=ParseMode.MARKDOWN_V2)
-            return
+
+    cfg = await get_consent_cfg()
+    if not cfg:
         await update.message.reply_text(
-            f"\U0001f4b3 {bold(esc(plan.upper()) + ' ' + esc(period.capitalize()) + ' Checkout')}\n\n"
-            f"Click below to complete your subscription:\n\n"
-            f"\U0001f449 {link('Open Checkout', url)}\n\n"
-            f"Secure payment via Stripe\\.",
+            "Checkout is temporarily unavailable — consent documents could not be loaded. Try again in a moment."
+        )
+        return
+
+    ctx.user_data["pending_upgrade"] = {
+        "plan": plan,
+        "period": period,
+        "consent_version": cfg["version"],
+        "idempotency_key": _uuid.uuid4().hex,
+        "at": time.time(),
+    }
+    price_str = _fmt_price(plans_cat.get(plan, {}).get(period))
+    docs_line = _docs_md(cfg)
+    period_label = "yearly" if period == "yearly" else "monthly"
+    trial_line = (
+        f"\U0001f381 {bold(f'{trial_days}-day free trial')} before any charge\\.\n\n"
+        if trial_days and trial_days > 0 else ""
+    )
+    try:
+        await update.message.reply_text(
+            f"\U0001f4dc {bold('Review & agree before checkout')}\n\n"
+            f"Plan: {bold(esc(plan.upper()))} \u2014 {esc(price_str)}/{esc(period_label[:2])}\n"
+            f"{trial_line}"
+            f"By continuing you agree to the {docs_line}\\.",
             parse_mode=ParseMode.MARKDOWN_V2,
+            reply_markup=cards.InlineKeyboardMarkup([
+                [cards.InlineKeyboardButton("✅ I agree — continue", callback_data=f"upgrade_go:{plan}:{period}")],
+                [cards.InlineKeyboardButton("📖 Open full pricing & terms", url=f"{APP_URL}/pricing.html")],
+                [cards.InlineKeyboardButton("✖ Cancel", callback_data="upgrade_cancel")],
+            ]),
+            disable_web_page_preview=True,
         )
     except Exception as e:
+        log.error(f"cmd_upgrade prompt failed: {e}")
         await api_error(update, "upgrade", e)
+    return
+
+
 # ═══════════════════════════════════════════════════════════════════
 #  SUPPORT COMMANDS
 # ═══════════════════════════════════════════════════════════════════
@@ -1721,7 +1962,9 @@ def main() -> None:
     )
 
     from telegram.ext import CallbackQueryHandler
-    app.add_handler(CallbackQueryHandler(upgrade_callback, pattern="^upgrade:"))
+    app.add_handler(CallbackQueryHandler(upgrade_callback, pattern=r"^upgrade:(pro|elite):(monthly|yearly)$"))
+    app.add_handler(CallbackQueryHandler(upgrade_go_callback, pattern=r"^upgrade_go:(pro|elite):(monthly|yearly)$"))
+    app.add_handler(CallbackQueryHandler(upgrade_cancel_callback, pattern=r"^upgrade_cancel$"))
     app.add_handler(CallbackQueryHandler(billing_portal_callback, pattern="^billing_portal$"))
     app.add_handler(CallbackQueryHandler(track_from_format_callback, pattern="^track_from_format$"))
     app.add_handler(CallbackQueryHandler(track_signal_callback, pattern="^track:"))

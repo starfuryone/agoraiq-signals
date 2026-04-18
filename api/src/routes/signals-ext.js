@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const db = require("../lib/db");
 const { requireAuth } = require("../middleware/auth");
-const { attachPlan } = require("../middleware/subscription");
+const { attachPlan, requirePlan } = require("../middleware/subscription");
 const Signal = require("../models/signal");
 const events = require("../lib/events");
 
@@ -10,7 +10,7 @@ const router = Router();
 // ─────────────────────────────────────────────────────────────────
 // POST /signals/:id/cancel
 // ─────────────────────────────────────────────────────────────────
-router.post("/:id/cancel", requireAuth, async (req, res) => {
+router.post("/:id/cancel", requireAuth, requirePlan("pro"), async (req, res) => {
   try {
     const signalId = parseInt(req.params.id);
     if (isNaN(signalId)) {
@@ -126,7 +126,7 @@ router.get("/user/stats", requireAuth, attachPlan, async (req, res) => {
 // ─────────────────────────────────────────────────────────────────
 // POST /signals/track — direct insert from scanner UI (bypasses parser)
 // ─────────────────────────────────────────────────────────────────
-router.post("/track", requireAuth, async (req, res) => {
+router.post("/track", requireAuth, requirePlan("pro"), async (req, res) => {
   try {
     const { symbol, direction, entry, sl, targets, ai_score, exchange, meta } = req.body;
 

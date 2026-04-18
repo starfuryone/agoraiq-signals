@@ -224,8 +224,53 @@ async def telegram_status(token: str) -> Any:
 #  BILLING (standalone Stripe)
 # ═══════════════════════════════════════════════════════════════════
 
-async def billing_checkout(token: str, plan: str, period: str = "monthly") -> Any:
-    return await _post(f"{API_BASE}/billing/checkout", {"plan": plan, "period": period, "source": "telegram", "consent": {"version": "1.0", "accepted": True, "timestamp": __import__("datetime").datetime.utcnow().isoformat() + "Z", "documents": ["subscription-agreement", "terms", "privacy", "cookies", "no-financial-advice"]}}, token)
+async def billing_consent_config() -> Any:
+    """Fetch the current consent version + required documents from the API.
+    The bot must show these to the user and capture their acceptance
+    *before* calling billing_checkout — it is NOT allowed to synthesize
+    consent on the user's behalf."""
+    return await _get(f"{API_BASE}/billing/consent-config")
+
+
+async def billing_prices() -> Any:
+    """Fetch the live Stripe price catalog so the bot never displays
+    hardcoded amounts that could drift from what Stripe will actually charge."""
+    return await _get(f"{API_BASE}/billing/prices")
+
+
+async def billing_checkout(
+    token: str,
+    plan: str,
+    period: str = "monthly",
+    *,
+    consent: Dict[str, Any],
+    idempotency_key: Optional[str] = None,
+) -> Any:
+    """Create a Stripe Checkout or apply an immediate plan change.
+
+    The caller MUST pass a consent object that was produced by real user
+    interaction (e.g. the user tapped an in-bot confirm button that
+    displayed the consent documents). The API rejects any consent that
+    doesn't exactly match /billing/consent-config.
+    """
+    if not isinstance(consent, dict) or consent.get("accepted") is not True:
+        raise ValueError("billing_checkout requires explicit user-accepted consent")
+
+    body: Dict[str, Any] = {
+        "plan": plan,
+        "period": period,
+        "source": "telegram",
+        "consent": consent,
+    }
+    if idempotency_key:
+        body["idempotencyKey"] = idempotency_key
+
+    headers = _headers(token)
+    if idempotency_key:
+        headers["Idempotency-Key"] = idempotency_key
+    r = await _get_client().post(f"{API_BASE}/billing/checkout", json=body, headers=headers)
+    r.raise_for_status()
+    return r.json()
 
 
 async def billing_portal(token: str) -> Any:

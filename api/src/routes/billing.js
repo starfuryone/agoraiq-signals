@@ -4,8 +4,10 @@
  */
 
 const { Router } = require("express");
+const crypto = require("crypto");
 const db = require("../lib/db");
 const { requireAuth } = require("../middleware/auth");
+const { invalidateCache: invalidatePlanCache } = require("../middleware/subscription");
 const txlog = require("../lib/transaction-log");
 const telegram = require("../lib/telegram");
 
@@ -158,6 +160,211 @@ const PRICE_MAP = {
 };
 const APP_URL = () => process.env.APP_URL || "https://bot.agoraiq.net";
 const TIER_RANK = { free: 0, trial: 1, pro: 2, elite: 3 };
+const TRIAL_DAYS = (() => {
+  const n = parseInt(process.env.STRIPE_TRIAL_DAYS ?? "1", 10);
+  return Number.isFinite(n) && n >= 0 ? n : 1;
+})();
+
+// ── Startup validation: confirm every configured price exists in Stripe ──
+let _pricesValidated = null;
+async function validatePriceIds() {
+  if (_pricesValidated) return _pricesValidated;
+  const plans = ["pro", "elite"];
+  const cycles = ["monthly", "yearly"];
+  const missing = [];
+  const invalid = [];
+  for (const plan of plans) {
+    for (const cycle of cycles) {
+      const id = PRICE_MAP[plan][cycle]();
+      if (!id) { missing.push(`${plan}/${cycle}`); continue; }
+      try {
+        await getStripe().prices.retrieve(id);
+      } catch (err) {
+        invalid.push(`${plan}/${cycle} (${id}): ${err.message}`);
+      }
+    }
+  }
+  _pricesValidated = { missing, invalid, checkedAt: new Date().toISOString() };
+  if (missing.length || invalid.length) {
+    console.error("[billing/startup] PRICE VALIDATION FAILED:",
+      { missing, invalid });
+  } else {
+    console.log("[billing/startup] all Stripe price IDs validated");
+  }
+  return _pricesValidated;
+}
+
+// ── Price catalog (cached from Stripe, single source of truth for UI) ──
+let _priceCatalog = null;
+let _priceCatalogAt = 0;
+const PRICE_CATALOG_TTL_MS = 60 * 60 * 1000; // 1h
+
+async function getPriceCatalog() {
+  if (_priceCatalog && (Date.now() - _priceCatalogAt) < PRICE_CATALOG_TTL_MS) {
+    return _priceCatalog;
+  }
+  const plans = ["pro", "elite"];
+  const cycles = ["monthly", "yearly"];
+  const out = { currency: "usd", trialDays: TRIAL_DAYS, plans: {} };
+  for (const plan of plans) {
+    out.plans[plan] = {};
+    for (const cycle of cycles) {
+      const id = PRICE_MAP[plan][cycle]();
+      if (!id) { out.plans[plan][cycle] = null; continue; }
+      try {
+        const price = await getStripe().prices.retrieve(id);
+        out.currency = price.currency || out.currency;
+        out.plans[plan][cycle] = {
+          priceId: price.id,
+          unitAmount: price.unit_amount,
+          currency: price.currency,
+          interval: price.recurring?.interval || null,
+          intervalCount: price.recurring?.interval_count || 1,
+        };
+      } catch (err) {
+        console.warn(`[billing/prices] retrieve failed for ${plan}/${cycle}:`, err.message);
+        out.plans[plan][cycle] = null;
+      }
+    }
+  }
+  _priceCatalog = out;
+  _priceCatalogAt = Date.now();
+  return out;
+}
+
+// ── Audit log ──────────────────────────────────────────────────
+async function writeAudit(entry) {
+  try {
+    await db.query(
+      `INSERT INTO subscription_audit_log
+         (bot_user_id, stripe_sub_id, action, from_plan, from_period,
+          to_plan, to_period, actor, source, stripe_event_id, reason, meta)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
+      [
+        entry.botUserId || null,
+        entry.stripeSubId || null,
+        entry.action,
+        entry.fromPlan || null,
+        entry.fromPeriod || null,
+        entry.toPlan || null,
+        entry.toPeriod || null,
+        entry.actor || null,
+        entry.source || null,
+        entry.stripeEventId || null,
+        entry.reason || null,
+        JSON.stringify(entry.meta || {}),
+      ]
+    );
+  } catch (err) {
+    console.error("[billing/audit] write failed:", err.message);
+  }
+}
+
+// ── Idempotency on checkout submissions ────────────────────────
+function hashRequest(body) {
+  const canon = JSON.stringify({
+    plan: body.plan,
+    period: body.period,
+    source: body.source || null,
+  });
+  return crypto.createHash("sha256").update(canon).digest("hex").slice(0, 32);
+}
+
+async function checkIdempotency(botUserId, key, body) {
+  if (!key) return { hit: false };
+  const r = await db.query(
+    `SELECT response, request_hash FROM billing_checkout_idempotency
+     WHERE bot_user_id = $1 AND idempotency_key = $2`,
+    [botUserId, key]
+  );
+  if (r.rows.length === 0) return { hit: false };
+  const prevHash = r.rows[0].request_hash;
+  const curHash = hashRequest(body);
+  if (prevHash && prevHash !== curHash) {
+    return { hit: true, conflict: true };
+  }
+  return { hit: true, response: r.rows[0].response };
+}
+
+async function storeIdempotency(botUserId, key, body, response) {
+  if (!key) return;
+  try {
+    await db.query(
+      `INSERT INTO billing_checkout_idempotency (bot_user_id, idempotency_key, request_hash, response)
+       VALUES ($1, $2, $3, $4)
+       ON CONFLICT (bot_user_id, idempotency_key) DO NOTHING`,
+      [botUserId, key, hashRequest(body), JSON.stringify(response)]
+    );
+  } catch (err) {
+    console.warn("[billing/idem] store failed:", err.message);
+  }
+}
+
+// ── Schedule tracking ──────────────────────────────────────────
+async function recordSchedule(entry) {
+  try {
+    await db.query(
+      `INSERT INTO subscription_schedules
+         (bot_user_id, stripe_sub_id, stripe_schedule_id,
+          from_plan, from_period, to_plan, to_period, effective_at, status)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'pending')
+       ON CONFLICT (stripe_schedule_id) DO UPDATE SET
+         from_plan = EXCLUDED.from_plan, from_period = EXCLUDED.from_period,
+         to_plan = EXCLUDED.to_plan, to_period = EXCLUDED.to_period,
+         effective_at = EXCLUDED.effective_at,
+         status = 'pending', released_at = NULL, applied_at = NULL,
+         updated_at = NOW()`,
+      [
+        entry.botUserId, entry.stripeSubId, entry.stripeScheduleId,
+        entry.fromPlan, entry.fromPeriod, entry.toPlan, entry.toPeriod,
+        entry.effectiveAt,
+      ]
+    );
+  } catch (err) {
+    console.error("[billing/schedule] recordSchedule failed:", err.message);
+  }
+}
+
+async function markScheduleApplied(stripeScheduleId) {
+  try {
+    await db.query(
+      `UPDATE subscription_schedules
+       SET status = 'applied', applied_at = NOW(), updated_at = NOW()
+       WHERE stripe_schedule_id = $1 AND status = 'pending'`,
+      [stripeScheduleId]
+    );
+  } catch (err) {
+    console.warn("[billing/schedule] markApplied failed:", err.message);
+  }
+}
+
+async function markSchedulesReleased(stripeSubId) {
+  try {
+    await db.query(
+      `UPDATE subscription_schedules
+       SET status = 'released', released_at = NOW(), updated_at = NOW()
+       WHERE stripe_sub_id = $1 AND status = 'pending'`,
+      [stripeSubId]
+    );
+  } catch (err) {
+    console.warn("[billing/schedule] markReleased failed:", err.message);
+  }
+}
+
+async function findPendingScheduleForSub(stripeSubId) {
+  try {
+    const r = await db.query(
+      `SELECT stripe_schedule_id, to_plan, to_period
+       FROM subscription_schedules
+       WHERE stripe_sub_id = $1 AND status = 'pending'
+       ORDER BY created_at DESC LIMIT 1`,
+      [stripeSubId]
+    );
+    return r.rows[0] || null;
+  } catch {
+    return null;
+  }
+}
 
 // ── Consent — single source of truth ────────────────────────────
 const CONSENT_VERSION = "1.0";
@@ -215,6 +422,19 @@ router.get("/consent-config", (req, res) => {
   res.json({ version: CONSENT_VERSION, documents: CONSENT_DOCUMENTS });
 });
 
+// ── GET /billing/prices — public, cached Stripe price catalog ──
+// Single source of truth for displayed prices. Pricing page and bot
+// MUST render from this — no hardcoded amounts.
+router.get("/prices", async (req, res) => {
+  try {
+    const cat = await getPriceCatalog();
+    res.json(cat);
+  } catch (err) {
+    console.error("[billing/prices]", err.message);
+    res.status(503).json({ error: "Price catalog unavailable" });
+  }
+});
+
 // ── POST /billing/preview-upgrade — proration preview (upgrade or downgrade) ──
 router.post("/preview-upgrade", requireAuth, async (req, res) => {
   try {
@@ -264,12 +484,29 @@ router.post("/preview-upgrade", requireAuth, async (req, res) => {
     // Extract meaningful line items
     const lines = preview.lines.data.map(line => ({
       description: line.description,
-      amount: line.amount,          // in cents
+      amount: line.amount,          // in cents (negative = credit)
       currency: line.currency,
       proration: line.proration || false,
     }));
 
     const periodEnd = sub.current_period_end;
+
+    // Split line items into credits vs charges so the UI can render
+    // downgrade refunds (credits) explicitly instead of burying them.
+    let creditTotal = 0, chargeTotal = 0;
+    for (const ln of lines) {
+      if (ln.amount < 0) creditTotal += ln.amount;
+      else chargeTotal += ln.amount;
+    }
+
+    // For scheduled downgrades the upcoming invoice can include a
+    // next-period charge that isn't due today. Surface the at-renewal
+    // amount separately so users understand when the credit lands.
+    const renewalTotal = direction === "downgrade"
+      ? lines
+          .filter(ln => !ln.proration)
+          .reduce((sum, ln) => sum + ln.amount, 0)
+      : null;
 
     res.json({
       isNewSubscription: false,
@@ -283,6 +520,9 @@ router.post("/preview-upgrade", requireAuth, async (req, res) => {
       subtotal: preview.subtotal,               // cents
       currency: preview.currency,
       immediateCharge: preview.amount_due > 0,
+      creditTotal,                              // cents (<= 0)
+      chargeTotal,                              // cents (>= 0)
+      renewalTotal,                             // cents — downgrade only
       currentPeriodEnd: periodEnd,
     });
   } catch (err) {
@@ -298,7 +538,13 @@ router.post("/checkout", requireAuth, async (req, res) => {
     const cycle = period === "yearly" ? "yearly" : "monthly";
     const priceId = PRICE_MAP[plan]?.[cycle]?.();
     if (!priceId) {
-      return res.status(400).json({ error: `Invalid plan/period: ${plan}/${cycle}` });
+      // Misconfigured env — distinguish from a malformed request so
+      // misconfiguration doesn't masquerade as user error.
+      if (!PRICE_MAP[plan]) {
+        return res.status(400).json({ error: `Invalid plan: ${plan}` });
+      }
+      console.error(`[billing/checkout] missing price env for ${plan}/${cycle}`);
+      return res.status(503).json({ error: "Billing temporarily unavailable" });
     }
 
     // Validate consent
@@ -306,6 +552,20 @@ router.post("/checkout", requireAuth, async (req, res) => {
     if (!cc.valid) {
       console.warn(`[billing/checkout] consent rejected for user ${req.userId}: ${cc.reason}`);
       return res.status(400).json({ error: cc.reason });
+    }
+
+    // Idempotency — client-supplied key dedupes retries so a double-click
+    // can't produce two Stripe subscriptions or double-apply an upgrade.
+    const idemKey =
+      req.headers["idempotency-key"] || req.headers["x-idempotency-key"] || req.body.idempotencyKey;
+    if (idemKey) {
+      const prev = await checkIdempotency(req.userId, idemKey, req.body);
+      if (prev.hit) {
+        if (prev.conflict) {
+          return res.status(409).json({ error: "Idempotency key reused with different payload" });
+        }
+        return res.json(prev.response);
+      }
     }
 
     const customerId = await ensureStripeCustomer(req.userId);
@@ -342,6 +602,7 @@ router.post("/checkout", requireAuth, async (req, res) => {
       if (direction === "upgrade" || isImmediateSwitch) {
         // Release any existing schedule (e.g. user had pending downgrade, now upgrading)
         await releaseExistingSchedule(subId);
+        await markSchedulesReleased(subId);
 
         await getStripe().subscriptions.update(subId, {
           items: [{ id: sub.items.data[0].id, price: priceId }],
@@ -356,10 +617,9 @@ router.post("/checkout", requireAuth, async (req, res) => {
         );
         await db.query(`UPDATE bot_users SET role = $1 WHERE id = $2`, [plan, req.userId]);
         await persistConsent(req.userId, consent, plan, cycle, req.ip, req.userEmail || null);
-        invalidateCache(req.userId);
+        invalidatePlanCache(req.userId);
         console.log(`[billing/checkout] ${direction} ${currentTier}/${currentPeriod} → ${plan}/${cycle} for user ${req.userId} (immediate)`);
         const confirmId = generateConfirmationId();
-        const actionLabel = direction === "upgrade" ? "Upgrade" : "Switch to Yearly";
         sendBillingConfirmation(req.userId, {
           confirmationId: confirmId, direction,
           plan, period: cycle,
@@ -372,7 +632,18 @@ router.post("/checkout", requireAuth, async (req, res) => {
           to: { plan, period: cycle },
           consentVersion: consent.version,
         });
-        return res.json({ changed: true, direction, plan, period: cycle, subscriptionId: subId, confirmationId: confirmId });
+        await writeAudit({
+          botUserId: req.userId, stripeSubId: subId,
+          action: direction === "upgrade" ? "upgrade_immediate" : "switch_yearly_immediate",
+          fromPlan: currentTier, fromPeriod: currentPeriod,
+          toPlan: plan, toPeriod: cycle,
+          actor: `bot_user:${req.userId}`,
+          source: req.body.source || "web",
+          meta: { confirmationId: confirmId, consentVersion: consent.version },
+        });
+        const payload = { changed: true, direction, plan, period: cycle, subscriptionId: subId, confirmationId: confirmId };
+        await storeIdempotency(req.userId, idemKey, req.body, payload);
+        return res.json(payload);
       }
 
       // ── Scheduled changes: downgrades + yearly→monthly ──
@@ -380,8 +651,9 @@ router.post("/checkout", requireAuth, async (req, res) => {
       const currentPriceId = sub.items.data[0].price.id;
       const effectiveAt = sub.current_period_end; // unix timestamp
 
-      // Release any existing schedule first (e.g. user changing their mind)
+      // Release any existing schedule first (user changing their mind).
       await releaseExistingSchedule(subId);
+      await markSchedulesReleased(subId);
 
       // Create subscription schedule: current plan now, new plan at renewal
       const schedule = await getStripe().subscriptionSchedules.create({
@@ -401,7 +673,18 @@ router.post("/checkout", requireAuth, async (req, res) => {
         ],
       });
 
-      // Store pending state in DB for display
+      // Durable schedule record — authoritative source for "did this
+      // scheduled change take effect?" queries, not bot_subscriptions.pending_*.
+      await recordSchedule({
+        botUserId: req.userId,
+        stripeSubId: subId,
+        stripeScheduleId: schedule.id,
+        fromPlan: currentTier, fromPeriod: currentPeriod,
+        toPlan: plan, toPeriod: cycle,
+        effectiveAt: new Date(effectiveAt * 1000).toISOString(),
+      });
+
+      // Mirror to bot_subscriptions.pending_* for existing UI display.
       await db.query(
         `UPDATE bot_subscriptions
          SET pending_plan_tier = $1, pending_billing_period = $2, updated_at = NOW()
@@ -409,10 +692,9 @@ router.post("/checkout", requireAuth, async (req, res) => {
         [plan, cycle, subId]
       );
       await persistConsent(req.userId, consent, plan, cycle, req.ip, req.userEmail || null);
-      invalidateCache(req.userId);
+      invalidatePlanCache(req.userId);
       console.log(`[billing/checkout] ${direction} ${currentTier}/${currentPeriod} → ${plan}/${cycle} for user ${req.userId} (scheduled at ${new Date(effectiveAt * 1000).toISOString()})`);
       const confirmId = generateConfirmationId();
-      const actionLabel = direction === "downgrade" ? "Downgrade (scheduled)" : "Switch to Monthly (scheduled)";
       sendBillingConfirmation(req.userId, {
         confirmationId: confirmId, direction,
         plan, period: cycle,
@@ -428,15 +710,36 @@ router.post("/checkout", requireAuth, async (req, res) => {
         effectiveAt: new Date(effectiveAt * 1000).toISOString(),
         consentVersion: consent.version,
       });
-      return res.json({
+      await writeAudit({
+        botUserId: req.userId, stripeSubId: subId,
+        action: direction === "downgrade" ? "downgrade_scheduled" : "switch_monthly_scheduled",
+        fromPlan: currentTier, fromPeriod: currentPeriod,
+        toPlan: plan, toPeriod: cycle,
+        actor: `bot_user:${req.userId}`,
+        source: req.body.source || "web",
+        meta: {
+          confirmationId: confirmId,
+          stripeScheduleId: schedule.id,
+          effectiveAt: new Date(effectiveAt * 1000).toISOString(),
+          consentVersion: consent.version,
+        },
+      });
+      const payload = {
         scheduled: true, direction, plan, period: cycle,
         effectiveAt: new Date(effectiveAt * 1000).toISOString(),
         subscriptionId: subId,
         confirmationId: confirmId,
-      });
+      };
+      await storeIdempotency(req.userId, idemKey, req.body, payload);
+      return res.json(payload);
     }
 
     // ── New subscription (no existing active subscription) ──
+    const subData = {
+      metadata: { bot_user_id: String(req.userId), plan_tier: plan, billing_period: cycle },
+    };
+    if (TRIAL_DAYS > 0) subData.trial_period_days = TRIAL_DAYS;
+
     const session = await getStripe().checkout.sessions.create({
       customer: customerId,
       mode: "subscription",
@@ -444,7 +747,7 @@ router.post("/checkout", requireAuth, async (req, res) => {
       success_url: `${APP_URL()}/${req.body.source==="telegram"?"success":"welcome"}.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${APP_URL()}/pricing.html?status=cancelled`,
       metadata: { bot_user_id: String(req.userId), plan_tier: plan, billing_period: cycle, consent_version: consent.version },
-      subscription_data: { metadata: { bot_user_id: String(req.userId), plan_tier: plan, billing_period: cycle }, trial_period_days: 1 },
+      subscription_data: subData,
     });
 
     await persistConsent(req.userId, consent, plan, cycle, req.ip, req.userEmail || null);
@@ -454,7 +757,17 @@ router.post("/checkout", requireAuth, async (req, res) => {
       plan, period: cycle,
       consentVersion: consent.version,
     });
-    res.json({ url: session.url, sessionId: session.id });
+    await writeAudit({
+      botUserId: req.userId,
+      action: "checkout_new",
+      toPlan: plan, toPeriod: cycle,
+      actor: `bot_user:${req.userId}`,
+      source: req.body.source || "web",
+      meta: { stripeSessionId: session.id, consentVersion: consent.version, trialDays: TRIAL_DAYS },
+    });
+    const payload = { url: session.url, sessionId: session.id, trialDays: TRIAL_DAYS };
+    await storeIdempotency(req.userId, idemKey, req.body, payload);
+    res.json(payload);
   } catch (err) {
     console.error("[billing/checkout]", err.message);
     res.status(500).json({ error: "Failed to create checkout session" });
@@ -535,23 +848,30 @@ async function webhookHandler(req, res) {
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!sig || !secret) return res.status(400).json({ error: "Missing signature" });
 
-  console.log("[stripe/webhook-debug] secret:", secret?.substring(0,10), "bodyType:", typeof req.body, "isBuffer:", Buffer.isBuffer(req.body), "bodyLen:", req.body?.length);
-
   let event;
   try {
-    console.log("[stripe/webhook-debug2] sig header:", sig.substring(0, 80));
-    console.log("[stripe/webhook-debug2] body preview:", req.body.toString().substring(0, 100));
     event = getStripe().webhooks.constructEvent(req.body, sig, secret);
   } catch (err) {
     console.error("[stripe/webhook] sig failed:", err.message);
     return res.status(400).json({ error: "Invalid signature" });
   }
 
-  // Idempotency
+  // Idempotency — record the event row first so a parallel delivery
+  // of the same event can't double-process while we're working.
   try {
-    const dup = await db.query("SELECT 1 FROM payment_events WHERE stripe_event_id = $1", [event.id]);
-    if (dup.rows.length > 0) return res.json({ received: true, duplicate: true });
-  } catch {}
+    const claim = await db.query(
+      `INSERT INTO payment_events (stripe_event_id, event_type, provider, payload, created_at)
+       VALUES ($1, $2, 'stripe', $3, NOW())
+       ON CONFLICT (stripe_event_id) DO NOTHING
+       RETURNING id`,
+      [event.id, event.type, JSON.stringify(event.data.object)]
+    );
+    if (claim.rows.length === 0) {
+      return res.json({ received: true, duplicate: true });
+    }
+  } catch (err) {
+    console.error("[stripe/webhook] claim failed:", err.message);
+  }
 
   try {
     switch (event.type) {
@@ -560,8 +880,10 @@ async function webhookHandler(req, res) {
         const uid = parseInt(s.metadata?.bot_user_id);
         const plan = s.metadata?.plan_tier || "pro";
         if (uid && s.subscription) {
-          // Resolve billing period from the subscription's price interval
           const period = await resolveStripePeriod(s.subscription, null);
+          // Dedupe customer: if this uid already has a different stripe_customer_id,
+          // keep the stored one and flag the duplicate so ops can reconcile.
+          await reconcileStripeCustomer(uid, s.customer, event.id);
           await activateSub(uid, plan, s.subscription, period);
           console.log(`[stripe] activated ${plan}/${period || "?"} for bot_user ${uid}`);
           const confirmId = generateConfirmationId();
@@ -576,50 +898,97 @@ async function webhookHandler(req, res) {
             plan, period,
             stripeEventId: event.id,
           });
+          await writeAudit({
+            botUserId: uid, stripeSubId: s.subscription,
+            action: "webhook_activated",
+            toPlan: plan, toPeriod: period,
+            actor: "stripe", source: "webhook",
+            stripeEventId: event.id,
+            meta: { stripeCustomerId: s.customer, confirmationId: confirmId },
+          });
         } else if (!uid && s.subscription && s.customer) {
-          // ── Cold visitor: create account from Stripe email ──
+          // ── Cold-visitor path: match email to an already-verified
+          // bot_users row. Do NOT mint a new account on an unverified email —
+          // a spoofed webhook (if signing secret ever leaks or rotates) must
+          // not yield an entitlement-bearing account.
           try {
             const customer = await getStripe().customers.retrieve(s.customer);
             const email = customer.email || s.customer_details?.email;
-            if (!email) { console.warn("[stripe/webhook] cold visitor: no email found"); break; }
-
-            // Check if user already exists
-            let userRow = await db.query("SELECT id FROM bot_users WHERE email = $1", [email]);
-            let newUserId;
-            if (userRow.rows.length > 0) {
-              newUserId = userRow.rows[0].id;
-              await db.query("UPDATE bot_users SET stripe_customer_id = $1 WHERE id = $2", [s.customer, newUserId]);
-            } else {
-              // Create user with random password (they'll use magic link or reset)
-              const crypto = require("crypto");
-              const tempPass = crypto.randomBytes(16).toString("hex");
-              const bcrypt = require("bcryptjs");
-              const hash = await bcrypt.hash(tempPass, 10);
-              const ins = await db.query(
-                "INSERT INTO bot_users (email, password_hash, stripe_customer_id) VALUES ($1, $2, $3) RETURNING id",
-                [email, hash, s.customer]
-              );
-              newUserId = ins.rows[0].id;
-              console.log(`[stripe/webhook] cold visitor: created bot_user ${newUserId} for ${email}`);
+            if (!email) {
+              console.warn("[stripe/webhook] cold visitor: no email in Stripe payload");
+              await writeAudit({
+                action: "webhook_cold_visitor_no_email",
+                actor: "stripe", source: "webhook",
+                stripeEventId: event.id,
+                meta: { stripeCustomerId: s.customer, stripeSubId: s.subscription },
+              });
+              break;
             }
 
+            const userRow = await db.query(
+              "SELECT id, email_verified FROM bot_users WHERE email = $1",
+              [email]
+            );
+            if (userRow.rows.length === 0) {
+              // Defer activation — no verified account exists yet. The
+              // subscription stays parked on the Stripe customer; when
+              // the user completes magic-link verification we attach the
+              // sub via /auth/magic-link/verify → reconcileStripeCustomer.
+              console.warn(`[stripe/webhook] cold visitor: no verified bot_users for ${email}; deferring activation`);
+              await writeAudit({
+                action: "webhook_cold_visitor_deferred",
+                actor: "stripe", source: "webhook",
+                stripeEventId: event.id,
+                meta: {
+                  email, stripeCustomerId: s.customer,
+                  stripeSubId: s.subscription, plan,
+                  reason: "no verified account",
+                },
+              });
+              break;
+            }
+
+            const existing = userRow.rows[0];
+            if (!existing.email_verified) {
+              console.warn(`[stripe/webhook] cold visitor: ${email} exists but is not verified; deferring activation`);
+              await writeAudit({
+                botUserId: existing.id,
+                action: "webhook_cold_visitor_deferred",
+                actor: "stripe", source: "webhook",
+                stripeEventId: event.id,
+                meta: {
+                  email, stripeCustomerId: s.customer,
+                  stripeSubId: s.subscription, plan,
+                  reason: "email not verified",
+                },
+              });
+              break;
+            }
+
+            const newUserId = existing.id;
+            await reconcileStripeCustomer(newUserId, s.customer, event.id);
             const period = await resolveStripePeriod(s.subscription, null);
             await activateSub(newUserId, plan, s.subscription, period);
             console.log(`[stripe/webhook] cold visitor: activated ${plan}/${period || "?"} for bot_user ${newUserId} (${email})`);
 
             const confirmId = generateConfirmationId();
-            // Send welcome email
             await sendEmailConfirmation(email, {
               confirmationId: confirmId, action: "New Subscription",
               plan, period: period || "monthly",
             });
-            console.log(`[stripe/webhook] cold visitor: welcome email sent to ${email}`);
-
             txlog.record("webhook_cold_visitor_activated", {
               botUserId: newUserId, email,
               stripeSubId: s.subscription, stripeCustomerId: s.customer,
               confirmationId: confirmId, plan, period,
               stripeEventId: event.id,
+            });
+            await writeAudit({
+              botUserId: newUserId, stripeSubId: s.subscription,
+              action: "webhook_cold_visitor_activated",
+              toPlan: plan, toPeriod: period,
+              actor: "stripe", source: "webhook",
+              stripeEventId: event.id,
+              meta: { email, stripeCustomerId: s.customer, confirmationId: confirmId },
             });
           } catch (coldErr) {
             console.error("[stripe/webhook] cold visitor error:", coldErr.message);
@@ -643,36 +1012,46 @@ async function webhookHandler(req, res) {
             expiresAt: new Date(sub.current_period_end * 1000).toISOString(),
             stripeEventId: event.id,
           });
+          await writeAudit({
+            botUserId: uid, stripeSubId: sub.id,
+            action: "webhook_cancel_scheduled",
+            actor: "stripe", source: "webhook",
+            stripeEventId: event.id,
+            meta: { expiresAt: new Date(sub.current_period_end * 1000).toISOString() },
+          });
         } else if (sub.status === "active") {
-          // Detect if a scheduled change has taken effect by comparing Stripe price to pending
-          const currentPrice = sub.items.data[0]?.price?.id;
-          const pending = await db.query(
-            `SELECT pending_plan_tier, pending_billing_period FROM bot_subscriptions
-             WHERE bot_user_id = $1 AND stripe_sub_id = $2`,
-            [uid, sub.id]
-          );
-          const hasPending = pending.rows[0]?.pending_plan_tier;
-          const pendingPriceId = hasPending
-            ? PRICE_MAP[pending.rows[0].pending_plan_tier]?.[pending.rows[0].pending_billing_period === "yearly" ? "yearly" : "monthly"]?.()
+          // Authoritative "did the scheduled change take effect?" lookup:
+          // subscription_schedules, not price-ID equality (prices rotate).
+          const pending = await findPendingScheduleForSub(sub.id);
+          const currentPriceId = sub.items.data[0]?.price?.id;
+          const pendingPriceId = pending
+            ? PRICE_MAP[pending.to_plan]?.[pending.to_period === "yearly" ? "yearly" : "monthly"]?.()
             : null;
 
-          if (hasPending && pendingPriceId && currentPrice === pendingPriceId) {
-            // Scheduled change has taken effect — update tier and clear pending
+          if (pending && pendingPriceId && currentPriceId === pendingPriceId) {
+            // Scheduled change has taken effect.
             await db.query(
               `UPDATE bot_subscriptions SET plan_tier = $1, billing_period = $2,
                pending_plan_tier = NULL, pending_billing_period = NULL,
                status = 'active', expires_at = to_timestamp($3), updated_at = NOW()
                WHERE bot_user_id = $4 AND stripe_sub_id = $5`,
-              [pending.rows[0].pending_plan_tier, pending.rows[0].pending_billing_period,
-               sub.current_period_end, uid, sub.id]
+              [pending.to_plan, pending.to_period, sub.current_period_end, uid, sub.id]
             );
-            await db.query(`UPDATE bot_users SET role = $1 WHERE id = $2`, [pending.rows[0].pending_plan_tier, uid]);
-            console.log(`[stripe/webhook] scheduled change applied: ${pending.rows[0].pending_plan_tier} for bot_user ${uid}`);
+            await db.query(`UPDATE bot_users SET role = $1 WHERE id = $2`, [pending.to_plan, uid]);
+            await markScheduleApplied(pending.stripe_schedule_id);
+            console.log(`[stripe/webhook] scheduled change applied: ${pending.to_plan} for bot_user ${uid}`);
             txlog.record("webhook_scheduled_applied", {
               botUserId: uid, stripeSubId: sub.id,
-              plan: pending.rows[0].pending_plan_tier,
-              period: pending.rows[0].pending_billing_period,
+              plan: pending.to_plan, period: pending.to_period,
               stripeEventId: event.id,
+            });
+            await writeAudit({
+              botUserId: uid, stripeSubId: sub.id,
+              action: "webhook_scheduled_applied",
+              toPlan: pending.to_plan, toPeriod: pending.to_period,
+              actor: "stripe", source: "webhook",
+              stripeEventId: event.id,
+              meta: { stripeScheduleId: pending.stripe_schedule_id },
             });
           } else {
             await db.query(
@@ -687,8 +1066,14 @@ async function webhookHandler(req, res) {
             `UPDATE bot_subscriptions SET status = 'past_due', updated_at = NOW()
              WHERE bot_user_id = $1 AND stripe_sub_id = $2`, [uid, sub.id]
           );
+          await writeAudit({
+            botUserId: uid, stripeSubId: sub.id,
+            action: "webhook_sub_past_due",
+            actor: "stripe", source: "webhook",
+            stripeEventId: event.id,
+          });
         }
-        invalidateCache(uid);
+        invalidatePlanCache(uid);
         break;
       }
       case "customer.subscription.deleted": {
@@ -699,10 +1084,17 @@ async function webhookHandler(req, res) {
             `UPDATE bot_subscriptions SET status = 'expired', updated_at = NOW()
              WHERE bot_user_id = $1 AND stripe_sub_id = $2`, [uid, sub.id]
           );
+          await markSchedulesReleased(sub.id);
           txlog.record("webhook_deleted", {
             botUserId: uid, stripeSubId: sub.id, stripeEventId: event.id,
           });
-          invalidateCache(uid);
+          await writeAudit({
+            botUserId: uid, stripeSubId: sub.id,
+            action: "webhook_sub_deleted",
+            actor: "stripe", source: "webhook",
+            stripeEventId: event.id,
+          });
+          invalidatePlanCache(uid);
         }
         break;
       }
@@ -717,29 +1109,136 @@ async function webhookHandler(req, res) {
             "SELECT bot_user_id FROM bot_subscriptions WHERE stripe_sub_id = $1", [inv.subscription]
           );
           const failedUid = ur.rows[0]?.bot_user_id;
+          const attempt = inv.attempt_count || null;
+          const nextAttempt = inv.next_payment_attempt
+            ? new Date(inv.next_payment_attempt * 1000).toISOString()
+            : null;
           txlog.record("webhook_payment_failed", {
             botUserId: failedUid || null,
             stripeSubId: inv.subscription,
             amountDue: inv.amount_due,
             currency: inv.currency,
+            attempt, nextAttempt,
             stripeEventId: event.id,
           });
-          if (failedUid) invalidateCache(failedUid);
+          await writeAudit({
+            botUserId: failedUid || null, stripeSubId: inv.subscription,
+            action: "webhook_payment_failed",
+            actor: "stripe", source: "webhook",
+            stripeEventId: event.id,
+            meta: {
+              amountDue: inv.amount_due, currency: inv.currency,
+              attempt, nextAttempt, hostedInvoiceUrl: inv.hosted_invoice_url || null,
+            },
+          });
+          if (failedUid) {
+            invalidatePlanCache(failedUid);
+            // Dunning notification — tell the user their payment failed
+            // and give them a direct link to retry via Stripe's hosted invoice.
+            sendPaymentFailedNotice(failedUid, inv).catch((e) =>
+              console.error("[billing/dunning]", e.message)
+            );
+          }
+        }
+        break;
+      }
+      case "invoice.payment_succeeded": {
+        const inv = event.data.object;
+        if (inv.subscription) {
+          const ur = await db.query(
+            "SELECT bot_user_id FROM bot_subscriptions WHERE stripe_sub_id = $1",
+            [inv.subscription]
+          );
+          const uid = ur.rows[0]?.bot_user_id;
+          if (uid) {
+            await db.query(
+              `UPDATE bot_subscriptions SET status = 'active', updated_at = NOW()
+               WHERE stripe_sub_id = $1`, [inv.subscription]
+            );
+            invalidatePlanCache(uid);
+            await writeAudit({
+              botUserId: uid, stripeSubId: inv.subscription,
+              action: "webhook_payment_succeeded",
+              actor: "stripe", source: "webhook",
+              stripeEventId: event.id,
+              meta: { amountPaid: inv.amount_paid, currency: inv.currency },
+            });
+          }
         }
         break;
       }
     }
 
-    await db.query(
-      `INSERT INTO payment_events (stripe_event_id, event_type, provider, payload, created_at)
-       VALUES ($1, $2, 'stripe', $3, NOW()) ON CONFLICT (stripe_event_id) DO NOTHING`,
-      [event.id, event.type, JSON.stringify(event.data.object)]
-    ).catch(() => {});
-
     res.json({ received: true });
   } catch (err) {
     console.error("[stripe/webhook]", err.message);
     res.status(500).json({ error: "Webhook processing failed" });
+  }
+}
+
+// ── Dunning: Telegram notification on payment failure ──
+async function sendPaymentFailedNotice(botUserId, inv) {
+  try {
+    const chatId = await getTelegramChatId(botUserId);
+    if (!chatId) return;
+    const amount = typeof inv.amount_due === "number"
+      ? `${(inv.amount_due / 100).toFixed(2)} ${(inv.currency || "usd").toUpperCase()}`
+      : "your subscription amount";
+    const nextAttempt = inv.next_payment_attempt
+      ? new Date(inv.next_payment_attempt * 1000).toLocaleDateString("en-US", { month: "long", day: "numeric" })
+      : null;
+    const lines = [
+      `⚠️ <b>Payment Failed</b>`,
+      ``,
+      `We couldn't charge ${amount} for your AgoraIQ subscription.`,
+    ];
+    if (nextAttempt) lines.push(`We'll retry automatically on <b>${nextAttempt}</b>.`);
+    if (inv.hosted_invoice_url) {
+      lines.push(``);
+      lines.push(`To pay now or update your card: <a href="${inv.hosted_invoice_url}">retry payment</a>`);
+    } else {
+      lines.push(``);
+      lines.push(`Update your card at ${APP_URL()}/pricing.html`);
+    }
+    lines.push(``);
+    lines.push(`Your access continues during our grace period. After that, premium features will pause until payment succeeds.`);
+    await telegram.send(chatId, lines.join("\n"));
+  } catch (err) {
+    console.warn("[billing/dunning] send failed:", err.message);
+  }
+}
+
+// ── Stripe customer reconciliation — detect duplicates across
+// accidental re-creates and audit mismatches for ops review. ──
+async function reconcileStripeCustomer(botUserId, stripeCustomerId, stripeEventId) {
+  if (!botUserId || !stripeCustomerId) return;
+  try {
+    const r = await db.query(
+      "SELECT stripe_customer_id FROM bot_users WHERE id = $1",
+      [botUserId]
+    );
+    const stored = r.rows[0]?.stripe_customer_id;
+    if (!stored) {
+      await db.query(
+        "UPDATE bot_users SET stripe_customer_id = $1 WHERE id = $2 AND stripe_customer_id IS NULL",
+        [stripeCustomerId, botUserId]
+      );
+      return;
+    }
+    if (stored !== stripeCustomerId) {
+      console.warn(
+        `[billing/dedupe] stripe_customer mismatch for bot_user ${botUserId}: stored=${stored}, incoming=${stripeCustomerId}`
+      );
+      await writeAudit({
+        botUserId,
+        action: "stripe_customer_mismatch",
+        actor: "stripe", source: "webhook",
+        stripeEventId,
+        meta: { stored, incoming: stripeCustomerId },
+      });
+    }
+  } catch (err) {
+    console.warn("[billing/dedupe] reconcile failed:", err.message);
   }
 }
 
@@ -849,29 +1348,34 @@ async function activateSub(botUserId, plan, stripeSubId, billingPeriod) {
        started_at = NOW(), expires_at = NULL, updated_at = NOW()`,
     [botUserId, plan, billingPeriod, stripeSubId]
   );
-  invalidateCache(botUserId);
-}
-
-function invalidateCache(botUserId) {
-  try {
-    const { getRedis } = require("../lib/redis");
-    const redis = getRedis();
-    if (redis) redis.del(`sub:${botUserId}`).catch(() => {});
-  } catch {}
+  invalidatePlanCache(botUserId);
 }
 
 
 
 // ── Public checkout for cold visitors (no auth required) ──
+// The returned Checkout session is useless for entitlement until the
+// resulting email is verified via magic-link — the webhook refuses to
+// mint or activate accounts for unverified emails.
 router.post("/public-checkout", async (req, res) => {
   try {
     const { plan, period, consent } = req.body;
     const cycle = period === "yearly" ? "yearly" : "monthly";
     const priceId = PRICE_MAP[plan]?.[cycle]?.();
-    if (!priceId) return res.status(400).json({ error: "Invalid plan/period" });
+    if (!priceId) {
+      if (!PRICE_MAP[plan]) {
+        return res.status(400).json({ error: `Invalid plan: ${plan}` });
+      }
+      return res.status(503).json({ error: "Billing temporarily unavailable" });
+    }
 
     const cc = validateConsent(consent);
     if (!cc.valid) return res.status(400).json({ error: cc.reason });
+
+    const subData = {
+      metadata: { plan_tier: plan, billing_period: cycle },
+    };
+    if (TRIAL_DAYS > 0) subData.trial_period_days = TRIAL_DAYS;
 
     const session = await getStripe().checkout.sessions.create({
       mode: "subscription",
@@ -879,14 +1383,21 @@ router.post("/public-checkout", async (req, res) => {
       success_url: `${APP_URL()}/welcome.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${APP_URL()}/pricing.html?status=cancelled`,
       metadata: { plan_tier: plan, billing_period: cycle, consent_version: consent.version, source: "web_cold" },
-      subscription_data: { metadata: { plan_tier: plan, billing_period: cycle }, trial_period_days: 1 },
+      subscription_data: subData,
     });
 
-    res.json({ url: session.url, sessionId: session.id });
+    await writeAudit({
+      action: "public_checkout_new",
+      toPlan: plan, toPeriod: cycle,
+      actor: "anonymous", source: "web_cold",
+      meta: { stripeSessionId: session.id, consentVersion: consent.version, trialDays: TRIAL_DAYS },
+    });
+
+    res.json({ url: session.url, sessionId: session.id, trialDays: TRIAL_DAYS });
   } catch (err) {
     console.error("[billing/public-checkout]", err.message);
     res.status(500).json({ error: "Checkout failed" });
   }
 });
 
-module.exports = { router, webhookHandler, resolveEntitlement };
+module.exports = { router, webhookHandler, resolveEntitlement, validatePriceIds, getPriceCatalog };

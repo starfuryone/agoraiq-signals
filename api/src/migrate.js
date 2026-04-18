@@ -222,6 +222,78 @@ const MIGRATIONS = [
   `CREATE INDEX IF NOT EXISTS idx_pe_type ON payment_events(event_type)`,
   `CREATE INDEX IF NOT EXISTS idx_pe_created ON payment_events(created_at DESC)`,
 
+  // ── bot_users.email_verified — gates cold-visitor entitlement grant ──
+  `DO $$ BEGIN
+     ALTER TABLE bot_users ADD COLUMN IF NOT EXISTS email_verified BOOLEAN NOT NULL DEFAULT FALSE;
+   EXCEPTION WHEN duplicate_column THEN NULL;
+   END $$`,
+  `DO $$ BEGIN
+     ALTER TABLE bot_users ADD COLUMN IF NOT EXISTS email_verified_at TIMESTAMPTZ;
+   EXCEPTION WHEN duplicate_column THEN NULL;
+   END $$`,
+
+  // ── subscription_schedules — durable log of scheduled plan changes ──
+  `CREATE TABLE IF NOT EXISTS subscription_schedules (
+    id                 SERIAL PRIMARY KEY,
+    bot_user_id        INTEGER NOT NULL REFERENCES bot_users(id) ON DELETE CASCADE,
+    stripe_sub_id      TEXT NOT NULL,
+    stripe_schedule_id TEXT NOT NULL,
+    from_plan          TEXT NOT NULL,
+    from_period        TEXT,
+    to_plan            TEXT NOT NULL,
+    to_period          TEXT,
+    effective_at       TIMESTAMPTZ NOT NULL,
+    status             TEXT NOT NULL DEFAULT 'pending',
+    applied_at         TIMESTAMPTZ,
+    released_at        TIMESTAMPTZ,
+    created_at         TIMESTAMPTZ DEFAULT NOW(),
+    updated_at         TIMESTAMPTZ DEFAULT NOW()
+  )`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_ssched_stripe
+     ON subscription_schedules(stripe_schedule_id)`,
+  `CREATE INDEX IF NOT EXISTS idx_ssched_user
+     ON subscription_schedules(bot_user_id)`,
+  `CREATE INDEX IF NOT EXISTS idx_ssched_sub
+     ON subscription_schedules(stripe_sub_id)`,
+  `CREATE INDEX IF NOT EXISTS idx_ssched_status
+     ON subscription_schedules(status)
+     WHERE status = 'pending'`,
+
+  // ── subscription_audit_log — immutable record of every plan change ──
+  `CREATE TABLE IF NOT EXISTS subscription_audit_log (
+    id              SERIAL PRIMARY KEY,
+    bot_user_id     INTEGER,
+    stripe_sub_id   TEXT,
+    action          TEXT NOT NULL,
+    from_plan       TEXT,
+    from_period     TEXT,
+    to_plan         TEXT,
+    to_period       TEXT,
+    actor           TEXT,
+    source          TEXT,
+    stripe_event_id TEXT,
+    reason          TEXT,
+    meta            JSONB DEFAULT '{}'::jsonb,
+    created_at      TIMESTAMPTZ DEFAULT NOW()
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_sal_user ON subscription_audit_log(bot_user_id)`,
+  `CREATE INDEX IF NOT EXISTS idx_sal_sub ON subscription_audit_log(stripe_sub_id)`,
+  `CREATE INDEX IF NOT EXISTS idx_sal_created ON subscription_audit_log(created_at DESC)`,
+
+  // ── billing_checkout_idempotency — prevent duplicate checkout submissions ──
+  `CREATE TABLE IF NOT EXISTS billing_checkout_idempotency (
+    id               SERIAL PRIMARY KEY,
+    bot_user_id      INTEGER NOT NULL REFERENCES bot_users(id) ON DELETE CASCADE,
+    idempotency_key  TEXT NOT NULL,
+    request_hash     TEXT,
+    response         JSONB,
+    created_at       TIMESTAMPTZ DEFAULT NOW()
+  )`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_bci_user_key
+     ON billing_checkout_idempotency(bot_user_id, idempotency_key)`,
+  `CREATE INDEX IF NOT EXISTS idx_bci_created
+     ON billing_checkout_idempotency(created_at DESC)`,
+
   // ── updated_at auto-trigger ─────────────────────────────────────
   `CREATE OR REPLACE FUNCTION update_updated_at()
    RETURNS TRIGGER AS $$

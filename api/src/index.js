@@ -68,6 +68,26 @@ async function start() {
     process.exit(1);
   }
 
+  // Validate Stripe price IDs at startup. Logs loudly on misconfiguration
+  // but does not exit — the app still serves non-billing traffic. Set
+  // STRIPE_VALIDATE_PRICES_STRICT=1 to hard-fail instead.
+  if (process.env.STRIPE_SECRET_KEY) {
+    try {
+      const { validatePriceIds } = require("./routes/billing");
+      const result = await validatePriceIds();
+      if ((result.missing.length || result.invalid.length) &&
+          process.env.STRIPE_VALIDATE_PRICES_STRICT === "1") {
+        console.error("[api] refusing to start: Stripe price validation failed");
+        process.exit(1);
+      }
+    } catch (err) {
+      console.error("[api] Stripe price validation threw:", err.message);
+      if (process.env.STRIPE_VALIDATE_PRICES_STRICT === "1") process.exit(1);
+    }
+  } else {
+    console.warn("[api] STRIPE_SECRET_KEY not set — billing disabled");
+  }
+
 
 // Watchlist (SQLite)
 const watchlistRouter = require('./watchlist');

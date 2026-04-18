@@ -185,8 +185,9 @@ body{min-height:100vh}
     <span class="toggle-label active" id="toggleMonthly">Monthly</span>
     <div class="toggle-track" id="billingToggle"><div class="toggle-thumb"></div></div>
     <span class="toggle-label" id="toggleYearly">Yearly</span>
-    <span class="save-badge">Save up to 34%</span>
+    <span class="save-badge" id="saveBadge">Save up to 34%</span>
   </div>
+  <div id="trialBadge" style="display:none;text-align:center;margin:-24px 0 24px;font-size:13px;font-family:var(--sans);color:var(--green)"></div>
 
   <div class="pricing-grid">
     <div class="plan-card featured">
@@ -216,7 +217,8 @@ body{min-height:100vh}
   <div class="faq-section">
     <h2>Questions</h2>
     <div class="faq-item"><div class="faq-q">Can I cancel anytime?<span class="arrow">▾</span></div><div class="faq-a">Yes. Cancel from your Stripe customer portal — no lock-in, no questions. You keep access until the end of your billing period.</div></div>
-    <div class="faq-item"><div class="faq-q">What's the difference between monthly and yearly?<span class="arrow">▾</span></div><div class="faq-a">Same features either way. Yearly plans save up to 34% — Pro drops from $348/yr to $228/yr, Elite from $1,188/yr to $790/yr. Billed as a single annual charge.</div></div>
+    <div class="faq-item"><div class="faq-q">What's the difference between monthly and yearly?<span class="arrow">▾</span></div><div class="faq-a">Same features either way. Yearly plans are billed as a single annual charge at a meaningful discount versus 12 months at the monthly rate — see the current savings figure on the monthly/yearly toggle above.</div></div>
+    <div class="faq-item"><div class="faq-q">Is there a free trial?<span class="arrow">▾</span></div><div class="faq-a" id="faqTrialA">Trial details are loaded from our billing service — see the badge above the plan cards.</div></div>
     <div class="faq-item"><div class="faq-q">What payment methods are accepted?<span class="arrow">▾</span></div><div class="faq-a">All major credit/debit cards via Stripe. Payments are processed securely — AgoraIQ never stores your card details.</div></div>
     <div class="faq-item"><div class="faq-q">What does "signal lifecycle tracking" mean?<span class="arrow">▾</span></div><div class="faq-a">Submit any trading signal and AgoraIQ tracks it against live market data. Every state change — from open through TP hits, SL, or expiry — is recorded with full audit trail. Elite includes advanced analytics: win rate, expectancy, duration, and drawdown views.</div></div>
     <div class="faq-item"><div class="faq-q">Do I need to link my exchange?<span class="arrow">▾</span></div><div class="faq-a">No. AgoraIQ tracks signals using public market data from Binance and Kraken. No exchange API keys needed.</div></div>
@@ -260,6 +262,9 @@ body{min-height:100vh}
   // ── 2D subscription state ─────────────────────────────────────
   var currentSub={plan:"free",period:null,status:null};
   var billingPeriod="monthly";
+
+  // ── Price catalog (from /billing/prices — single source of truth) ──
+  var priceCatalog=null;
 
   // ── Consent ───────────────────────────────────────────────────
   var consentConfig=null,consentConfigError=false,consentAccepted=false;
@@ -343,21 +348,73 @@ body{min-height:100vh}
   }
 
   // ── Billing toggle ────────────────────────────────────────────
+  function wholeCents(c){return (c/100)%1===0}
+  function fmtWhole(c){return wholeCents(c)?String(c/100):(c/100).toFixed(2)}
+  function fmtSub(c){return (c/100).toFixed(2)}
+
+  function priceFor(plan,cycle){
+    if(!priceCatalog||!priceCatalog.plans)return null;
+    var entry=priceCatalog.plans[plan];
+    if(!entry)return null;
+    return entry[cycle]||null;
+  }
+
+  function renderPrices(){
+    var proMonth=priceFor("pro","monthly"),proYear=priceFor("pro","yearly");
+    var eliteMonth=priceFor("elite","monthly"),eliteYear=priceFor("elite","yearly");
+
+    var proPrice=document.getElementById("proPrice"),proPeriod=document.getElementById("proPeriod"),proNote=document.getElementById("proYearlyNote");
+    var elitePrice=document.getElementById("elitePrice"),elitePeriod=document.getElementById("elitePeriod"),eliteNote=document.getElementById("eliteYearlyNote");
+
+    if(billingPeriod==="yearly"){
+      if(proYear){proPrice.textContent=fmtWhole(proYear.unitAmount);proPeriod.textContent="/yr";
+        if(proMonth){var eq=proYear.unitAmount/12;var save=(proMonth.unitAmount*12)-proYear.unitAmount;
+          proNote.style.display="block";proNote.textContent="$"+fmtSub(eq)+"/mo equivalent"+(save>0?" — save $"+fmtWhole(save):"");}
+        else proNote.style.display="none";
+      }
+      if(eliteYear){elitePrice.textContent=fmtWhole(eliteYear.unitAmount);elitePeriod.textContent="/yr";
+        if(eliteMonth){var eq=eliteYear.unitAmount/12;var save=(eliteMonth.unitAmount*12)-eliteYear.unitAmount;
+          eliteNote.style.display="block";eliteNote.textContent="$"+fmtSub(eq)+"/mo equivalent"+(save>0?" — save $"+fmtWhole(save):"");}
+        else eliteNote.style.display="none";
+      }
+      // Compute actual max savings for the badge
+      var savings=[];
+      if(proMonth&&proYear){savings.push(1-(proYear.unitAmount/(proMonth.unitAmount*12)))}
+      if(eliteMonth&&eliteYear){savings.push(1-(eliteYear.unitAmount/(eliteMonth.unitAmount*12)))}
+      if(savings.length){var max=Math.round(Math.max.apply(null,savings)*100);
+        document.getElementById("saveBadge").textContent="Save up to "+max+"%"}
+    }else{
+      if(proMonth){proPrice.textContent=fmtWhole(proMonth.unitAmount);proPeriod.textContent="/mo";proNote.style.display="none";}
+      if(eliteMonth){elitePrice.textContent=fmtWhole(eliteMonth.unitAmount);elitePeriod.textContent="/mo";eliteNote.style.display="none";}
+    }
+  }
+
   function setBillingPeriod(p){
     billingPeriod=p;
     var tgl=document.getElementById("billingToggle"),lm=document.getElementById("toggleMonthly"),ly=document.getElementById("toggleYearly");
-    if(p==="yearly"){
-      tgl.classList.add("yearly");lm.classList.remove("active");ly.classList.add("active");
-      document.getElementById("proPrice").textContent="228";document.getElementById("proPeriod").textContent="/yr";
-      document.getElementById("proYearlyNote").style.display="block";document.getElementById("proYearlyNote").textContent="$19/mo equivalent — save $120";
-      document.getElementById("elitePrice").textContent="790";document.getElementById("elitePeriod").textContent="/yr";
-      document.getElementById("eliteYearlyNote").style.display="block";document.getElementById("eliteYearlyNote").textContent="$65.83/mo equivalent — save $398";
-    }else{
-      tgl.classList.remove("yearly");lm.classList.add("active");ly.classList.remove("active");
-      document.getElementById("proPrice").textContent="29";document.getElementById("proPeriod").textContent="/mo";document.getElementById("proYearlyNote").style.display="none";
-      document.getElementById("elitePrice").textContent="99";document.getElementById("elitePeriod").textContent="/mo";document.getElementById("eliteYearlyNote").style.display="none";
-    }
+    if(p==="yearly"){tgl.classList.add("yearly");lm.classList.remove("active");ly.classList.add("active");}
+    else{tgl.classList.remove("yearly");lm.classList.add("active");ly.classList.remove("active");}
+    renderPrices();
     updateButtons();
+  }
+
+  function loadPriceCatalog(){
+    fetch(API+"/prices").then(function(r){return r.ok?r.json():null}).then(function(cat){
+      if(!cat||!cat.plans){
+        document.getElementById("proPrice").textContent="—";document.getElementById("elitePrice").textContent="—";
+        toast("Live pricing is temporarily unavailable. Please try again.","error");
+        return;
+      }
+      priceCatalog=cat;
+      renderPrices();
+      var trial=cat.trialDays||0;
+      var tb=document.getElementById("trialBadge");
+      if(trial>0){tb.textContent="✨ "+trial+"-day free trial on new subscriptions — cancel anytime before it ends";tb.style.display="block"}
+      else{tb.style.display="none"}
+    }).catch(function(){
+      document.getElementById("proPrice").textContent="—";document.getElementById("elitePrice").textContent="—";
+      toast("Could not load pricing.","error");
+    });
   }
 
   // ── Billing status (2D) ───────────────────────────────────────
@@ -408,10 +465,13 @@ body{min-height:100vh}
       .catch(function(){toast("Network error","error");btn.classList.remove("btn-loading");btn.disabled=false;btn.textContent=orig;syncGate()});
   }
 
+  function randKey(){try{return crypto.randomUUID()}catch(e){return String(Date.now())+"-"+Math.random().toString(36).slice(2,10)}}
+
   function executeCheckout(plan,consent){
     var btn=document.getElementById(plan==="pro"?"btnPro":"btnElite");
     var orig=btn.textContent;btn.classList.add("btn-loading");btn.disabled=true;
-    fetch(API+"/billing/checkout",{method:"POST",headers:hdrs(),body:JSON.stringify({plan:plan,period:billingPeriod,consent:consent})})
+    var h=hdrs();h["Idempotency-Key"]=randKey();
+    fetch(API+"/billing/checkout",{method:"POST",headers:h,body:JSON.stringify({plan:plan,period:billingPeriod,consent:consent})})
       .then(function(r){return r.json().then(function(d){return{ok:r.ok,data:d}})})
       .then(function(res){
         if(!res.ok){toast(res.data.error||"Checkout failed","error");return}
@@ -441,13 +501,18 @@ body{min-height:100vh}
     cb.className=dir==="upgrade"?"btn btn-primary":"btn btn-outline";
 
     var pe=preview.currentPeriodEnd?new Date(preview.currentPeriodEnd*1000).toLocaleDateString():"period end";
+    var subLines=[];
     if(isScheduled){
-      document.getElementById("modalSub").textContent="Your current plan continues until "+pe+". The new plan takes effect at renewal.";
+      subLines.push("Your current plan continues until "+pe+". The new plan takes effect at renewal.");
       document.getElementById("modalTotalLabel").textContent="Due at renewal";
     }else{
-      document.getElementById("modalSub").textContent="Prorated based on remaining time until "+pe+".";
+      subLines.push("Prorated based on remaining time until "+pe+".");
       document.getElementById("modalTotalLabel").textContent=(preview.amountDue||0)<=0?"Credit applied":"Due now";
     }
+    if(dir==="downgrade"&&typeof preview.creditTotal==="number"&&preview.creditTotal<0){
+      subLines.push("Unused time on your current plan ("+fmtCents(preview.creditTotal,preview.currency)+") is credited toward future invoices.");
+    }
+    document.getElementById("modalSub").textContent=subLines.join(" ");
 
     var el=document.getElementById("modalLines");el.innerHTML="";
     (preview.lines||[]).forEach(function(ln){
@@ -584,6 +649,7 @@ document.getElementById("consentModal").addEventListener("click",function(e){if(
     for(var i=0;i<faqs.length;i++) faqs[i].addEventListener("click",function(){this.classList.toggle("open")});
 
     setBillingPeriod("monthly");
+    loadPriceCatalog();
     loadConsentConfig();
     if(token) loadBillingStatus();
   });
