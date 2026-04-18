@@ -165,29 +165,40 @@ const TRIAL_DAYS = (() => {
   return Number.isFinite(n) && n >= 0 ? n : 1;
 })();
 
-// ── Startup validation: confirm every configured price exists in Stripe ──
+// ── Startup validation: confirm every configured price exists in Stripe
+// AND that its recurring interval matches the cycle it's configured under.
+// A price billed monthly that we expose as "yearly" would silently
+// overcharge customers 12× — this catches it at boot, not at payment time.
 let _pricesValidated = null;
 async function validatePriceIds() {
   if (_pricesValidated) return _pricesValidated;
   const plans = ["pro", "elite"];
   const cycles = ["monthly", "yearly"];
+  const expectedInterval = { monthly: "month", yearly: "year" };
   const missing = [];
   const invalid = [];
+  const intervalMismatch = [];
   for (const plan of plans) {
     for (const cycle of cycles) {
       const id = PRICE_MAP[plan][cycle]();
       if (!id) { missing.push(`${plan}/${cycle}`); continue; }
       try {
-        await getStripe().prices.retrieve(id);
+        const price = await getStripe().prices.retrieve(id);
+        const actual = price.recurring?.interval;
+        if (actual !== expectedInterval[cycle]) {
+          intervalMismatch.push(
+            `${plan}/${cycle} (${id}): Stripe interval is "${actual}", expected "${expectedInterval[cycle]}"`
+          );
+        }
       } catch (err) {
         invalid.push(`${plan}/${cycle} (${id}): ${err.message}`);
       }
     }
   }
-  _pricesValidated = { missing, invalid, checkedAt: new Date().toISOString() };
-  if (missing.length || invalid.length) {
+  _pricesValidated = { missing, invalid, intervalMismatch, checkedAt: new Date().toISOString() };
+  if (missing.length || invalid.length || intervalMismatch.length) {
     console.error("[billing/startup] PRICE VALIDATION FAILED:",
-      { missing, invalid });
+      { missing, invalid, intervalMismatch });
   } else {
     console.log("[billing/startup] all Stripe price IDs validated");
   }
@@ -205,6 +216,7 @@ async function getPriceCatalog() {
   }
   const plans = ["pro", "elite"];
   const cycles = ["monthly", "yearly"];
+  const expectedInterval = { monthly: "month", yearly: "year" };
   const out = { currency: "usd", trialDays: TRIAL_DAYS, plans: {} };
   for (const plan of plans) {
     out.plans[plan] = {};
@@ -213,12 +225,23 @@ async function getPriceCatalog() {
       if (!id) { out.plans[plan][cycle] = null; continue; }
       try {
         const price = await getStripe().prices.retrieve(id);
+        const actual = price.recurring?.interval;
+        if (actual !== expectedInterval[cycle]) {
+          // Stripe billing interval disagrees with the cycle this price
+          // is wired under. Refuse to surface it — clients would render
+          // a "yearly" button that actually charges monthly.
+          console.error(
+            `[billing/prices] MISCONFIG: ${plan}/${cycle} (${id}) has Stripe interval "${actual}", expected "${expectedInterval[cycle]}" — hiding`
+          );
+          out.plans[plan][cycle] = null;
+          continue;
+        }
         out.currency = price.currency || out.currency;
         out.plans[plan][cycle] = {
           priceId: price.id,
           unitAmount: price.unit_amount,
           currency: price.currency,
-          interval: price.recurring?.interval || null,
+          interval: actual,
           intervalCount: price.recurring?.interval_count || 1,
         };
       } catch (err) {
@@ -545,6 +568,16 @@ router.post("/checkout", requireAuth, async (req, res) => {
       }
       console.error(`[billing/checkout] missing price env for ${plan}/${cycle}`);
       return res.status(503).json({ error: "Billing temporarily unavailable" });
+    }
+
+    // Reject upfront if the Stripe price's interval disagrees with the
+    // cycle the caller asked for. Prevents an unintended 12× overcharge
+    // the moment someone clicks "yearly" against a mis-configured price.
+    const catalog = await getPriceCatalog();
+    if (!catalog.plans[plan] || !catalog.plans[plan][cycle]) {
+      return res.status(503).json({
+        error: `${plan} ${cycle} is temporarily unavailable — contact support`,
+      });
     }
 
     // Validate consent
@@ -1495,6 +1528,13 @@ router.post("/public-checkout", async (req, res) => {
 
     const cc = validateConsent(consent);
     if (!cc.valid) return res.status(400).json({ error: cc.reason });
+
+    const catalog = await getPriceCatalog();
+    if (!catalog.plans[plan] || !catalog.plans[plan][cycle]) {
+      return res.status(503).json({
+        error: `${plan} ${cycle} is temporarily unavailable — contact support`,
+      });
+    }
 
     const subData = {
       metadata: { plan_tier: plan, billing_period: cycle },
