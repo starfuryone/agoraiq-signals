@@ -15,11 +15,12 @@ async function create(row) {
        user_id, plan_tier, name, natural_language, rule_json,
        cooldown_seconds, daily_limit, priority,
        parse_confidence, parse_source, delivery_channel, delivery_target
-     ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+     ) VALUES ($1,$2,$3,$4,$5::jsonb,$6,$7,$8,$9,$10,$11,$12)
      RETURNING ${PUBLIC_COLUMNS}`,
     [
       row.user_id, row.plan_tier, row.name, row.natural_language,
-      row.rule_json, row.cooldown_seconds, row.daily_limit, row.priority,
+      JSON.stringify(row.rule_json ?? {}),
+      row.cooldown_seconds, row.daily_limit, row.priority,
       row.parse_confidence, row.parse_source,
       row.delivery_channel || "telegram",
       row.delivery_target || null,

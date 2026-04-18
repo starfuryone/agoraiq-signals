@@ -19,12 +19,14 @@ async function record({
     `INSERT INTO trigger_logs (
        alert_rule_id, user_id, signal_id, signal_snapshot,
        matched_fields, suppressed, suppressed_reason
-     ) VALUES ($1,$2,$3,$4,$5,$6,$7)
+     ) VALUES ($1,$2,$3,$4::jsonb,$5::jsonb,$6,$7)
      ON CONFLICT (alert_rule_id, signal_id) DO NOTHING
      RETURNING id, alert_rule_id, user_id, signal_id, fired_at, suppressed`,
     [
-      alert_rule_id, user_id, signal_id, signal_snapshot,
-      matched_fields, suppressed, suppressed_reason,
+      alert_rule_id, user_id, signal_id,
+      JSON.stringify(signal_snapshot ?? {}),
+      JSON.stringify(matched_fields ?? []),
+      suppressed, suppressed_reason,
     ]
   );
   return r.rows[0] || null;

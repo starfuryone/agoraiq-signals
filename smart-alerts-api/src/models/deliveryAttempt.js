@@ -9,9 +9,10 @@ async function create({
   const r = await db.query(
     `INSERT INTO delivery_attempts (
        trigger_log_id, alert_rule_id, user_id, channel, target, payload
-     ) VALUES ($1,$2,$3,$4,$5,$6)
+     ) VALUES ($1,$2,$3,$4,$5,$6::jsonb)
      RETURNING id`,
-    [trigger_log_id, alert_rule_id, user_id, channel, target, payload]
+    [trigger_log_id, alert_rule_id, user_id, channel, target,
+     JSON.stringify(payload ?? {})]
   );
   return r.rows[0].id;
 }
