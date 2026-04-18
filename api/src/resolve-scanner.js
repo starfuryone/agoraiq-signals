@@ -19,7 +19,11 @@
 require("dotenv").config({ path: "/opt/agoraiq-signals/api/.env", override: true });
 const { Pool } = require("pg");
 
-const DB_URL = process.env.DATABASE_URL || "postgresql://agoraiq_signals:desf19848@127.0.0.1:5432/agoraiq_signals";
+const DB_URL = process.env.DATABASE_URL;
+if (!DB_URL) {
+  console.error("DATABASE_URL environment variable is required");
+  process.exit(1);
+}
 const pool = new Pool({ connectionString: DB_URL, max: 2 });
 
 async function resolve() {

@@ -17,11 +17,16 @@
 
 const { Pool } = require("pg");
 
+if (!process.env.PGPASSWORD) {
+  console.error("PGPASSWORD environment variable is required");
+  process.exit(1);
+}
+
 const pool = new Pool({
   user: process.env.PGUSER || "agoraiq_signals",
   host: process.env.PGHOST || "127.0.0.1",
   database: process.env.PGDATABASE || "agoraiq_signals",
-  password: process.env.PGPASSWORD || "desf19848",
+  password: process.env.PGPASSWORD,
   port: parseInt(process.env.PGPORT) || 5432,
 });
 

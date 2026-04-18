@@ -17,7 +17,11 @@ const nodeFetch = require("node-fetch");
 const { SocksProxyAgent } = require("socks-proxy-agent");
 
 // ── CONFIG ──
-const DB_URL = process.env.DATABASE_URL || "postgresql://agoraiq_signals:desf19848@127.0.0.1:5432/agoraiq_signals";
+const DB_URL = process.env.DATABASE_URL;
+if (!DB_URL) {
+  console.error("DATABASE_URL environment variable is required");
+  process.exit(1);
+}
 const SOCKS_PROXY = process.env.SOCKS_PROXY || process.env.SOCKS_PROXY_URL || null;
 const SCAN_INTERVAL = parseInt(process.env.SCAN_INTERVAL_MS) || 10000;
 const SIGNAL_MIN_SCORE = parseInt(process.env.SIGNAL_MIN_SCORE) || 55;

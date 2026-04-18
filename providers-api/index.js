@@ -5,6 +5,10 @@ const Database = require('better-sqlite3');
 const path     = require('path');
 
 const PORT = process.env.PROVIDERS_PORT || 4400;
+const PPLX_API_KEY = process.env.PPLX_API_KEY || process.env.PERPLEXITY_API_KEY;
+if (!PPLX_API_KEY) {
+  console.warn('[providers-api] PPLX_API_KEY not set — /ai/provider-iq will return 503');
+}
 const db   = new Database(path.join(__dirname, 'providers.db'));
 
 db.exec(`
@@ -148,12 +152,15 @@ Tier: ${p.marketplace_tier || 'PENDING'}
 
 Give a direct, data-driven assessment. Be honest about weaknesses.`;
 
+    if (!PPLX_API_KEY) {
+      return res.status(503).json({ error: 'AI service not configured' });
+    }
     const hfRes = await fetch(
       'https://api.perplexity.ai/chat/completions',
       {
         method: 'POST',
         headers: {
-          'Authorization': 'Bearer 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',
+          'Authorization': `Bearer ${PPLX_API_KEY}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
