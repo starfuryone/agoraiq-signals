@@ -65,7 +65,7 @@ async function main() {
     }
   );
 
-  worker.on("completed", (job) => log.debug(`[worker] done ${job.id}`));
+  worker.on("completed", (job) => log.info(`[worker] done ${job.id}`));
   worker.on("failed", (job, err) => log.warn(`[worker] failed ${job?.id}: ${err?.message}`));
   worker.on("error", (err) => log.error("[worker] error:", err.message));
 
