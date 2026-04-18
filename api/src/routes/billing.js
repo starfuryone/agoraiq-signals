@@ -1351,6 +1351,130 @@ async function activateSub(botUserId, plan, stripeSubId, billingPeriod) {
   invalidatePlanCache(botUserId);
 }
 
+// ── Plan inference from Stripe price ID ────────────────────────
+// Used when the subscription's metadata doesn't carry plan_tier (the
+// common case for cold-visitor Stripe Checkout where our metadata is
+// attached at session level but not on the subscription itself).
+function inferPlanFromPriceId(priceId) {
+  if (!priceId) return null;
+  for (const plan of Object.keys(PRICE_MAP)) {
+    for (const cycle of Object.keys(PRICE_MAP[plan])) {
+      if (PRICE_MAP[plan][cycle]() === priceId) {
+        return { plan, period: cycle };
+      }
+    }
+  }
+  return null;
+}
+
+// ── Attach deferred subscriptions for a just-verified email ───
+// Called when a user completes email-ownership proof (magic-link). The
+// webhook previously refused to activate these subs because the email
+// was unverified; now we find them in Stripe and activate.
+//
+// Scan strategy: first look up the user's stored stripe_customer_id;
+// then ask Stripe for every customer with this email (covers the
+// "Stripe auto-created a duplicate customer during public checkout"
+// case). We never mint a user here — the auth caller already owns one.
+async function attachSubscriptionByEmail(botUserId, email, opts = {}) {
+  if (!botUserId || !email) return { attached: 0 };
+  const source = opts.source || "email_verify";
+  let attached = 0;
+  try {
+    const seen = new Set();
+    const candidates = [];
+
+    const row = await db.query(
+      "SELECT stripe_customer_id FROM bot_users WHERE id = $1",
+      [botUserId]
+    );
+    if (row.rows[0]?.stripe_customer_id) {
+      candidates.push({ id: row.rows[0].stripe_customer_id });
+      seen.add(row.rows[0].stripe_customer_id);
+    }
+
+    try {
+      const byEmail = await getStripe().customers.list({ email, limit: 10 });
+      for (const c of byEmail.data) {
+        if (!seen.has(c.id)) { candidates.push(c); seen.add(c.id); }
+      }
+    } catch (err) {
+      console.warn("[billing/attach] customers.list failed:", err.message);
+    }
+
+    for (const customer of candidates) {
+      let subs;
+      try {
+        subs = await getStripe().subscriptions.list({
+          customer: customer.id, status: "all", limit: 20,
+        });
+      } catch (err) {
+        console.warn("[billing/attach] subscriptions.list failed:", err.message);
+        continue;
+      }
+      for (const sub of subs.data) {
+        if (!["active", "trialing", "past_due"].includes(sub.status)) continue;
+
+        // Skip if this sub is already bound to some other bot_user.
+        const already = await db.query(
+          "SELECT bot_user_id FROM bot_subscriptions WHERE stripe_sub_id = $1",
+          [sub.id]
+        );
+        if (already.rows[0] && already.rows[0].bot_user_id !== botUserId) {
+          console.warn(
+            `[billing/attach] sub ${sub.id} already bound to bot_user ${already.rows[0].bot_user_id}; skipping for bot_user ${botUserId}`
+          );
+          await writeAudit({
+            botUserId, stripeSubId: sub.id,
+            action: "attach_conflict",
+            actor: "system", source,
+            meta: { email, otherBotUserId: already.rows[0].bot_user_id, stripeCustomerId: customer.id },
+          });
+          continue;
+        }
+
+        const priceId = sub.items.data[0]?.price?.id;
+        const inferred = inferPlanFromPriceId(priceId);
+        const plan = sub.metadata?.plan_tier || inferred?.plan || "pro";
+        const period =
+          sub.metadata?.billing_period ||
+          (sub.items.data[0]?.price?.recurring?.interval === "year" ? "yearly" : "monthly");
+
+        await reconcileStripeCustomer(botUserId, customer.id);
+        await activateSub(botUserId, plan, sub.id, period);
+
+        // Rewrite the subscription metadata so future webhooks carry
+        // bot_user_id and we don't take the cold-visitor path again.
+        try {
+          await getStripe().subscriptions.update(sub.id, {
+            metadata: {
+              ...(sub.metadata || {}),
+              bot_user_id: String(botUserId),
+              plan_tier: plan,
+              billing_period: period,
+            },
+          });
+        } catch (err) {
+          console.warn("[billing/attach] subscription metadata update failed:", err.message);
+        }
+
+        await writeAudit({
+          botUserId, stripeSubId: sub.id,
+          action: "attach_on_email_verify",
+          toPlan: plan, toPeriod: period,
+          actor: "system", source,
+          meta: { email, stripeCustomerId: customer.id, priceId, stripeSubStatus: sub.status },
+        });
+        attached++;
+      }
+    }
+  } catch (err) {
+    console.error("[billing/attach]", err.message);
+    return { attached, error: err.message };
+  }
+  return { attached };
+}
+
 
 
 // ── Public checkout for cold visitors (no auth required) ──
@@ -1400,4 +1524,11 @@ router.post("/public-checkout", async (req, res) => {
   }
 });
 
-module.exports = { router, webhookHandler, resolveEntitlement, validatePriceIds, getPriceCatalog };
+module.exports = {
+  router,
+  webhookHandler,
+  resolveEntitlement,
+  validatePriceIds,
+  getPriceCatalog,
+  attachSubscriptionByEmail,
+};

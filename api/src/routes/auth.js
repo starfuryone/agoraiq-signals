@@ -12,9 +12,51 @@ const { Router } = require("express");
 const db = require("../lib/db");
 const pw = require("../lib/password");
 const { requireAuth, issueToken } = require("../middleware/auth");
-const { getUserTier } = require("../middleware/subscription");
+const { getUserTier, invalidateCache: invalidatePlanCache } = require("../middleware/subscription");
 
 const router = Router();
+
+// ── Email verification helper ──────────────────────────────────
+// Flips email_verified=true for the given user (if not already) and
+// reconciles any deferred Stripe subscription the webhook parked on
+// this email. Best-effort — a Stripe hiccup must not roll back the
+// verification flip, since verification is the user-facing outcome.
+async function markEmailVerified(botUserId, email, source) {
+  if (!botUserId) return;
+  let flipped = false;
+  try {
+    const r = await db.query(
+      `UPDATE bot_users
+       SET email_verified = TRUE, email_verified_at = NOW()
+       WHERE id = $1 AND email_verified = FALSE
+       RETURNING id`,
+      [botUserId]
+    );
+    flipped = r.rows.length > 0;
+  } catch (err) {
+    console.error("[auth/verify] flip failed:", err.message);
+    return;
+  }
+
+  if (flipped) {
+    console.log(`[auth/verify] email_verified flipped for bot_user ${botUserId} via ${source}`);
+    invalidatePlanCache(botUserId);
+    try {
+      const { attachSubscriptionByEmail } = require("./billing");
+      if (typeof attachSubscriptionByEmail === "function") {
+        const result = await attachSubscriptionByEmail(botUserId, email, { source });
+        if (result && result.attached > 0) {
+          console.log(
+            `[auth/verify] attached ${result.attached} deferred sub(s) for bot_user ${botUserId}`
+          );
+          invalidatePlanCache(botUserId);
+        }
+      }
+    } catch (err) {
+      console.warn("[auth/verify] attach deferred failed:", err.message);
+    }
+  }
+}
 
 // ─────────────────────────────────────────────────────────────────
 // POST /auth/register
@@ -221,8 +263,18 @@ router.post("/magic-link/verify", async (req, res) => {
       [session.id]
     );
 
+    // Clicking a magic link proves control of the inbox — this is the
+    // single gate that flips email_verified and activates any Stripe
+    // subscription the webhook parked while the email was unverified.
+    await markEmailVerified(session.bot_user_id, session.email, "magic_link_verify");
+
     const tier = await getUserTier(session.bot_user_id);
     const jwt = issueToken(session.bot_user_id, session.email);
+
+    const verifiedRow = await db.query(
+      "SELECT email_verified FROM bot_users WHERE id = $1",
+      [session.bot_user_id]
+    );
 
     res.json({
       token: jwt,
@@ -231,6 +283,7 @@ router.post("/magic-link/verify", async (req, res) => {
         email: session.email,
         role: session.role,
         planTier: tier,
+        emailVerified: !!verifiedRow.rows[0]?.email_verified,
       },
     });
   } catch (err) {
@@ -252,7 +305,7 @@ router.post("/logout", (req, res) => {
 router.get("/me", requireAuth, async (req, res) => {
   try {
     const result = await db.query(
-      "SELECT id, email, role, created_at FROM bot_users WHERE id = $1",
+      "SELECT id, email, role, email_verified, email_verified_at, created_at FROM bot_users WHERE id = $1",
       [req.userId]
     );
     if (result.rows.length === 0) {
@@ -275,12 +328,55 @@ router.get("/me", requireAuth, async (req, res) => {
         email: user.email,
         role: user.role,
         createdAt: user.created_at,
+        emailVerified: !!user.email_verified,
+        emailVerifiedAt: user.email_verified_at,
       },
       subscription: { planTier: tier },
       telegram: tg.rows[0] || null,
     });
   } catch (err) {
     console.error("[auth/me]", err.message);
+    res.status(500).json({ error: "Internal error" });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────
+// POST /auth/verify/request — send a verification magic link to the
+// logged-in user's email. Succeeds as a no-op if already verified.
+// Separate from /magic-link so clients can surface a distinct UX
+// ("verify your email" vs. "log in"). Token is still issued against
+// the 'magic_link' purpose so /magic-link/verify handles it uniformly.
+// ─────────────────────────────────────────────────────────────────
+router.post("/verify/request", requireAuth, async (req, res) => {
+  try {
+    const row = await db.query(
+      "SELECT email, email_verified FROM bot_users WHERE id = $1",
+      [req.userId]
+    );
+    if (row.rows.length === 0) return res.status(404).json({ error: "User not found" });
+    if (row.rows[0].email_verified) {
+      return res.json({ ok: true, alreadyVerified: true });
+    }
+
+    const email = row.rows[0].email;
+    const rawToken = pw.randomToken();
+    const tokenHash = pw.hashToken(rawToken);
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+
+    await db.query(
+      `INSERT INTO bot_sessions (bot_user_id, token_hash, purpose, expires_at)
+       VALUES ($1, $2, 'magic_link', $3)`,
+      [req.userId, tokenHash, expiresAt]
+    );
+
+    if (process.env.NODE_ENV !== "production") {
+      console.log(`[auth/verify] token for ${email}: ${rawToken}`);
+    }
+    // TODO: wire Brevo/SES here to actually email the link.
+
+    res.json({ ok: true, alreadyVerified: false });
+  } catch (err) {
+    console.error("[auth/verify/request]", err.message);
     res.status(500).json({ error: "Internal error" });
   }
 });
