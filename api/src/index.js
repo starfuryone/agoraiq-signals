@@ -43,6 +43,11 @@ app.use("/api/v1/billing", require("./routes/billing").router);
 app.use("/api/v1/telegram", require("./routes/telegram"));
 app.use("/api/v1/ai", require("./routes/ai"));
 
+// Internal, loopback-only routes consumed by sibling sidecars
+// (e.g. agoraiq-smart-alerts). Gated by X-Internal-Key and returns
+// only the minimum read-only data needed for feature gating.
+app.use("/api/internal", require("./routes/internal"));
+
 app.get("/health", async (req, res) => {
   try {
     await db.query("SELECT 1");

@@ -226,6 +226,11 @@ router.post("/submit", requireAuth, async (req, res) => {
       });
     }
 
+    // Read-only fan-out to the Smart Alerts sidecar. Fire-and-forget:
+    // no-op if SMART_ALERTS_WEBHOOK_URL is unset; cannot throw back
+    // into the main pipeline.
+    try { require("../lib/smartAlertsEmitter").emit(saved); } catch {}
+
     res.status(201).json(saved);
   } catch (err) {
     console.error("[signals/submit]", err.message);

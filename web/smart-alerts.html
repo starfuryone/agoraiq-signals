@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Smart Alerts · AgoraIQ</title>
+<meta name="description" content="Create plain-English alert rules for AgoraIQ signals. Pro & Elite only." />
+<style>
+  :root {
+    --bg: #0b0d12;
+    --panel: #12151d;
+    --panel-2: #181c26;
+    --border: #232838;
+    --text: #e7eaf3;
+    --muted: #8a93a6;
+    --accent: #4f8cff;
+    --accent-2: #7cffb2;
+    --danger: #ff6b6b;
+    --warn: #ffb454;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.4;
+  }
+  header {
+    padding: 16px 24px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--panel);
+  }
+  header h1 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: .2px; }
+  header .plan { font-size: 12px; color: var(--muted); }
+  main { max-width: 960px; margin: 0 auto; padding: 24px; }
+  section { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+  h2 { margin: 0 0 12px; font-size: 15px; font-weight: 600; color: var(--text); }
+  label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  input, textarea, select {
+    width: 100%; padding: 10px 12px; background: var(--panel-2); color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-family: inherit;
+  }
+  textarea { min-height: 72px; resize: vertical; }
+  button {
+    background: var(--accent); color: white; border: 0; padding: 10px 16px; border-radius: 8px;
+    font-size: 14px; cursor: pointer; font-weight: 500;
+  }
+  button:hover { filter: brightness(1.08); }
+  button.ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  button.danger { background: var(--danger); }
+  .row { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
+  .col { flex: 1 1 200px; }
+  pre {
+    margin: 0; background: #0a0c12; border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px; overflow: auto; font-size: 12.5px; color: #c7cee0;
+  }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill,minmax(320px,1fr)); gap: 14px; }
+  .card { background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+  .card h3 { margin: 0 0 6px; font-size: 14px; font-weight: 600; }
+  .card .meta { font-size: 11.5px; color: var(--muted); margin-bottom: 10px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; margin-right: 6px; }
+  .b-active  { background: rgba(124,255,178,.12); color: var(--accent-2); }
+  .b-paused  { background: rgba(255,180,84,.12); color: var(--warn); }
+  .b-pro     { background: rgba(79,140,255,.12); color: var(--accent); }
+  .b-elite   { background: linear-gradient(90deg,rgba(124,255,178,.15),rgba(79,140,255,.15)); color: #fff; }
+  .stats { display: flex; gap: 24px; margin-top: 4px; font-size: 12px; color: var(--muted); }
+  .stat-val { color: var(--text); font-weight: 600; }
+  .actions { display: flex; gap: 6px; margin-top: 10px; }
+  .actions button { padding: 6px 10px; font-size: 12px; }
+  .error { color: var(--danger); font-size: 13px; margin-top: 6px; }
+  .muted { color: var(--muted); font-size: 12px; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <h1>AgoraIQ · Smart Alerts</h1>
+  <div class="plan" id="planLabel">—</div>
+</header>
+
+<main>
+  <section id="gate" class="hidden">
+    <h2>Paid plan required</h2>
+    <p class="muted">Smart Alerts is a Pro &amp; Elite feature. <a href="/pricing.html" style="color:var(--accent)">Upgrade here</a>.</p>
+  </section>
+
+  <section id="create">
+    <h2>Create an alert</h2>
+    <label for="prompt">Describe your filter in plain English</label>
+    <textarea id="prompt" placeholder="Example: long BTC on 4h with ai score above 80 and rr >= 2"></textarea>
+
+    <div class="row" style="margin-top:12px">
+      <div class="col">
+        <label for="name">Alert name (optional)</label>
+        <input id="name" placeholder="BTC momentum" />
+      </div>
+      <div class="col">
+        <label for="cooldown">Cooldown (seconds)</label>
+        <input id="cooldown" type="number" min="60" step="30" />
+      </div>
+      <div class="col">
+        <label for="target">Telegram chat ID</label>
+        <input id="target" placeholder="123456789" />
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:16px">
+      <button id="btnPreview" class="ghost">Preview rule</button>
+      <button id="btnCreate">Create alert</button>
+      <span class="error" id="createErr"></span>
+    </div>
+
+    <div id="previewWrap" class="hidden" style="margin-top:14px">
+      <label>Parsed rule</label>
+      <pre id="previewJson"></pre>
+      <div class="muted" id="previewMeta"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Your alerts <span class="muted" id="usage"></span></h2>
+    <div id="list" class="cards"></div>
+  </section>
+</main>
+
+<script>
+// ── Config ──────────────────────────────────────────────────────
+const API_BASE = "/api/smart-alerts";  // proxied by Caddy → 127.0.0.1:4310
+
+function getToken() {
+  return localStorage.getItem("token") || localStorage.getItem("jwt") || "";
+}
+
+async function api(path, opts = {}) {
+  const token = getToken();
+  if (!token) {
+    location.href = "/login.html?next=" + encodeURIComponent("/smart-alerts.html");
+    return;
+  }
+  const res = await fetch(API_BASE + path, {
+    ...opts,
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer " + token,
+      ...(opts.headers || {}),
+    },
+  });
+  let body = null;
+  try { body = await res.json(); } catch {}
+  if (!res.ok) {
+    const err = new Error(body?.error || ("HTTP " + res.status));
+    err.body = body; err.status = res.status;
+    throw err;
+  }
+  return body;
+}
+
+// ── State ──────────────────────────────────────────────────────
+const state = { alerts: [], plan: null, limits: null };
+
+// ── Helpers ────────────────────────────────────────────────────
+function badge(s) {
+  return `<span class="badge b-${s}">${s}</span>`;
+}
+function fmtDate(d) {
+  if (!d) return "—";
+  const t = new Date(d);
+  return t.toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+// ── Renderers ──────────────────────────────────────────────────
+function renderList() {
+  const el = document.getElementById("list");
+  if (!state.alerts.length) {
+    el.innerHTML = `<p class="muted">No alerts yet. Create one above.</p>`;
+    return;
+  }
+  el.innerHTML = state.alerts.map(a => `
+    <div class="card" data-id="${a.id}">
+      <h3>${escapeHtml(a.name)}</h3>
+      <div class="meta">${badge(a.status)} ${badge(a.plan_tier)} · created ${fmtDate(a.created_at)}</div>
+      <pre style="font-size:11.5px;max-height:140px">${escapeHtml(JSON.stringify(a.rule_json, null, 2))}</pre>
+      <div class="stats">
+        <div>Matches: <span class="stat-val">${a.match_count}</span></div>
+        <div>Cooldown: <span class="stat-val">${a.cooldown_seconds}s</span></div>
+        <div>Daily cap: <span class="stat-val">${a.daily_limit}</span></div>
+      </div>
+      <div class="actions">
+        ${a.status === "active"
+          ? `<button class="ghost" data-act="pause">Pause</button>`
+          : `<button class="ghost" data-act="resume">Resume</button>`}
+        <button class="danger" data-act="delete">Delete</button>
+      </div>
+    </div>
+  `).join("");
+  el.querySelectorAll(".card").forEach(card => {
+    card.addEventListener("click", onCardClick);
+  });
+}
+
+function renderUsage() {
+  const l = state.limits || {};
+  const used = state.alerts.filter(a => a.status !== "deleted").length;
+  document.getElementById("usage").textContent =
+    `· ${used}/${l.maxAlerts ?? "?"} used`;
+  document.getElementById("planLabel").innerHTML =
+    state.plan ? `plan: ${badge(state.plan)}` : "";
+  const cd = document.getElementById("cooldown");
+  if (!cd.value && l.minCooldownSeconds) cd.value = l.minCooldownSeconds;
+}
+
+// ── Actions ────────────────────────────────────────────────────
+async function load() {
+  try {
+    const r = await api("/api/v1/alerts");
+    state.alerts = r.alerts || [];
+    state.limits = r.limits || null;
+    state.plan = r.limits?.tier || null;
+    renderUsage();
+    renderList();
+  } catch (e) {
+    if (e.status === 403) {
+      document.getElementById("gate").classList.remove("hidden");
+      document.getElementById("create").classList.add("hidden");
+    } else {
+      alert("Load failed: " + e.message);
+    }
+  }
+}
+
+async function preview() {
+  const prompt = document.getElementById("prompt").value.trim();
+  if (!prompt) return;
+  try {
+    const r = await api("/api/v1/alerts/test", {
+      method: "POST",
+      body: JSON.stringify({ prompt }),
+    });
+    document.getElementById("previewWrap").classList.remove("hidden");
+    document.getElementById("previewJson").textContent = JSON.stringify(r.parsed.rule, null, 2);
+    document.getElementById("previewMeta").textContent =
+      `source: ${r.parsed.source} · confidence: ${r.parsed.confidence}`;
+  } catch (e) {
+    document.getElementById("createErr").textContent = e.message;
+  }
+}
+
+async function create() {
+  const prompt = document.getElementById("prompt").value.trim();
+  const name = document.getElementById("name").value.trim();
+  const cooldown = parseInt(document.getElementById("cooldown").value, 10);
+  const target = document.getElementById("target").value.trim();
+  const errEl = document.getElementById("createErr");
+  errEl.textContent = "";
+  if (!prompt) { errEl.textContent = "Prompt required."; return; }
+  try {
+    await api("/api/v1/alerts", {
+      method: "POST",
+      body: JSON.stringify({
+        prompt, name: name || undefined,
+        cooldown_seconds: Number.isFinite(cooldown) ? cooldown : undefined,
+        delivery_target: target || undefined,
+      }),
+    });
+    document.getElementById("prompt").value = "";
+    document.getElementById("name").value = "";
+    document.getElementById("previewWrap").classList.add("hidden");
+    await load();
+  } catch (e) {
+    errEl.textContent = e.body?.detail || e.message;
+  }
+}
+
+async function onCardClick(ev) {
+  const btn = ev.target.closest("button[data-act]");
+  if (!btn) return;
+  const card = ev.currentTarget;
+  const id = card.dataset.id;
+  const act = btn.dataset.act;
+  try {
+    if (act === "pause")  await api(`/api/v1/alerts/${id}/pause`,  { method: "POST" });
+    if (act === "resume") await api(`/api/v1/alerts/${id}/resume`, { method: "POST" });
+    if (act === "delete") {
+      if (!confirm("Delete this alert?")) return;
+      await api(`/api/v1/alerts/${id}`, { method: "DELETE" });
+    }
+    await load();
+  } catch (e) {
+    alert(e.message);
+  }
+}
+
+// ── Wire-up ────────────────────────────────────────────────────
+document.getElementById("btnPreview").addEventListener("click", preview);
+document.getElementById("btnCreate").addEventListener("click", create);
+document.getElementById("prompt").addEventListener("input", () => {
+  document.getElementById("createErr").textContent = "";
+});
+
+load();
+</script>
+</body>
+</html>
