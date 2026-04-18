@@ -129,14 +129,13 @@ tailwind.config = {
   }
   .brand-text{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;letter-spacing:-.5px;color:#fff;line-height:1;white-space:nowrap}
   .brand-iq{color:var(--green)}
-  .header-nav{display:flex;align-items:center;gap:6px}
+  .header-nav{display:flex;align-items:center;gap:20px}
   .header-nav a{
-    color:var(--text-dim);text-decoration:none;font-size:13px;font-weight:500;
-    letter-spacing:.02em;padding:7px 14px;border-radius:7px;
-    transition:all .15s;border:1px solid transparent;
+    color:var(--text-dim);text-decoration:none;font-size:13px;
+    font-family:var(--font-mono,'JetBrains Mono',monospace);
+    transition:color .2s;
   }
-  .header-nav a:hover{color:var(--text);background:var(--surface);border-color:var(--border)}
-  .header-nav a.active{color:var(--cyan);border-color:var(--border-hi)}
+  .header-nav a:hover,.header-nav a.active{color:var(--gold)}
   .btn-upgrade{
     display:inline-flex;align-items:center;gap:6px;
     padding:7px 18px;border-radius:7px;font-size:12px;font-weight:800;letter-spacing:.03em;
@@ -318,7 +317,12 @@ tailwind.config = {
     <a href="/" class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">Agora<span class="brand-iq">IQ</span></span></a>
     <nav class="header-nav">
       <a href="/signals.html">Signals</a>
+      <a href="/scanner.html">Scanner</a>
+      <a href="/track.html">Track</a>
       <a href="/chart.html" class="active">Charts</a>
+      <a href="/providers.html">Providers</a>
+      <a href="/watchlist.html">Watchlist</a>
+      <a href="/help.html">Help</a>
       <a href="/pricing.html" class="btn-upgrade">Upgrade</a>
     </nav>
   </div>
