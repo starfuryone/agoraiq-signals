@@ -1390,13 +1390,16 @@ button{cursor:pointer}
       <span class="brand-text">Agora<span class="brand-iq">IQ</span></span>
     </a>
     <div class="nav-links">
+      <a href="/dashboard.html">Dashboard</a>
       <a href="/signals.html">Signals</a>
       <a href="/scanner.html">Scanner</a>
       <a href="/track.html">Track</a>
       <a href="/chart.html">Charts</a>
       <a href="/providers.html">Providers</a>
       <a href="/watchlist.html">Watchlist</a>
+      <a href="/alerts.html">Alerts</a>
       <a href="/help.html">Help</a>
+      <a href="#" onclick="localStorage.removeItem('iq_token');location.href='/login.html'" style="color: var(--red,#ef4444); font-size: 13px; text-decoration: none; margin-left: 4px; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.7">Sign Out</a>
     </div>
   </div>
 </nav>
