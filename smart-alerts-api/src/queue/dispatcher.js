@@ -127,7 +127,7 @@ async function dispatch(rawSignal) {
         { deliveryId },
         {
           priority: rule.priority || 5,
-          jobId: `d:${deliveryId}`,
+          jobId: `d-${deliveryId}`,
         }
       );
       dispatched++;
