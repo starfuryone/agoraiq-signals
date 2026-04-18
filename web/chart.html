@@ -318,9 +318,7 @@ tailwind.config = {
     <a href="/" class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">Agora<span class="brand-iq">IQ</span></span></a>
     <nav class="header-nav">
       <a href="/signals.html">Signals</a>
-      <a href="/proof.html">Proof</a>
       <a href="/chart.html" class="active">Charts</a>
-      <a href="/pricing.html">Pricing</a>
       <a href="/pricing.html" class="btn-upgrade">Upgrade</a>
     </nav>
   </div>
@@ -562,9 +560,20 @@ tailwind.config = {
 </main>
 
 <footer class="relative z-10 border-t border-white/5 mt-8">
-  <div class="max-w-[1320px] mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-2">
-    <span class="text-[11px]" style="color:var(--text-muted)">&copy; 2025 ChatLogic Insights LTD &middot; AgoraIQ Signals</span>
-    <span class="text-[10px] font-mono" style="color:var(--text-muted)">Chart Intelligence &middot; Live market data + real-time signal overlays &middot; /signals (read-only)</span>
+  <div class="max-w-[1320px] mx-auto px-6 py-5 flex flex-col items-center gap-3">
+    <div class="flex flex-wrap justify-center gap-4 text-[12px]" style="color:var(--text-muted)">
+      <a href="/proof.html" style="color:inherit;text-decoration:none">Proof</a>
+      <a href="/pricing.html" style="color:inherit;text-decoration:none">Pricing</a>
+      <a href="/terms.html" style="color:inherit;text-decoration:none">Terms</a>
+      <a href="/privacy.html" style="color:inherit;text-decoration:none">Privacy</a>
+      <a href="/cookies.html" style="color:inherit;text-decoration:none">Cookies</a>
+      <a href="/disclaimer.html" style="color:inherit;text-decoration:none">Disclaimer</a>
+      <a href="/no-financial-advice.html" style="color:inherit;text-decoration:none">No Financial Advice</a>
+    </div>
+    <div class="flex flex-col sm:flex-row items-center justify-between w-full gap-2">
+      <span class="text-[11px]" style="color:var(--text-muted)">&copy; 2025 ChatLogic Insights LTD &middot; AgoraIQ Signals</span>
+      <span class="text-[10px] font-mono" style="color:var(--text-muted)">Chart Intelligence &middot; Live market data + real-time signal overlays &middot; /signals (read-only)</span>
+    </div>
   </div>
 </footer>
 
