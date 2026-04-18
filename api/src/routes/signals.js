@@ -42,6 +42,30 @@ const DEDUPE_WINDOW_SEC = 300;
 
 const PUBLIC_SOURCES = ['scanner', 'provider'];
 
+/**
+ * Authorize read access to a signal row.
+ *
+ * Rules (preserve existing behavior):
+ *   - Owned signal: only the owner may view.
+ *   - Ownerless signal: only rows whose source is in PUBLIC_SOURCES are
+ *     visible to anyone. All other ownerless rows are private.
+ *
+ * Returns null if allowed, or `{ status, error }` to respond with.
+ */
+function canViewSignal(row, userId) {
+  if (!row) return { status: 404, error: "Signal not found" };
+  const ownerId = row.bot_user_id;
+  if (ownerId) {
+    const isOwner = userId && ownerId === userId;
+    if (!isOwner) return { status: 403, error: "Not your signal" };
+    return null;
+  }
+  if (!PUBLIC_SOURCES.includes(row.source)) {
+    return { status: 403, error: "Signal not accessible" };
+  }
+  return null;
+}
+
 /** Strip event payload to safe public fields. */
 function toSafeEvent(e) {
   const data = e.data || e;
@@ -401,19 +425,11 @@ router.get("/:id", optionalAuth, attachPlan, async (req, res) => {
     }
 
     const row = result.rows[0];
+    const deny = canViewSignal(row, req.userId);
+    if (deny) return res.status(deny.status).json({ error: deny.error });
+
     const isOwner = req.userId && row.bot_user_id && row.bot_user_id === req.userId;
     const tier = req.planTier || "free";
-    const isPublicSource = PUBLIC_SOURCES.includes(row.source);
-
-    // Private signal: owner only
-    if (row.bot_user_id && !isOwner) {
-      return res.status(403).json({ error: "Not your signal" });
-    }
-
-    // Ownerless but non-public source: deny to non-owners
-    if (!row.bot_user_id && !isPublicSource) {
-      return res.status(403).json({ error: "Signal not accessible" });
-    }
 
     const signal = Signal.fromDbRow(row);
 
@@ -462,17 +478,10 @@ router.get("/:id/events", requireAuth, async (req, res) => {
     }
 
     const sig = sigResult.rows[0];
+    const deny = canViewSignal(sig, req.userId);
+    if (deny) return res.status(deny.status).json({ error: deny.error });
+
     const isOwner = sig.bot_user_id && sig.bot_user_id === req.userId;
-
-    // Private signals: owner only
-    if (sig.bot_user_id && !isOwner) {
-      return res.status(403).json({ error: "Not your signal" });
-    }
-
-    // Ownerless + non-public source: deny
-    if (!sig.bot_user_id && !PUBLIC_SOURCES.includes(sig.source)) {
-      return res.status(403).json({ error: "Signal not accessible" });
-    }
 
     const evts = await events.getEvents(id);
 

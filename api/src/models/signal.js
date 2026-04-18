@@ -85,6 +85,41 @@ function validate(signal) {
     errors.push(`source must be one of ${SOURCES.join(",")}, got: ${signal.source}`);
   }
 
+  // Bounds & directional consistency — reject nonsense prices early.
+  // Stop must be within 50% of entry; targets within 10x (prevents rogue
+  // auto-gen values or bad user input producing absurd positions).
+  const MAX_STOP_DEVIATION = 0.5;
+  const MAX_TARGET_MULTIPLE = 10;
+  if (typeof signal.entry === "number" && signal.entry > 0) {
+    const e = signal.entry;
+    if (typeof signal.stop === "number" && signal.stop > 0) {
+      const stopPct = Math.abs(signal.stop - e) / e;
+      if (stopPct > MAX_STOP_DEVIATION) {
+        errors.push(`stop ${signal.stop} is ${(stopPct * 100).toFixed(1)}% from entry (max ${MAX_STOP_DEVIATION * 100}%)`);
+      }
+      if (signal.direction === "LONG" && signal.stop >= e) {
+        errors.push("LONG stop must be below entry");
+      }
+      if (signal.direction === "SHORT" && signal.stop <= e) {
+        errors.push("SHORT stop must be above entry");
+      }
+    }
+    if (Array.isArray(signal.targets) && signal.targets.length) {
+      for (const t of signal.targets) {
+        if (typeof t !== "number" || t <= 0) continue;
+        if (t > e * MAX_TARGET_MULTIPLE || t < e / MAX_TARGET_MULTIPLE) {
+          errors.push(`target ${t} is out of reasonable range of entry ${e}`);
+        }
+        if (signal.direction === "LONG" && t <= e) {
+          errors.push("LONG targets must be above entry");
+        }
+        if (signal.direction === "SHORT" && t >= e) {
+          errors.push("SHORT targets must be below entry");
+        }
+      }
+    }
+  }
+
   return { valid: errors.length === 0, errors };
 }
 

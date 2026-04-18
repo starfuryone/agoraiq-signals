@@ -1,14 +1,32 @@
 require("dotenv").config({ override: true });
 
+require("./lib/config").validate();
+
 const express = require("express");
 const cors = require("cors");
 const db = require("./lib/db");
+const { rateLimit } = require("./middleware/rateLimit");
 
 const app = express();
 const PORT = parseInt(process.env.PORT) || 4300;
 
+// Trust the reverse proxy so req.ip / X-Forwarded-For work correctly
+app.set("trust proxy", 1);
+
 // ── middleware ─────────────────────────────────────────────────────
 app.use(cors());
+
+// Global rate limit: protect against runaway clients / basic DoS.
+// Skip /health so monitors don't count.
+const globalLimiter = rateLimit({ windowMs: 60_000, max: 300 });
+app.use((req, res, next) => (req.path === "/health" ? next() : globalLimiter(req, res, next)));
+
+// Stricter limit on auth endpoints (brute-force protection).
+const authLimiter = rateLimit({
+  windowMs: 60_000,
+  max: 10,
+  message: "Too many authentication attempts",
+});
 
 // Stripe webhook — raw body BEFORE json parser
 app.post(
@@ -31,7 +49,7 @@ app.use((req, res, next) => {
 });
 
 // ── routes ────────────────────────────────────────────────────────
-app.use("/api/v1/auth", require("./routes/auth"));
+app.use("/api/v1/auth", authLimiter, require("./routes/auth"));
 app.use("/api/v1/signals", require("./routes/signals"));
 app.use("/api/v1/signals", require("./routes/signals-ext"));
 app.use("/api/v1/providers", require("./routes/providers"));

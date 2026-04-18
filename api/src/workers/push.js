@@ -51,7 +51,8 @@ async function getLinkedUsers() {
       LEFT JOIN bot_subscriptions s ON s.bot_user_id = u.id
     `);
     return r.rows;
-  } catch {
+  } catch (err) {
+    console.error("[push] getLinkedUsers failed:", err.message, err.stack);
     return [];
   }
 }
@@ -71,7 +72,9 @@ async function logPush(signalId, userId, telegramId, eventType, tier, delivered,
        VALUES ($1,$2,$3,$4,$5,$6,$7)`,
       [signalId, userId, telegramId, eventType, tier, delivered, delayedUntil]
     );
-  } catch { /* non-fatal */ }
+  } catch (err) {
+    console.warn(`[push] logPush failed signal=${signalId} user=${userId}: ${err.message}`);
+  }
 }
 
 // ── Breakout handler ──────────────────────────────────────────────
@@ -192,7 +195,9 @@ async function handleUpdate(data) {
         const result = await telegram.send(r.rows[0].telegram_id, text);
         if (result.blocked) await removeBlockedUser(r.rows[0].telegram_id);
       }
-    } catch { /* non-fatal */ }
+    } catch (err) {
+      console.warn(`[push] notify owner failed signal=${signal.id}: ${err.message}`);
+    }
   }
 
   // Notify followers of the provider
@@ -210,7 +215,9 @@ async function handleUpdate(data) {
         if (result.blocked) await removeBlockedUser(row.telegram_id);
         await sleep(BATCH_DELAY);
       }
-    } catch { /* non-fatal */ }
+    } catch (err) {
+      console.warn(`[push] notify followers failed signal=${signal.id}: ${err.message}`);
+    }
   }
 
   return { sent: 1 };
