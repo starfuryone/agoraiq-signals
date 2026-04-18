@@ -13,20 +13,23 @@ function format(payload) {
   const a = payload.alert || {};
   const arrow = s.direction === "short" ? "🔻" : "🟢";
   const lines = [
-    `${arrow} *${escape(a.name || "Smart Alert")}*`,
-    `Signal ${escape(s.symbol || "?")} · ${escape((s.direction || "").toUpperCase())}`,
+    `${arrow} *${esc(a.name || "Smart Alert")}*`,
+    `Signal ${esc(s.symbol || "?")} · ${esc((s.direction || "").toUpperCase())}`,
   ];
-  if (s.ai_score != null)    lines.push(`AI Score: *${s.ai_score}*`);
-  if (s.confidence != null)  lines.push(`Confidence: *${s.confidence}*`);
-  if (s.risk_reward != null) lines.push(`R/R: *${s.risk_reward}*`);
-  if (s.timeframe)           lines.push(`TF: *${escape(s.timeframe)}*`);
-  if (s.provider)            lines.push(`Provider: ${escape(s.provider)}`);
-  if (s.signal_type)         lines.push(`Type: ${escape(s.signal_type)}`);
+  if (s.ai_score != null)    lines.push(`AI Score: *${esc(s.ai_score)}*`);
+  if (s.confidence != null)  lines.push(`Confidence: *${esc(s.confidence)}*`);
+  if (s.risk_reward != null) lines.push(`R/R: *${esc(s.risk_reward)}*`);
+  if (s.timeframe)           lines.push(`TF: *${esc(s.timeframe)}*`);
+  if (s.provider)            lines.push(`Provider: ${esc(s.provider)}`);
+  if (s.signal_type)         lines.push(`Type: ${esc(s.signal_type)}`);
   return lines.join("\n");
 }
 
-function escape(s) {
-  return String(s).replace(/([_*[\]()~`>#+=|{}.!-])/g, "\\$1");
+// Escape all MarkdownV2 reserved characters. Telegram rejects messages
+// with any unescaped instance of: _ * [ ] ( ) ~ ` > # + - = | { } . !
+function esc(v) {
+  if (v == null) return "";
+  return String(v).replace(/([_*\[\]()~`>#+\-=|{}.!])/g, "\\$1");
 }
 
 async function send(chatId, payload) {
