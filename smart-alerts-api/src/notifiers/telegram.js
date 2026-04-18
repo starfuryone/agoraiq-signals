@@ -3,7 +3,7 @@
 const fetch = require("node-fetch");
 const log = require("../lib/logger");
 
-const TOKEN = process.env.TELEGRAM_BOT_TOKEN || "";
+const TOKEN = process.env.BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN || "";
 const TIMEOUT = parseInt(process.env.TELEGRAM_SEND_TIMEOUT_MS || "5000", 10);
 
 function enabled() { return !!TOKEN; }
