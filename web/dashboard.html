@@ -212,6 +212,15 @@ h1 .accent { color: var(--gold); }
 .ac-btn.go:hover{box-shadow:0 6px 20px rgba(255,193,7,.3);transform:translateY(-1px)}
 .ac-btn.done{background:var(--green-dim);color:var(--green);border:1px solid rgba(34,197,94,.25);cursor:default}
 
+/* === Footer === */
+.legal-footer{background:var(--surface);border-top:1px solid var(--border);padding:32px 24px;margin-top:48px;text-align:center;font-size:12px;font-family:var(--sans);color:var(--text3)}
+.footer-inner{max-width:1100px;margin:0 auto}
+.footer-brand{font-family:var(--syne);font-weight:800;font-size:16px;color:var(--text);margin-bottom:10px}
+.footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-bottom:12px}
+.footer-links a{color:var(--text3);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--gold)}
+.footer-copy{color:var(--text3)}
+
 /* === Mobile === */
 @media (max-width:768px) {
   .topbar { flex-direction:column; gap:12px; padding:12px 16px; }
@@ -241,9 +250,7 @@ h1 .accent { color: var(--gold); }
     <a href="signals.html">Signals</a>
     <a href="scanner.html">Scanner</a>
     <a href="track.html">Track</a>
-    <a href="proof.html">Proof</a>
     <a href="providers.html">Providers</a>
-    <a href="pricing.html">Pricing</a>
     <a href="help.html">Help</a>
   </nav>
 </div>
@@ -354,6 +361,22 @@ h1 .accent { color: var(--gold); }
     <button class="m-close" id="mClose">Maybe later</button>
   </div>
 </div>
+
+<footer class="legal-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">Agora<span style="color:var(--gold)">IQ</span></div>
+    <div class="footer-links">
+      <a href="proof.html">Proof</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="terms.html">Terms</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="cookies.html">Cookies</a>
+      <a href="disclaimer.html">Disclaimer</a>
+      <a href="no-financial-advice.html">No Financial Advice</a>
+    </div>
+    <div class="footer-copy">&copy; 2026 ChatLogic Insights LTD. All rights reserved.</div>
+  </div>
+</footer>
 
 <script>
 const API = '/api/v1';
