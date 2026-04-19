@@ -42,6 +42,7 @@ app.use("/api/proof", require("./routes/proof"));
 app.use("/api/v1/billing", require("./routes/billing").router);
 app.use("/api/v1/telegram", require("./routes/telegram"));
 app.use("/api/v1/ai", require("./routes/ai"));
+app.use("/api/internal", require("./routes/internal"));
 
 app.get("/health", async (req, res) => {
   try {
