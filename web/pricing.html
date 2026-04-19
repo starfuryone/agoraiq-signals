@@ -400,7 +400,7 @@ body{min-height:100vh}
   }
 
   function loadPriceCatalog(){
-    fetch(API+"/prices").then(function(r){return r.ok?r.json():null}).then(function(cat){
+    fetch(API+"/billing/prices").then(function(r){return r.ok?r.json():null}).then(function(cat){
       if(!cat||!cat.plans){
         document.getElementById("proPrice").textContent="—";document.getElementById("elitePrice").textContent="—";
         toast("Live pricing is temporarily unavailable. Please try again.","error");
