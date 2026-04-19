@@ -58,6 +58,9 @@ h2{font-family:var(--sans);font-weight:700;font-size:22px;color:#fff;margin-bott
 .tg-block .tg-desc{font-size:12px;color:var(--text3);line-height:1.5;margin-bottom:10px}
 .tg-block .btn-tg{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;font-size:12px;font-weight:600;font-family:var(--sans);background:var(--cyan-dim);color:var(--cyan);border:1px solid rgba(0,212,255,.2);border-radius:6px;text-decoration:none;transition:all .2s}
 .tg-block .btn-tg:hover{background:rgba(0,212,255,.15);border-color:rgba(0,212,255,.35)}
+.or-divider{display:flex;align-items:center;gap:10px;margin:18px 0 14px;color:var(--text3);font-size:11.5px;text-transform:uppercase;letter-spacing:.08em}
+.or-divider::before,.or-divider::after{content:"";flex:1;height:1px;background:var(--border)}
+.tg-login{display:flex;justify-content:center;min-height:40px}
 .dest-note{font-size:11.5px;color:var(--text3);margin-top:12px;line-height:1.5}
 #successPanel{display:none}
 #successPanel h2{margin-bottom:12px}
@@ -105,9 +108,20 @@ h2{font-family:var(--sans);font-weight:700;font-size:22px;color:#fff;margin-bott
       </div>
       <button class="btn btn-primary" id="submitBtn">Sign In</button>
       <p class="dest-note" id="destNote">After sign-in, you'll be taken to your member dashboard.</p>
+
+      <div class="or-divider">or</div>
+      <div class="tg-login" id="tgLogin">
+        <script async src="https://telegram.org/js/telegram-widget.js?22"
+                data-telegram-login="sigpulsebot"
+                data-size="large"
+                data-radius="8"
+                data-onauth="onTelegramAuth(user)"
+                data-request-access="write"></script>
+      </div>
+
       <div class="tg-block">
-        <div class="tg-title">Using Telegram?</div>
-        <div class="tg-desc">Sign in here first, then link your Telegram account by running <strong>/connect</strong> in the bot.</div>
+        <div class="tg-title">Already have a Telegram link?</div>
+        <div class="tg-desc">If you've previously connected your account via <strong>/connect</strong>, just use the Telegram button above — we'll sign you straight in.</div>
         <a href="https://t.me/sigpulsebot" class="btn-tg" target="_blank" rel="noopener">Open Bot on Telegram →</a>
       </div>
       <div class="trust">
@@ -155,6 +169,40 @@ h2{font-family:var(--sans);font-weight:700;font-size:22px;color:#fff;margin-bott
   </div>
 </footer>
 
+<script>
+  // Exposed globally so the Telegram Login Widget (telegram-widget.js) can call it.
+  window.onTelegramAuth = function(user) {
+    var API = "/api/v1";
+    var MEMBER_HOME = "/dashboard.html";
+    var status = document.getElementById("formStatus");
+    if (status) { status.className = "status wait"; status.textContent = "Signing you in with Telegram\u2026"; }
+
+    fetch(API + "/auth/telegram-login", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(user),
+    }).then(function(res){
+      return res.json().then(function(data){ return { ok: res.ok, data: data }; });
+    }).then(function(r){
+      if (r.ok && r.data.token) {
+        localStorage.setItem("iq_token", r.data.token);
+        var form = document.getElementById("formPanel");
+        var ok = document.getElementById("successPanel");
+        var msg = document.getElementById("successMsg");
+        if (form) form.style.display = "none";
+        if (ok) ok.style.display = "block";
+        if (msg) msg.textContent = "Signed in via Telegram. Loading your workspace\u2026";
+        var dest = new URLSearchParams(window.location.search).get("next") || MEMBER_HOME;
+        setTimeout(function(){ window.location.href = dest; }, 1000);
+      } else if (status) {
+        status.className = "status err";
+        status.textContent = (r.data && r.data.error) || "Telegram sign-in failed. Please try again.";
+      }
+    }).catch(function(){
+      if (status) { status.className = "status err"; status.textContent = "Couldn\u2019t reach the server. Check your connection and try again."; }
+    });
+  };
+</script>
 <script>
 (function(){
   "use strict";

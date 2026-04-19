@@ -9,12 +9,41 @@
  */
 
 const { Router } = require("express");
+const crypto = require("crypto");
 const db = require("../lib/db");
 const pw = require("../lib/password");
 const { requireAuth, issueToken } = require("../middleware/auth");
 const { getUserTier } = require("../middleware/subscription");
 
 const router = Router();
+
+// Telegram Login Widget: https://core.telegram.org/widgets/login#checking-authorization
+// Treat any auth_date older than this as stale.
+const TG_LOGIN_MAX_AGE_SEC = 86400;
+
+function verifyTelegramLogin(payload, botToken) {
+  if (!payload || typeof payload !== "object") return false;
+  const { hash, ...rest } = payload;
+  if (!hash || typeof hash !== "string") return false;
+
+  const dataCheckString = Object.keys(rest)
+    .filter((k) => rest[k] !== undefined && rest[k] !== null && rest[k] !== "")
+    .sort()
+    .map((k) => `${k}=${rest[k]}`)
+    .join("\n");
+
+  const secretKey = crypto.createHash("sha256").update(botToken).digest();
+  const computed = crypto
+    .createHmac("sha256", secretKey)
+    .update(dataCheckString)
+    .digest("hex");
+
+  // Constant-time compare
+  const a = Buffer.from(computed, "hex");
+  const b = Buffer.from(hash, "hex");
+  if (a.length !== b.length) return false;
+  return crypto.timingSafeEqual(a, b);
+}
 
 // ─────────────────────────────────────────────────────────────────
 // POST /auth/register
@@ -332,6 +361,116 @@ router.post("/telegram-auth", async (req, res) => {
     });
   } catch (err) {
     console.error("[auth/telegram-auth]", err.message);
+    res.status(500).json({ error: "Internal error" });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────
+// POST /auth/telegram-login — public: Telegram Login Widget callback
+// Body: { id, first_name, last_name?, username?, photo_url?, auth_date, hash }
+// Verifies HMAC-SHA256 signature, then issues a JWT. If no bot_user is
+// linked to this telegram_id yet, creates one and grants a 1-day trial.
+// ─────────────────────────────────────────────────────────────────
+router.post("/telegram-login", async (req, res) => {
+  try {
+    const botToken = process.env.BOT_TOKEN;
+    if (!botToken) {
+      console.error("[auth/telegram-login] BOT_TOKEN not set");
+      return res.status(500).json({ error: "Telegram login not configured" });
+    }
+
+    const payload = req.body || {};
+    if (!payload.id || !payload.hash || !payload.auth_date) {
+      return res.status(400).json({ error: "Missing Telegram auth fields" });
+    }
+
+    if (!verifyTelegramLogin(payload, botToken)) {
+      return res.status(401).json({ error: "Invalid Telegram signature" });
+    }
+
+    const authDate = parseInt(payload.auth_date, 10);
+    const nowSec = Math.floor(Date.now() / 1000);
+    if (!authDate || nowSec - authDate > TG_LOGIN_MAX_AGE_SEC) {
+      return res.status(401).json({ error: "Telegram auth data is stale" });
+    }
+
+    const telegramId = parseInt(payload.id, 10);
+    const telegramUsername = payload.username || null;
+
+    // 1) Existing link?
+    const linked = await db.query(
+      `SELECT u.id, u.email, u.role
+       FROM bot_users u
+       JOIN bot_telegram_accounts t ON t.bot_user_id = u.id
+       WHERE t.telegram_id = $1 AND t.unlinked_at IS NULL`,
+      [telegramId]
+    );
+
+    let user;
+    if (linked.rows.length > 0) {
+      user = linked.rows[0];
+      if (telegramUsername) {
+        await db.query(
+          `UPDATE bot_telegram_accounts
+           SET telegram_username = $1
+           WHERE telegram_id = $2 AND unlinked_at IS NULL`,
+          [telegramUsername, telegramId]
+        );
+      }
+    } else {
+      // 2) No link → provision a new bot_user.
+      // Synthesize a placeholder email so the NOT NULL UNIQUE constraint holds.
+      // The user can set a real email later from their account page.
+      const placeholderEmail = `tg${telegramId}@telegram.agoraiq.net`;
+      const created = await db.query(
+        `INSERT INTO bot_users (email, auth_provider)
+         VALUES ($1, 'telegram')
+         ON CONFLICT (email) DO UPDATE SET updated_at = NOW()
+         RETURNING id, email, role`,
+        [placeholderEmail]
+      );
+      user = created.rows[0];
+
+      // Grant a 1-day trial, same as /register.
+      await db.query(
+        `INSERT INTO bot_subscriptions (bot_user_id, plan_tier, status, expires_at)
+         VALUES ($1, 'trial', 'active', NOW() + INTERVAL '1 day')
+         ON CONFLICT (bot_user_id) DO NOTHING`,
+        [user.id]
+      );
+
+      // Remove any stale unlinked records for this telegram_id, then link.
+      await db.query(
+        `DELETE FROM bot_telegram_accounts
+         WHERE telegram_id = $1 AND unlinked_at IS NOT NULL`,
+        [telegramId]
+      );
+      await db.query(
+        `INSERT INTO bot_telegram_accounts (bot_user_id, telegram_id, telegram_username, linked_at, unlinked_at)
+         VALUES ($1, $2, $3, NOW(), NULL)
+         ON CONFLICT (telegram_id) DO UPDATE SET
+           bot_user_id = EXCLUDED.bot_user_id,
+           telegram_username = EXCLUDED.telegram_username,
+           linked_at = NOW(),
+           unlinked_at = NULL`,
+        [user.id, telegramId, telegramUsername]
+      );
+    }
+
+    const tier = await getUserTier(user.id);
+    const token = issueToken(user.id, user.email);
+
+    res.json({
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        planTier: tier,
+      },
+    });
+  } catch (err) {
+    console.error("[auth/telegram-login]", err.message);
     res.status(500).json({ error: "Internal error" });
   }
 });
