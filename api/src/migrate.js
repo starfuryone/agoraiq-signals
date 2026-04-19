@@ -222,6 +222,26 @@ const MIGRATIONS = [
   `CREATE INDEX IF NOT EXISTS idx_pe_type ON payment_events(event_type)`,
   `CREATE INDEX IF NOT EXISTS idx_pe_created ON payment_events(created_at DESC)`,
 
+  // ── billing_refunds — 7-day money-back guarantee tracking ───────
+  `CREATE TABLE IF NOT EXISTS billing_refunds (
+    id                   SERIAL PRIMARY KEY,
+    bot_user_id          INTEGER REFERENCES bot_users(id) ON DELETE SET NULL,
+    stripe_sub_id        TEXT NOT NULL,
+    stripe_customer_id   TEXT,
+    stripe_charge_id     TEXT,
+    stripe_refund_id     TEXT UNIQUE,
+    amount_cents         INTEGER,
+    currency             TEXT,
+    reason               TEXT NOT NULL DEFAULT 'first_time_7day_guarantee',
+    trigger_source       TEXT,
+    status               TEXT NOT NULL DEFAULT 'pending',
+    error                TEXT,
+    created_at           TIMESTAMPTZ DEFAULT NOW()
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_brefunds_sub ON billing_refunds(stripe_sub_id)`,
+  `CREATE INDEX IF NOT EXISTS idx_brefunds_user ON billing_refunds(bot_user_id)`,
+  `CREATE INDEX IF NOT EXISTS idx_brefunds_status ON billing_refunds(status)`,
+
   // ── updated_at auto-trigger ─────────────────────────────────────
   `CREATE OR REPLACE FUNCTION update_updated_at()
    RETURNS TRIGGER AS $$

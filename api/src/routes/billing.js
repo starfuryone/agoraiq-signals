@@ -8,6 +8,7 @@ const db = require("../lib/db");
 const { requireAuth } = require("../middleware/auth");
 const txlog = require("../lib/transaction-log");
 const telegram = require("../lib/telegram");
+const refunds = require("../lib/refunds");
 
 // ── Confirmation helpers ────────────────────────────────────────
 function generateConfirmationId() {
@@ -512,6 +513,125 @@ router.post("/email-confirmation", requireAuth, async (req, res) => {
   }
 });
 
+// ── POST /billing/refund — 7-day money-back guarantee ───────────
+// Cancels the subscription immediately and refunds every paid charge
+// when the caller qualifies (first-time customer, first charge within 7 days).
+router.post("/refund", requireAuth, async (req, res) => {
+  try {
+    const r = await db.query(
+      `SELECT stripe_sub_id FROM bot_subscriptions
+       WHERE bot_user_id = $1
+         AND stripe_sub_id IS NOT NULL
+         AND status IN ('active', 'cancel_at_period_end', 'past_due')
+       ORDER BY started_at DESC LIMIT 1`,
+      [req.userId]
+    );
+    if (r.rows.length === 0) {
+      return res.status(404).json({ error: "No eligible subscription found" });
+    }
+    const stripeSubId = r.rows[0].stripe_sub_id;
+
+    const result = await refunds.processCancelRefund({
+      botUserId: req.userId,
+      stripeSubId,
+      triggerSource: "user_request",
+    });
+
+    if (result.refunded) {
+      invalidateCache(req.userId);
+      return res.json({
+        refunded: true,
+        amountCents: result.amountCents,
+        currency: result.currency,
+        refundIds: result.refundIds,
+        windowDays: refunds.REFUND_WINDOW_DAYS,
+      });
+    }
+
+    const userMessage = {
+      already_refunded: "This subscription has already been refunded.",
+      not_first_time_customer: "Automatic refunds are only available to first-time customers.",
+      outside_refund_window: `Refund window of ${refunds.REFUND_WINDOW_DAYS} days has passed.`,
+      no_paid_invoices: "No charges found to refund.",
+      no_charges_to_refund: "No charges found to refund.",
+      subscription_not_found: "Subscription could not be located in Stripe.",
+      missing_subscription: "Subscription could not be located.",
+      stripe_refund_error: "Refund could not be processed — please contact support.",
+    }[result.reason] || "Refund is not available for this subscription.";
+
+    return res.status(400).json({
+      refunded: false,
+      reason: result.reason,
+      message: userMessage,
+    });
+  } catch (err) {
+    console.error("[billing/refund]", err.message);
+    res.status(500).json({ error: "Refund request failed" });
+  }
+});
+
+// ── GET /billing/refund-eligibility — check without refunding ───
+router.get("/refund-eligibility", requireAuth, async (req, res) => {
+  try {
+    const r = await db.query(
+      `SELECT stripe_sub_id, started_at FROM bot_subscriptions
+       WHERE bot_user_id = $1
+         AND stripe_sub_id IS NOT NULL
+         AND status IN ('active', 'cancel_at_period_end', 'past_due')
+       ORDER BY started_at DESC LIMIT 1`,
+      [req.userId]
+    );
+    if (r.rows.length === 0) {
+      return res.json({ eligible: false, reason: "no_active_subscription" });
+    }
+    const stripeSubId = r.rows[0].stripe_sub_id;
+
+    const existing = await db.query(
+      `SELECT 1 FROM billing_refunds WHERE stripe_sub_id = $1 AND status = 'succeeded' LIMIT 1`,
+      [stripeSubId]
+    );
+    if (existing.rows.length > 0) {
+      return res.json({ eligible: false, reason: "already_refunded" });
+    }
+
+    const sub = await getStripe().subscriptions.retrieve(stripeSubId);
+    const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
+
+    const list = await getStripe().subscriptions.list({ customer: customerId, status: "all", limit: 20 });
+    const firstTime = list.data.filter((s) => s.id !== stripeSubId).length === 0;
+    if (!firstTime) {
+      return res.json({ eligible: false, reason: "not_first_time_customer" });
+    }
+
+    const invoices = await getStripe().invoices.list({ subscription: stripeSubId, status: "paid", limit: 100 });
+    if (invoices.data.length === 0) {
+      return res.json({ eligible: false, reason: "no_paid_invoices" });
+    }
+    const firstPaidAt = [...invoices.data].sort((a, b) => a.created - b.created)[0].status_transitions?.paid_at
+      || invoices.data[0].created;
+    const now = Math.floor(Date.now() / 1000);
+    const deadline = firstPaidAt + refunds.REFUND_WINDOW_DAYS * 86400;
+    if (now > deadline) {
+      return res.json({
+        eligible: false,
+        reason: "outside_refund_window",
+        firstPaidAt,
+        deadline,
+        windowDays: refunds.REFUND_WINDOW_DAYS,
+      });
+    }
+    return res.json({
+      eligible: true,
+      firstPaidAt,
+      deadline,
+      windowDays: refunds.REFUND_WINDOW_DAYS,
+    });
+  } catch (err) {
+    console.error("[billing/refund-eligibility]", err.message);
+    res.status(500).json({ error: "Eligibility check failed" });
+  }
+});
+
 // ── GET /billing/status ──────────────────────────────────────────
 router.get("/status", requireAuth, async (req, res) => {
   try {
@@ -643,6 +763,23 @@ async function webhookHandler(req, res) {
             expiresAt: new Date(sub.current_period_end * 1000).toISOString(),
             stripeEventId: event.id,
           });
+
+          // 7-day money-back guarantee for first-time customers.
+          try {
+            const result = await refunds.processCancelRefund({
+              botUserId: uid,
+              stripeSubId: sub.id,
+              triggerSource: "webhook_cancel_at_period_end",
+            });
+            if (result.refunded) {
+              console.log(`[stripe/webhook] auto-refund issued for bot_user ${uid} sub ${sub.id}: ${result.amountCents} ${result.currency}`);
+              invalidateCache(uid);
+            } else if (result.reason !== "already_refunded") {
+              console.log(`[stripe/webhook] auto-refund skipped for sub ${sub.id}: ${result.reason}`);
+            }
+          } catch (refundErr) {
+            console.error(`[stripe/webhook] auto-refund error for sub ${sub.id}:`, refundErr.message);
+          }
         } else if (sub.status === "active") {
           // Detect if a scheduled change has taken effect by comparing Stripe price to pending
           const currentPrice = sub.items.data[0]?.price?.id;
