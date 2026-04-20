@@ -79,8 +79,13 @@ def esc(text: str) -> str:
     return text
 
 
+def esc_code(text: str) -> str:
+    # Inside MarkdownV2 code entities, only '`' and '\' may/must be escaped.
+    return str(text).replace("\\", "\\\\").replace("`", "\\`")
+
+
 def mono(text: str) -> str:
-    return f"`{esc(str(text))}`"
+    return f"`{esc_code(text)}`"
 
 
 def bold(text: str) -> str:
