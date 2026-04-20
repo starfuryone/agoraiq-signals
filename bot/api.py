@@ -279,3 +279,30 @@ async def get_telegram_channel_info(bot, channel_username):
 async def signal_format(token: str, raw_text: str) -> Any:
     """POST /api/v1/signals/format — parse and structure a signal without tracking it."""
     return await _post(f"{API_BASE}/signals/format", {"text": raw_text}, token)
+
+
+# ═══════════════════════════════════════════════════════════════════
+#  ALERTS — per-user symbol rules
+# ═══════════════════════════════════════════════════════════════════
+
+async def alerts_list(token: str) -> Any:
+    return await _get(f"{API_BASE}/alerts", token)
+
+
+async def alert_create(token: str, symbol: str, name: Optional[str] = None) -> Any:
+    body: Dict[str, Any] = {"symbol": symbol}
+    if name:
+        body["name"] = name
+    return await _post(f"{API_BASE}/alerts", body, token)
+
+
+async def alert_delete(token: str, rule_id) -> Any:
+    return await _delete(f"{API_BASE}/alerts/{rule_id}", token)
+
+
+async def alerts_pause_all(token: str) -> Any:
+    return await _post(f"{API_BASE}/alerts/pause-all", {}, token)
+
+
+async def alerts_resume_all(token: str) -> Any:
+    return await _post(f"{API_BASE}/alerts/resume-all", {}, token)

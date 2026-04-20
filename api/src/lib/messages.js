@@ -183,8 +183,25 @@ function dailySummaryFree(stats) {
   );
 }
 
+// ═══════════════════════════════════════════════════════════════════
+//  ALERT TRIGGERED — user-configured symbol alert fired
+// ═══════════════════════════════════════════════════════════════════
+
+function alertTriggered(sig, ruleName) {
+  const arrow = sig.direction === "LONG" ? "🟢" : "🔴";
+  const label = ruleName || `${sig.symbol} breakout`;
+  return (
+    `🎯 <b>Alert: ${label}</b>\n\n` +
+    `${arrow} ${sig.symbol} <b>${sig.direction}</b> @ <code>${usd(sig.entry)}</code>\n` +
+    (sig.confidence != null ? `🧠 Confidence: <b>${sig.confidence}%</b>\n` : "") +
+    `\n` +
+    `Manage alerts: /alerts · /pausealerts`
+  );
+}
+
 module.exports = {
   breakoutAlert, lockedSignal, lockedButtons,
   signalOutcome, signalUpdate,
   dailySummary, dailySummaryFree,
+  alertTriggered,
 };
