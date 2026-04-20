@@ -43,7 +43,7 @@ def _pct(val) -> str:
         return "—"
     if isinstance(val, (int, float)):
         v = val * 100 if abs(val) <= 1.0 else val
-        sign = "\\+" if v > 0 else ""
+        sign = "+" if v > 0 else ""
         return f"{sign}{v:.1f}%"
     return str(val)
 
@@ -271,7 +271,7 @@ def breakout_list_full(items: List[Dict], title: str, emoji: str) -> str:
         dir_emoji = "🟢" if direction == "LONG" else "🔴"
 
         score_str = f" · Score: {_e(str(score))}" if score else ""
-        change_str = f" · {_pct(change)}" if change else ""
+        change_str = f" · {_e(_pct(change))}" if change else ""
 
         lines.append(f"{i}\\. {dir_emoji} {_b(_e(sym))}{change_str}{score_str}")
     return "\n".join(lines)
@@ -286,7 +286,7 @@ def breakout_list_locked(items: List[Dict], title: str, emoji: str) -> str:
         change = b.get("change", b.get("priceChangePercent", None))
         direction = b.get("direction", b.get("side", "—"))
         dir_emoji = "🟢" if direction == "LONG" else "🔴"
-        change_str = f" {_pct(change)}" if change else ""
+        change_str = f" {_e(_pct(change))}" if change else ""
         lines.append(f"{i}\\. {dir_emoji} {_b(_e(sym))}{change_str}")
 
     remaining = max(0, len(items) - 3)
@@ -322,7 +322,7 @@ def my_signals_list(signals: List[Dict]) -> str:
         sig_id = s.get("id", "")
 
         s_emoji = {"OPEN": "⏳", "TP1": "✅", "TP2": "✅", "TP3": "✅", "SL": "❌", "EXPIRED": "⌛"}.get(status, "⚪")
-        r_str = f" {_pct(result)}" if result is not None else ""
+        r_str = f" {_e(_pct(result))}" if result is not None else ""
 
         lines.append(
             f"{s_emoji} {_b(_e(sym))} {_e(direction)} → {_e(status)}{r_str}"
