@@ -28,8 +28,13 @@ def _b(text: str) -> str:
     return f"*{_e(str(text))}*"
 
 
+def _e_code(text: str) -> str:
+    # Inside MarkdownV2 code entities, only '`' and '\' may/must be escaped.
+    return str(text).replace("\\", "\\\\").replace("`", "\\`")
+
+
 def _m(text: str) -> str:
-    return f"`{_e(str(text))}`"
+    return f"`{_e_code(text)}`"
 
 
 def _usd(val) -> str:
@@ -228,7 +233,7 @@ def lifecycle_card(s: Dict[str, Any]) -> str:
     s_emoji = {"OPEN": "⏳", "TP1": "✅", "TP2": "✅", "TP3": "✅", "SL": "❌", "EXPIRED": "⌛"}.get(status, "⚪")
     d_emoji = "🟢" if direction in ("LONG", "BUY") else "🔴"
 
-    lines = [f"📋 {_b(f'Signal \\#{_e(str(sig_id))}')}"]
+    lines = [f"📋 {_b(f'Signal #{sig_id}')}"]
     lines.append("")
     lines.append(f"{d_emoji} {_b(_e(symbol))} {_e(str(direction))}")
     lines.append(f"{s_emoji} Status: {_b(_e(status))}")
@@ -292,7 +297,7 @@ def breakout_list_locked(items: List[Dict], title: str, emoji: str) -> str:
     remaining = max(0, len(items) - 3)
     if remaining > 0:
         lines.append("")
-        lines.append(f"🔒 {_b(f'\\+{remaining} more locked')}")
+        lines.append(f"🔒 {_b(f'+{remaining} more locked')}")
         lines.append("")
         lines.append(f"Upgrade to {_b('PRO')} for full rankings")
         lines.append("→ All breakout candidates")
