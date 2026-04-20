@@ -751,7 +751,11 @@ async function webhookHandler(req, res) {
         const sub = event.data.object;
         const uid = parseInt(sub.metadata?.bot_user_id);
         if (!uid) break;
-        if (sub.cancel_at_period_end) {
+        const prev = event.data.previous_attributes || {};
+        const transitionedToCancel =
+          sub.cancel_at_period_end === true &&
+          prev.cancel_at_period_end === false;
+        if (transitionedToCancel) {
           await db.query(
             `UPDATE bot_subscriptions SET status = 'cancel_at_period_end',
              expires_at = to_timestamp($1), updated_at = NOW()
