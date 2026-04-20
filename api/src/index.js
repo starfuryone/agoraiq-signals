@@ -42,6 +42,7 @@ app.use("/api/proof", require("./routes/proof"));
 app.use("/api/v1/billing", require("./routes/billing").router);
 app.use("/api/v1/telegram", require("./routes/telegram"));
 app.use("/api/v1/ai", require("./routes/ai"));
+app.use("/api/v1/alerts", require("./routes/alerts"));
 
 app.get("/health", async (req, res) => {
   try {
@@ -74,7 +75,7 @@ const watchlistRouter = require('./watchlist');
 app.use('/api/v1/watchlist', watchlistRouter);
   app.listen(PORT, "127.0.0.1", () => {
     console.log(`[api] agoraiq-signals-api v3.0.0 on 127.0.0.1:${PORT}`);
-    console.log("[api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai");
+    console.log("[api] routes: /auth, /signals, /providers, /scanner, /proof, /billing, /telegram, /ai, /alerts");
   });
 }
 

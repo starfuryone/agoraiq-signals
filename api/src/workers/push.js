@@ -130,7 +130,57 @@ async function handleBreakout(signal) {
   }
 
   console.log(`[push:breakout] ${signal.symbol} → sent=${sent} delayed=${delayed} blocked=${blocked}`);
+
+  await fanoutAlertRules(signal);
+
   return { sent, delayed, blocked };
+}
+
+// ── Alert-rule fanout: users who opted into a symbol ──────────────
+//
+// Alerts bypass the free-tier delay because the user explicitly asked
+// to be notified. The message is intentionally light (no full entry /
+// SL / TP ladder) so free users still have a reason to upgrade.
+async function fanoutAlertRules(signal) {
+  let rules;
+  try {
+    const r = await db.query(
+      `SELECT r.id, r.name, r.bot_user_id, t.telegram_id
+         FROM bot_alert_rules r
+         JOIN bot_telegram_accounts t
+           ON t.bot_user_id = r.bot_user_id AND t.unlinked_at IS NULL
+        WHERE r.symbol = $1 AND r.enabled = TRUE`,
+      [signal.symbol]
+    );
+    rules = r.rows;
+  } catch (err) {
+    console.error("[push:alert] lookup failed:", err.message);
+    return;
+  }
+
+  let fired = 0;
+  for (const rule of rules) {
+    const text = msg.alertTriggered(signal, rule.name);
+    const result = await telegram.send(rule.telegram_id, text);
+
+    if (result.blocked) {
+      await removeBlockedUser(rule.telegram_id);
+    } else if (result.ok) {
+      fired++;
+      try {
+        await db.query(
+          "UPDATE bot_alert_rules SET last_fired_at = NOW() WHERE id = $1",
+          [rule.id]
+        );
+      } catch { /* non-fatal */ }
+    }
+    await logPush(signal.id, rule.bot_user_id, rule.telegram_id, "alert_rule", null, result.ok, null);
+    await sleep(BATCH_DELAY);
+  }
+
+  if (rules.length > 0) {
+    console.log(`[push:alert] ${signal.symbol} → rules=${rules.length} fired=${fired}`);
+  }
 }
 
 // ── Delayed delivery (free users) ─────────────────────────────────

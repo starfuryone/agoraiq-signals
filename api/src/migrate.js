@@ -242,6 +242,22 @@ const MIGRATIONS = [
   `CREATE INDEX IF NOT EXISTS idx_brefunds_user ON billing_refunds(bot_user_id)`,
   `CREATE INDEX IF NOT EXISTS idx_brefunds_status ON billing_refunds(status)`,
 
+  // ── bot_alert_rules — per-user symbol alerts ────────────────────
+  `CREATE TABLE IF NOT EXISTS bot_alert_rules (
+    id              SERIAL PRIMARY KEY,
+    bot_user_id     INTEGER NOT NULL REFERENCES bot_users(id) ON DELETE CASCADE,
+    symbol          TEXT NOT NULL,
+    name            TEXT,
+    conditions      JSONB NOT NULL DEFAULT '{}'::jsonb,
+    enabled         BOOLEAN NOT NULL DEFAULT TRUE,
+    last_fired_at   TIMESTAMPTZ,
+    created_at      TIMESTAMPTZ DEFAULT NOW(),
+    updated_at      TIMESTAMPTZ DEFAULT NOW()
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_bar_user ON bot_alert_rules(bot_user_id)`,
+  `CREATE INDEX IF NOT EXISTS idx_bar_symbol_enabled ON bot_alert_rules(symbol) WHERE enabled = TRUE`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_bar_user_symbol ON bot_alert_rules(bot_user_id, symbol)`,
+
   // ── updated_at auto-trigger ─────────────────────────────────────
   `CREATE OR REPLACE FUNCTION update_updated_at()
    RETURNS TRIGGER AS $$
@@ -262,6 +278,12 @@ const MIGRATIONS = [
 
   `DO $$ BEGIN
      CREATE TRIGGER trg_bsub_updated BEFORE UPDATE ON bot_subscriptions
+       FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+   EXCEPTION WHEN duplicate_object THEN NULL;
+   END $$`,
+
+  `DO $$ BEGIN
+     CREATE TRIGGER trg_bar_updated BEFORE UPDATE ON bot_alert_rules
        FOR EACH ROW EXECUTE FUNCTION update_updated_at();
    EXCEPTION WHEN duplicate_object THEN NULL;
    END $$`,
