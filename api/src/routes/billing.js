@@ -774,6 +774,7 @@ async function webhookHandler(req, res) {
               botUserId: uid,
               stripeSubId: sub.id,
               triggerSource: "webhook_cancel_at_period_end",
+              triggerTimeSec: event.created,
             });
             if (result.refunded) {
               console.log(`[stripe/webhook] auto-refund issued for bot_user ${uid} sub ${sub.id}: ${result.amountCents} ${result.currency}`);

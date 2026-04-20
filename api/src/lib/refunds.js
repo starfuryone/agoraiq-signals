@@ -88,9 +88,10 @@ async function recordRefund(row) {
  * @param {number} [opts.botUserId]       — local user id (may be null for cold visitor edge cases)
  * @param {string} opts.stripeSubId       — Stripe subscription id
  * @param {string} [opts.triggerSource]   — "webhook" | "user_request" | "manual"
+ * @param {number} [opts.triggerTimeSec]  — unix seconds to evaluate the 7-day window against (defaults to now)
  * @returns {Promise<object>} result      — { refunded, reason?, amountCents?, refundIds? }
  */
-async function processCancelRefund({ botUserId, stripeSubId, triggerSource }) {
+async function processCancelRefund({ botUserId, stripeSubId, triggerSource, triggerTimeSec }) {
   if (!stripeSubId) return { refunded: false, reason: "missing_subscription" };
 
   if (await hasExistingSucceededRefund(stripeSubId)) {
@@ -115,7 +116,7 @@ async function processCancelRefund({ botUserId, stripeSubId, triggerSource }) {
   const firstPaidAt = await firstPaidInvoiceTimestamp(stripeSubId);
   if (!firstPaidAt) return { refunded: false, reason: "no_paid_invoices" };
 
-  const now = Math.floor(Date.now() / 1000);
+  const now = Number.isFinite(triggerTimeSec) ? triggerTimeSec : Math.floor(Date.now() / 1000);
   if (now - firstPaidAt > WINDOW_SECONDS) {
     return {
       refunded: false,
