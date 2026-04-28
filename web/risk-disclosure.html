@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+
+<title>Risk Disclosure &amp; Disclaimers — AgoraIQ</title>
+<meta name="description" content="Full risk disclosure for AgoraIQ. Crypto trading involves substantial risk. We score signals, not execute them. Past performance does not predict future results." />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://bot.agoraiq.net/risk-disclosure.html" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bot.agoraiq.net/risk-disclosure.html" />
+<meta property="og:title" content="Risk Disclosure — AgoraIQ" />
+<meta property="og:description" content="What can go wrong. Explicitly." />
+<meta property="og:image" content="https://bot.agoraiq.net/og-image.png" />
+
+<meta name="theme-color" content="#0a0b0d" />
+<meta name="color-scheme" content="dark" />
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="mask-icon" href="/favicon.svg" color="#00d084" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&display=block">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Albert+Sans:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0b0d; --bg-elev: #111318; --bg-elev-2: #181b22;
+  --border: #23272f; --border-soft: #1a1d23;
+  --text: #e7e9ee; --text-dim: #9098a4; --text-mute: #646a76;
+  --accent: #00d084; --accent-dim: #0a3d2a;
+  --loss: #ff5260; --loss-dim: #3a1519;
+  --warn: #f5a623; --warn-dim: #2e2a10;
+  --radius: 8px; --radius-sm: 4px;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  --sans: "Inter", -apple-system, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: var(--sans); font-size: 15px; line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+
+/* Nav */
+.nav { position: sticky; top: 0; z-index: 50;
+  background: rgba(10,11,13,0.92); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-soft); }
+.nav-inner { max-width: 1200px; margin: 0 auto; padding: 14px 24px;
+  display: flex; align-items: center; gap: 24px; }
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-mark { width: 24px; height: 24px; flex-shrink: 0;
+  background: linear-gradient(135deg, #00e892 0%, #00a66a 100%);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  box-shadow: 0 0 14px rgba(0,208,132,0.22); }
+.brand-text { font-family: "Syne", sans-serif;
+  font-weight: 800; font-size: 18px; line-height: 1;
+  letter-spacing: -0.02em; color: var(--text); }
+.brand-iq { color: var(--accent); }
+.nav-links { display: flex; gap: 22px; margin-left: auto;
+  font-size: 14px; color: var(--text-dim); }
+.nav-links a:hover { color: var(--text); }
+.nav-cta { display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px; font-size: 13px; font-weight: 600;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  color: var(--text); }
+.nav-cta:hover { background: var(--bg-elev); }
+@media (max-width: 720px) { .nav-links { display: none; } }
+
+/* Hero */
+.hero { max-width: 900px; margin: 0 auto;
+  padding: 64px 24px 36px; border-bottom: 1px solid var(--border-soft); }
+.hero-eyebrow { display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 11px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--warn); margin-bottom: 14px; }
+.hero-eyebrow::before { content: "⚠"; font-size: 14px; }
+.hero h1 { font-size: 40px; line-height: 1.1; letter-spacing: -0.025em;
+  font-weight: 700; margin: 0 0 16px; }
+.hero-sub { font-size: 17px; color: var(--text-dim); margin: 0; max-width: 720px; }
+.hero-meta { font-family: var(--mono); font-size: 12px; color: var(--text-mute);
+  display: flex; gap: 20px; flex-wrap: wrap;
+  padding-top: 18px; border-top: 1px solid var(--border-soft); margin-top: 24px; }
+.hero-meta strong { color: var(--text-dim); font-weight: 500; }
+@media (max-width: 720px) { .hero { padding: 48px 20px 28px; } .hero h1 { font-size: 30px; } }
+
+/* Layout with TOC sidebar */
+.doc { max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 240px 1fr;
+  gap: 48px; padding: 40px 24px 72px; }
+.toc { position: sticky; top: 80px; align-self: start; font-size: 13px; }
+.toc-label { font-family: var(--mono); font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-mute); margin-bottom: 14px; }
+.toc ul { list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 2px;
+  border-left: 1px solid var(--border-soft); }
+.toc li a { display: block; padding: 6px 14px;
+  color: var(--text-dim); border-left: 2px solid transparent;
+  margin-left: -1px; transition: all 0.15s; }
+.toc li a:hover { color: var(--text); border-left-color: var(--border); }
+.toc li a.active { color: var(--accent); border-left-color: var(--accent); }
+.content { max-width: 780px; min-width: 0; }
+@media (max-width: 900px) {
+  .doc { grid-template-columns: 1fr; padding: 28px 20px 64px; }
+  .toc { display: none; }
+}
+
+/* Top-level banner */
+.banner { background: linear-gradient(180deg, var(--loss-dim) 0%, transparent 100%);
+  border: 1px solid var(--loss); border-left-width: 3px;
+  border-radius: var(--radius); padding: 20px 22px; margin-bottom: 40px; }
+.banner-label { font-family: var(--mono); font-size: 11px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--loss); margin-bottom: 8px; font-weight: 600; }
+.banner h3 { font-size: 18px; margin: 0 0 8px; letter-spacing: -0.015em; }
+.banner p { font-size: 14px; color: var(--text-dim); margin: 0; line-height: 1.6; }
+.banner p + p { margin-top: 8px; }
+
+/* Section */
+.sec { margin-bottom: 48px; scroll-margin-top: 80px; }
+.sec-num { font-family: var(--mono); font-size: 12px;
+  color: var(--accent); letter-spacing: 0.1em; margin-bottom: 10px; }
+.sec h2 { font-size: 24px; line-height: 1.2;
+  letter-spacing: -0.015em; font-weight: 700; margin: 0 0 14px; }
+.sec h3 { font-size: 15px; font-weight: 600;
+  margin: 24px 0 8px; letter-spacing: -0.005em; color: var(--text); }
+.sec p { color: var(--text-dim); margin: 0 0 12px; line-height: 1.7; }
+.sec ul { color: var(--text-dim); padding-left: 22px;
+  margin: 0 0 14px; line-height: 1.7; }
+.sec li { margin-bottom: 5px; }
+.sec li::marker { color: var(--text-mute); }
+.sec strong { color: var(--text); font-weight: 600; }
+.sec a:not(.btn) { color: var(--accent); text-decoration: underline;
+  text-underline-offset: 2px; text-decoration-color: rgba(0,208,132,0.35); }
+.sec a:not(.btn):hover { text-decoration-color: var(--accent); }
+.sec code { font-family: var(--mono); font-size: 13px;
+  background: var(--bg-elev); border: 1px solid var(--border-soft);
+  padding: 1px 6px; border-radius: 3px; color: var(--accent); }
+
+/* Callouts */
+.callout { background: var(--bg-elev); border-left: 2px solid var(--warn);
+  padding: 16px 20px; margin: 14px 0 18px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0; font-size: 14px; }
+.callout.info { border-left-color: var(--accent); }
+.callout.loss { border-left-color: var(--loss); }
+.callout-label { font-family: var(--mono); font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin-bottom: 6px; color: var(--warn); font-weight: 600; }
+.callout.info .callout-label { color: var(--accent); }
+.callout.loss .callout-label { color: var(--loss); }
+.callout p { margin: 0; color: var(--text-dim); line-height: 1.6; }
+
+/* Footer */
+.footer { max-width: 1200px; margin: 48px auto 0;
+  padding: 40px 24px; border-top: 1px solid var(--border-soft);
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px;
+  font-size: 13px; color: var(--text-dim); }
+.footer-brand p { margin: 12px 0 0; max-width: 360px;
+  color: var(--text-mute); line-height: 1.55; }
+.footer h4 { font-size: 12px; font-family: var(--mono);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-mute); margin: 0 0 14px; font-weight: 600; }
+.footer ul { list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 8px; }
+.footer a:hover { color: var(--text); }
+.footer-bottom { max-width: 1200px; margin: 0 auto;
+  padding: 24px; border-top: 1px solid var(--border-soft);
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 12px; color: var(--text-mute); font-family: var(--mono);
+  flex-wrap: wrap; gap: 16px; }
+.footer-bottom .risk { max-width: 720px; line-height: 1.5; }
+@media (max-width: 720px) { .footer { grid-template-columns: 1fr 1fr; } }
+</style>
+<link rel="stylesheet" href="/assets/agoraiq-mobile.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+      <a href="signals.html">Signals</a>
+      <a href="signals-feed.html">Feed</a>
+      <a href="scanner.html">Scanner</a>
+      <a href="chart.html">Chart</a>
+      <a href="track.html">Track</a>
+      <a href="watchlist.html">Watchlist</a>
+      <a href="providers.html">Providers</a>
+      <a href="https://signals.agoraiq.net">Calls</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="help.html">Help</a>
+      <a href="#" onclick="localStorage.removeItem('iq_token');window.location.href='/login.html'" style="color:var(--red)">Sign Out</a>
+    </nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Risk Disclosure &amp; Disclaimers</div>
+  <h1>Read this before you act on anything you see on AgoraIQ.</h1>
+  <p class="hero-sub">
+    We've built AgoraIQ to make signal performance legible. That doesn't make trading cryptocurrency
+    safe. This page documents — plainly — what AgoraIQ is, what it isn't, and what can go wrong if you
+    act on data you find here.
+  </p>
+  <div class="hero-meta">
+    <span>Last revised <strong>April 19, 2026</strong></span>
+    <span>Version <strong>1.0</strong></span>
+    <span>Jurisdiction <strong>England &amp; Wales</strong></span>
+  </div>
+</section>
+
+<!-- DOC -->
+<div class="doc">
+
+  <!-- TOC -->
+  <aside class="toc">
+    <div class="toc-label">Contents</div>
+    <ul>
+      <li><a href="#summary" class="active">Summary</a></li>
+      <li><a href="#what-we-are">1 · What we are</a></li>
+      <li><a href="#not-advice">2 · Not financial advice</a></li>
+      <li><a href="#crypto-risk">3 · Crypto trading risk</a></li>
+      <li><a href="#past-performance">4 · Past performance</a></li>
+      <li><a href="#methodology-limits">5 · Methodology limits</a></li>
+      <li><a href="#provider-risk">6 · Provider risk</a></li>
+      <li><a href="#technical-risk">7 · Technical risk</a></li>
+      <li><a href="#regulatory">8 · Regulatory &amp; geographic</a></li>
+      <li><a href="#tax">9 · Tax responsibility</a></li>
+      <li><a href="#liability">10 · Limitation of liability</a></li>
+      <li><a href="#changes">Changes to this page</a></li>
+    </ul>
+  </aside>
+
+  <div class="content">
+
+    <!-- SUMMARY BANNER -->
+    <div class="banner" id="summary">
+      <div class="banner-label">In one paragraph</div>
+      <h3>Trading crypto can lose you all your money.</h3>
+      <p>
+        AgoraIQ is a data and analytics platform. We rank the performance of public cryptocurrency signal
+        providers. We do not provide financial advice, execute trades, recommend specific investments, or
+        guarantee any outcome. Cryptocurrency trading — especially on leverage — carries substantial and
+        potentially total risk of loss. The fact that a provider has a high IQ score on our leaderboard
+        does not mean their future signals will be profitable for you.
+      </p>
+      <p>
+        <strong>You alone are responsible for every decision you make with your capital.</strong>
+      </p>
+    </div>
+
+    <!-- 1 -->
+    <section class="sec" id="what-we-are">
+      <div class="sec-num">01 — What AgoraIQ is</div>
+      <h2>A data and analytics service.</h2>
+      <p>
+        AgoraIQ ("we", "the service", operated by <strong>ChatLogic Insights LTD</strong>, a company
+        registered in England &amp; Wales) is a crypto signal intelligence platform. We monitor public
+        channels of signal providers on Telegram, Discord, and X, capture the calls they publish,
+        cryptographically hash them, track them against live exchange market data, and compute
+        statistical performance scores.
+      </p>
+      <h3>What we do</h3>
+      <ul>
+        <li>Ingest and record signals posted publicly by third-party signal providers</li>
+        <li>Compute statistical metrics: win rate, average R-multiple, consistency</li>
+        <li>Publish a leaderboard ranking of provider performance</li>
+        <li>Provide access to this data via a web dashboard and Telegram bot</li>
+      </ul>
+      <h3>What we do not do</h3>
+      <ul>
+        <li>Execute trades on your behalf</li>
+        <li>Hold custody of your funds or access to your exchange accounts</li>
+        <li>Recommend specific trades, positions, leverage levels, or entry/exit timing</li>
+        <li>Guarantee the accuracy, completeness, or timeliness of any data shown</li>
+        <li>Act as a broker, exchange, investment adviser, fund manager, or custodian</li>
+      </ul>
+    </section>
+
+    <!-- 2 -->
+    <section class="sec" id="not-advice">
+      <div class="sec-num">02 — Nothing here is financial advice</div>
+      <h2>We are not your adviser.</h2>
+      <p>
+        Nothing published by AgoraIQ — on our website, in the Telegram bot, in any email, or in any
+        other communication — constitutes investment advice, financial advice, trading advice,
+        solicitation to buy or sell any financial instrument, or a recommendation of any kind.
+      </p>
+      <p>
+        Provider IQ scores are <strong>descriptive statistics of past public behavior</strong>, not
+        recommendations. A high score means a provider's past signals performed well under our scoring
+        methodology during the measured window. It does not mean we endorse the provider, that you
+        should subscribe to them, or that you should act on their future signals.
+      </p>
+      <div class="callout info">
+        <div class="callout-label">What you should do</div>
+        <p>Before acting on any cryptocurrency trade, consult with a licensed financial adviser in your jurisdiction who knows your personal circumstances, risk tolerance, and financial goals. AgoraIQ cannot and will not replace that conversation.</p>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section class="sec" id="crypto-risk">
+      <div class="sec-num">03 — Cryptocurrency trading risk</div>
+      <h2>You can lose 100% of your capital. Quickly.</h2>
+      <p>
+        Cryptocurrency markets are among the most volatile asset classes in existence. Acting on any
+        signal — regardless of the provider's IQ score or historical performance — exposes you to risks
+        including but not limited to:
+      </p>
+      <ul>
+        <li><strong>Total loss of capital.</strong> Spot positions can lose significant value in hours; leveraged positions can be liquidated in minutes.</li>
+        <li><strong>Volatility.</strong> Single-asset moves of 20–50% within a 24-hour window are common. Larger moves happen.</li>
+        <li><strong>Leverage multiplies losses.</strong> Many signal providers post calls with recommended leverage of 10×, 20×, or higher. At 20× leverage, a 5% adverse price move is a full liquidation.</li>
+        <li><strong>Liquidity risk.</strong> Smaller-cap tokens can have thin order books. Your SL may fill at a worse price than advertised (slippage), or not fill at all during extreme moves.</li>
+        <li><strong>Funding rate risk.</strong> Perpetual futures charge funding every 8 hours. Extended holds on heavily-long markets can bleed even winning positions.</li>
+        <li><strong>Gap risk.</strong> Flash crashes, exchange outages, and cross-exchange arbitrage can cause prices to skip past stop levels without triggering.</li>
+        <li><strong>Systemic risk.</strong> Exchange insolvency, stablecoin depegging, smart-contract exploits, network congestion, or regulatory action can wipe out positions regardless of signal quality.</li>
+      </ul>
+      <div class="callout loss">
+        <div class="callout-label">A hard truth</div>
+        <p>Most retail traders who use leverage lose money over time. Even a provider with a 60% win rate can leave a subscriber unprofitable after fees, slippage, funding, and behavioral error. Our IQ score measures the signal, not what happens when you trade it.</p>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section class="sec" id="past-performance">
+      <div class="sec-num">04 — Past performance</div>
+      <h2>Past performance does not predict future performance.</h2>
+      <p>
+        Every data point, score, ranking, chart, and sparkline on AgoraIQ reflects <strong>what
+        happened</strong> — not what will happen. A provider who ranked #1 last month may rank #30 next
+        month. A signal strategy that worked in a trending market may fail completely in chop.
+      </p>
+      <p>
+        Providers' relative rankings on our leaderboard change continuously. Our own published example
+        calculations show providers with both positive and negative average R-multiples. We show the
+        tail of underperforming providers as honestly as we show the top. This is intentional: we want
+        you to see that performance ranges widely and changes over time.
+      </p>
+      <p>
+        Our methodology (documented in full at <a href="/methodology.html">/methodology.html</a>) uses a
+        rolling 30-day window. If you subscribe to a provider based on a 30-day leaderboard snapshot,
+        nothing guarantees that the next 30 days of their signals will perform anywhere close to the
+        previous 30 days.
+      </p>
+    </section>
+
+    <!-- 5 -->
+    <section class="sec" id="methodology-limits">
+      <div class="sec-num">05 — Limits of our methodology</div>
+      <h2>Our own methodology has blind spots. We document them.</h2>
+      <p>
+        Our methodology page explicitly lists limitations of the scoring system. We won't repeat that
+        here — read <a href="/methodology.html#limits">/methodology.html#limits</a> — but in brief:
+      </p>
+      <ul>
+        <li>R-multiples are computed on mid-candle pricing, <strong>without adjusting for trading fees, funding rates, or execution slippage</strong>. Your realized return will be lower than our quoted R.</li>
+        <li>We do not adjust for market regime. Providers who mostly posted longs during an uptrend will score better than balanced providers.</li>
+        <li>We cannot observe private or paid-only signal groups. The leaderboard reflects public-call performance only.</li>
+        <li>Providers can potentially game consistency scores by only posting in favorable conditions. We partially penalize this with a sample-weight cap; it's not a complete fix.</li>
+        <li>Judgment calls in signal resolution (e.g., TP + SL in the same candle) are documented and conservative, but still subject to disagreement.</li>
+      </ul>
+    </section>
+
+    <!-- 6 -->
+    <section class="sec" id="provider-risk">
+      <div class="sec-num">06 — Risk from signal providers themselves</div>
+      <h2>We track providers. We don't endorse them.</h2>
+      <p>
+        Providers listed on AgoraIQ are independent third parties. We do not control, vet, employ,
+        partner with, or endorse them. Listing a provider on our leaderboard is not an approval of
+        their conduct, competence, integrity, or legality.
+      </p>
+      <p>Specifically, we cannot prevent or be held responsible for:</p>
+      <ul>
+        <li>Providers charging subscription fees you consider unfair</li>
+        <li>Providers engaging in pump-and-dump schemes or market manipulation</li>
+        <li>Providers offering "premium" or VIP tiers with different signals than their public calls</li>
+        <li>Providers promoting exchanges or other services via referral links</li>
+        <li>Providers operating without required licenses in your jurisdiction</li>
+        <li>Providers disappearing, changing ownership, or becoming unreachable</li>
+      </ul>
+      <p>
+        Subscribing to any signal provider is a transaction between you and that provider. AgoraIQ is
+        not party to it. We receive no portion of subscription fees paid to providers, and we do not
+        refund any fees paid to providers.
+      </p>
+    </section>
+
+    <!-- 7 -->
+    <section class="sec" id="technical-risk">
+      <div class="sec-num">07 — Technical and data risk</div>
+      <h2>Our service can fail. Data can be wrong.</h2>
+      <p>
+        Despite our best efforts, AgoraIQ — like all online services — is subject to technical failure.
+        We do not guarantee uptime, data accuracy, or timeliness.
+      </p>
+      <ul>
+        <li><strong>Our service may be unavailable.</strong> Maintenance, outages, attacks, and network issues happen. We target 99%+ uptime but do not guarantee it.</li>
+        <li><strong>Signal capture may miss events.</strong> Telegram rate-limiting, channel changes, deleted messages, or parser errors can cause signals to be missed or captured late.</li>
+        <li><strong>Resolution data may be delayed or incorrect.</strong> Exchange API issues can delay TP/SL detection. Candle data disputes happen.</li>
+        <li><strong>Scores can be wrong.</strong> Bugs in our code can produce incorrect scores. We publish the methodology so errors can be spotted and disputed at <a href="mailto:audit@agoraiq.net">audit@agoraiq.net</a>.</li>
+      </ul>
+      <p>
+        AgoraIQ services are provided <strong>"as is" and "as available"</strong>, with no warranties
+        of accuracy, completeness, merchantability, or fitness for a particular purpose.
+      </p>
+    </section>
+
+    <!-- 8 -->
+    <section class="sec" id="regulatory">
+      <div class="sec-num">08 — Regulatory and geographic restrictions</div>
+      <h2>AgoraIQ is not available in every jurisdiction.</h2>
+      <p>
+        Cryptocurrency services are regulated differently around the world. It is <strong>your
+        responsibility</strong> to determine whether using AgoraIQ, subscribing to signal providers, or
+        trading cryptocurrency is legal in your jurisdiction.
+      </p>
+      <div class="callout">
+        <div class="callout-label">UK residents — not available</div>
+        <p>The UK's Financial Conduct Authority (FCA) classifies signal services on crypto derivatives as a restricted activity. AgoraIQ does not currently hold the necessary permissions to serve UK persons and has not been approved as a financial promotion. UK residents should not subscribe. If you subscribed while resident in the UK, contact <a href="mailto:legal@agoraiq.net">legal@agoraiq.net</a> for a refund.</p>
+      </div>
+      <p>
+        We reserve the right to refuse or terminate service to any person or in any jurisdiction where
+        our service would violate local law.
+      </p>
+    </section>
+
+    <!-- 9 -->
+    <section class="sec" id="tax">
+      <div class="sec-num">09 — Tax is your responsibility</div>
+      <h2>We are not tax advisers.</h2>
+      <p>
+        Any gains, losses, or income you realize from cryptocurrency trading may be subject to taxes
+        in your jurisdiction. These obligations are entirely your own. AgoraIQ does not provide tax
+        advice, tax reporting, cost-basis calculations, or transaction history suitable for tax
+        filing.
+      </p>
+      <p>
+        Consult a qualified tax professional in your jurisdiction before filing returns based on crypto
+        trading activity.
+      </p>
+    </section>
+
+    <!-- 10 -->
+    <section class="sec" id="liability">
+      <div class="sec-num">10 — Limitation of liability</div>
+      <h2>To the maximum extent permitted by law.</h2>
+      <p>
+        To the fullest extent permitted by applicable law, ChatLogic Insights LTD (operator of
+        AgoraIQ), its directors, officers, employees, and affiliates shall not be liable for any
+        direct, indirect, incidental, special, consequential, exemplary, or punitive damages —
+        including without limitation loss of profits, trading losses, loss of data, goodwill, or
+        other intangible losses — arising out of or in connection with:
+      </p>
+      <ul>
+        <li>Your use of, or inability to use, AgoraIQ services</li>
+        <li>Any information, data, score, ranking, or content published on AgoraIQ</li>
+        <li>Any trade, investment, or financial decision made on the basis of AgoraIQ data</li>
+        <li>Any action, omission, failure, fraud, or misrepresentation by a third-party signal provider listed on AgoraIQ</li>
+        <li>Unauthorized access to or alteration of your account, subscriptions, or data</li>
+        <li>Service interruption, data loss, cyberattack, or technical failure</li>
+      </ul>
+      <p>
+        This limitation applies regardless of the legal theory — contract, tort, strict liability, or
+        otherwise — and even if we have been advised of the possibility of such damages. Your sole and
+        exclusive remedy for dissatisfaction with the service is to cancel your subscription and stop
+        using it.
+      </p>
+      <p>
+        Nothing in this disclosure limits or excludes liability that cannot lawfully be limited or
+        excluded under the laws of England and Wales — including, in particular, liability for death
+        or personal injury caused by negligence, or for fraud or fraudulent misrepresentation.
+      </p>
+    </section>
+
+    <!-- Changes -->
+    <section class="sec" id="changes">
+      <div class="sec-num">Changes to this page</div>
+      <h2>We may update this disclosure.</h2>
+      <p>
+        We may revise this risk disclosure from time to time as our product, operations, or applicable
+        law evolves. The version number and revision date at the top of this page reflect the current
+        version. Material changes will be announced via email to subscribers and noted on the
+        <a href="/changelog">changelog</a>.
+      </p>
+      <p>
+        Continued use of AgoraIQ after a revised version is published constitutes acceptance of the
+        revised disclosure. If you disagree with a revision, cancel your subscription before the
+        effective date listed in the announcement.
+      </p>
+    </section>
+
+    <!-- Contact -->
+    <section class="sec">
+      <div class="sec-num">Questions</div>
+      <h2>Ask before you act.</h2>
+      <p>
+        If anything on this page is unclear, email <a href="mailto:legal@agoraiq.net">legal@agoraiq.net</a>
+        before subscribing or acting on any data. We'd rather answer your question in advance than
+        receive it after the fact.
+      </p>
+    </section>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-brand">
+    <div class="logo">
+      <span class="logo-mark"></span>
+      <span class="brand-text">Agora<span class="brand-iq">IQ</span></span>
+    </div>
+    <p>The proof layer for crypto signals. Operated by ChatLogic Insights LTD, London. Not investment advice. Not available to UK persons.</p>
+  </div>
+  <div>
+    <h4>Product</h4>
+    <ul>
+      <li><a href="/proof.html">Live Proof</a></li>
+      <li><a href="/providers.html">Providers</a></li>
+      <li><a href="/scanner.html">Scanner</a></li>
+      <li><a href="/methodology.html">Methodology</a></li>
+      <li><a href="/pricing.html">Pricing</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Company</h4>
+    <ul>
+      <li><a href="/about.html">About</a></li>
+      <li><a href="/contact.html">Contact</a></li>
+      <li><a href="/faq.html">FAQ</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Legal</h4>
+    <ul>
+      <li><a href="/terms.html">Terms of Use</a></li>
+      <li><a href="/privacy.html">Privacy Policy</a></li>
+      <li><a href="/cookies.html">Cookie Policy</a></li>
+      <li><a href="/risk-disclosure.html">Risk Disclosure</a></li>
+      <li><a href="/disclaimer.html">Disclaimer</a></li>
+      <li><a href="/no-financial-advice.html">No Financial Advice</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span>© 2026 ChatLogic Insights LTD</span>
+  <span class="risk">Trading crypto derivatives involves substantial risk of loss. Past performance of any provider is not indicative of future results. AgoraIQ is not a regulated financial service and does not provide investment advice. See <a href="/risk-disclosure.html" style="color:var(--text-dim);text-decoration:underline">full risk disclosure</a>.</span>
+</div>
+
+<script>
+// TOC scrollspy
+const tocLinks = document.querySelectorAll('.toc a');
+const sections = Array.from(document.querySelectorAll('.sec[id], .banner[id]'));
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+sections.forEach(s => obs.observe(s));
+</script>
+
+<script src="/assets/agoraiq-mobile.js" defer></script>
+</body>
+</html>

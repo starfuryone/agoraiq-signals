@@ -1,7 +1,47 @@
-node_modules/
+# Secrets — never commit
 .env
+.env.*
+!.env.example
+*.pem
+*.key
+ecosystem.config.js
+ecosystem.config.js.*
+
+# Backup files (any flavor)
+*.bak
+*.bak.*
+*.bak-*
+*.bak[0-9]*
+*.finalbak
+*.fullbak
+*.h1bak
+*.font-bak
+*.lwbak
+*.nukebak
+*.save.[0-9]*
+.mobile-patch-backup-*
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+bot/.venv/
+
+# Logs
+logs/
 *.log
-dist/
-build/
+
+# OS
 .DS_Store
-api/ecosystem.config.js
+Thumbs.db
+
+# Local-only
+backups/
+bin/
+.env.preview

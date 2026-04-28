@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+
+<title>About — AgoraIQ | The Proof Layer for Crypto Signals</title>
+<meta name="description" content="AgoraIQ grades crypto signal providers by what actually happens. Operated by ChatLogic Insights LTD, London. Built to replace screenshots with math." />
+<meta name="keywords" content="about agoraiq, crypto signal intelligence company, ChatLogic Insights, signal verification platform, london crypto saas" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://bot.agoraiq.net/about.html" />
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://bot.agoraiq.net/about.html" />
+<meta property="og:title" content="About AgoraIQ" />
+<meta property="og:description" content="The proof layer for crypto signals. Built to replace screenshots with math." />
+<meta property="og:image" content="https://bot.agoraiq.net/og-image.png" />
+
+<meta name="theme-color" content="#0a0b0d" />
+<meta name="color-scheme" content="dark" />
+
+<!-- Favicons -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="mask-icon" href="/favicon.svg" color="#00d084" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&display=block">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Albert+Sans:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0b0d; --bg-elev: #111318; --bg-elev-2: #181b22;
+  --border: #23272f; --border-soft: #1a1d23;
+  --text: #e7e9ee; --text-dim: #9098a4; --text-mute: #646a76;
+  --accent: #00d084; --accent-dim: #0a3d2a;
+  --loss: #ff5260; --warn: #f5a623;
+  --radius: 8px; --radius-sm: 4px;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  --sans: "Inter", -apple-system, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: var(--sans); font-size: 15px; line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+
+/* Nav */
+.nav { position: sticky; top: 0; z-index: 50;
+  background: rgba(10,11,13,0.92); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-soft); }
+.nav-inner { max-width: 1200px; margin: 0 auto; padding: 14px 24px;
+  display: flex; align-items: center; gap: 24px; }
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-mark { width: 24px; height: 24px; flex-shrink: 0;
+  background: linear-gradient(135deg, #00e892 0%, #00a66a 100%);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  box-shadow: 0 0 14px rgba(0,208,132,0.22); }
+.brand-text { font-family: "Syne", sans-serif;
+  font-weight: 800; font-size: 18px; line-height: 1;
+  letter-spacing: -0.02em; color: var(--text); }
+.brand-iq { color: var(--accent); }
+.nav-links { display: flex; gap: 22px; margin-left: auto;
+  font-size: 14px; color: var(--text-dim); }
+.nav-links a:hover { color: var(--text); }
+.nav-cta { display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px; font-size: 13px; font-weight: 600;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  color: var(--text); }
+.nav-cta:hover { background: var(--bg-elev); }
+@media (max-width: 720px) { .nav-links { display: none; } }
+
+/* Hero */
+.hero { max-width: 900px; margin: 0 auto;
+  padding: 72px 24px 48px; border-bottom: 1px solid var(--border-soft); }
+.hero-eyebrow { display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 11px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 16px; }
+.hero-eyebrow::before { content: ""; width: 18px; height: 1px; background: var(--accent); }
+.hero h1 { font-size: 44px; line-height: 1.1; letter-spacing: -0.025em;
+  font-weight: 700; margin: 0 0 20px; }
+.hero h1 em { font-style: normal; color: var(--accent);
+  background: linear-gradient(180deg, transparent 60%, rgba(0,208,132,0.12) 60%);
+  padding: 0 2px; }
+.hero-sub { font-size: 18px; color: var(--text-dim); margin: 0; max-width: 720px; }
+@media (max-width: 720px) { .hero { padding: 48px 20px 32px; } .hero h1 { font-size: 32px; } }
+
+/* Content */
+.content { max-width: 780px; margin: 0 auto; padding: 48px 24px 72px; }
+.sec { margin-bottom: 56px; scroll-margin-top: 80px; }
+.sec:last-child { margin-bottom: 0; }
+.sec-num { font-family: var(--mono); font-size: 12px;
+  color: var(--accent); letter-spacing: 0.1em; margin-bottom: 10px; }
+.sec h2 { font-size: 26px; line-height: 1.2;
+  letter-spacing: -0.02em; font-weight: 700; margin: 0 0 16px; }
+.sec h3 { font-size: 16px; font-weight: 600; margin: 28px 0 8px; letter-spacing: -0.01em; }
+.sec p { color: var(--text-dim); margin: 0 0 14px; line-height: 1.7; }
+.sec ul { color: var(--text-dim); padding-left: 22px; margin: 0 0 14px; line-height: 1.7; }
+.sec li { margin-bottom: 6px; }
+.sec li::marker { color: var(--text-mute); }
+.sec strong { color: var(--text); font-weight: 600; }
+.sec a:not(.btn) { color: var(--accent); text-decoration: underline;
+  text-underline-offset: 2px; text-decoration-color: rgba(0,208,132,0.35); }
+.sec a:not(.btn):hover { text-decoration-color: var(--accent); }
+.sec code { font-family: var(--mono); font-size: 13px;
+  background: var(--bg-elev); border: 1px solid var(--border-soft);
+  padding: 1px 6px; border-radius: 3px; color: var(--accent); }
+
+/* Spec */
+.spec { background: var(--bg-elev); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden; margin: 16px 0 20px; }
+.spec-row { display: grid; grid-template-columns: 180px 1fr;
+  padding: 14px 18px; border-bottom: 1px solid var(--border-soft);
+  gap: 20px; font-size: 13px; }
+.spec-row:last-child { border-bottom: none; }
+.spec-k { font-family: var(--mono); color: var(--text-mute);
+  font-size: 12px; letter-spacing: 0.03em; }
+.spec-v { color: var(--text-dim); line-height: 1.55; }
+@media (max-width: 600px) { .spec-row { grid-template-columns: 1fr; gap: 4px; } }
+
+/* Principle grid */
+.principles { display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+  background: var(--border); border-radius: var(--radius); overflow: hidden; margin: 20px 0; }
+.principle { background: var(--bg-elev); padding: 22px 20px; }
+.principle-num { font-family: var(--mono); font-size: 11px;
+  color: var(--accent); letter-spacing: 0.1em; margin-bottom: 6px; }
+.principle h4 { font-size: 15px; font-weight: 600; margin: 0 0 6px; letter-spacing: -0.005em; }
+.principle p { font-size: 13px; color: var(--text-dim); margin: 0; line-height: 1.6; }
+@media (max-width: 600px) { .principles { grid-template-columns: 1fr; } }
+
+/* CTA band */
+.cta-band { background: linear-gradient(180deg, var(--bg-elev) 0%, var(--bg) 100%);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 36px 28px; text-align: center; margin: 56px auto 0; max-width: 820px; }
+.cta-band h3 { font-size: 22px; margin: 0 0 10px; letter-spacing: -0.015em; }
+.cta-band p { font-size: 14px; color: var(--text-dim); margin: 0 0 20px; }
+.cta-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 20px; font-size: 14px; font-weight: 600;
+  border-radius: var(--radius-sm); border: 1px solid transparent;
+  transition: all 0.15s; }
+.btn-primary { background: var(--accent); color: #02130b; border-color: var(--accent); }
+.btn-primary:hover { background: #00e892; transform: translateY(-1px); }
+.btn-secondary { background: transparent; color: var(--text); border-color: var(--border); }
+.btn-secondary:hover { background: var(--bg-elev); }
+
+/* Footer */
+.footer { max-width: 1200px; margin: 48px auto 0;
+  padding: 40px 24px; border-top: 1px solid var(--border-soft);
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px;
+  font-size: 13px; color: var(--text-dim); }
+.footer-brand p { margin: 12px 0 0; max-width: 360px;
+  color: var(--text-mute); line-height: 1.55; }
+.footer h4 { font-size: 12px; font-family: var(--mono);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-mute); margin: 0 0 14px; font-weight: 600; }
+.footer ul { list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 8px; }
+.footer a:hover { color: var(--text); }
+.footer-bottom { max-width: 1200px; margin: 0 auto;
+  padding: 24px; border-top: 1px solid var(--border-soft);
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 12px; color: var(--text-mute); font-family: var(--mono);
+  flex-wrap: wrap; gap: 16px; }
+.footer-bottom .risk { max-width: 720px; line-height: 1.5; }
+@media (max-width: 720px) { .footer { grid-template-columns: 1fr 1fr; } }
+</style>
+<link rel="stylesheet" href="/assets/agoraiq-mobile.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+      <a href="signals.html">Signals</a>
+      <a href="signals-feed.html">Feed</a>
+      <a href="scanner.html">Scanner</a>
+      <a href="chart.html">Chart</a>
+      <a href="track.html">Track</a>
+      <a href="watchlist.html">Watchlist</a>
+      <a href="providers.html">Providers</a>
+      <a href="https://signals.agoraiq.net">Calls</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="help.html">Help</a>
+      <a href="#" onclick="localStorage.removeItem('iq_token');window.location.href='/login.html'" style="color:var(--red)">Sign Out</a>
+    </nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">About AgoraIQ</div>
+  <h1>We grade signal providers by what actually happens. <em>Not by what they screenshot.</em></h1>
+  <p class="hero-sub">
+    Most crypto signal groups pick their wins for the group chat and quietly delete the losses. AgoraIQ is
+    the layer that captures every call, scores it against live market outcomes, and publishes the math. If
+    a provider has edge, our leaderboard will show it. If they don't, it'll show that too.
+  </p>
+</section>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <section class="sec">
+    <div class="sec-num">What AgoraIQ is</div>
+    <h2>A proof layer, not a signal group.</h2>
+    <p>
+      We don't generate signals. We grade the people who do. Every public crypto signal we can see — on
+      Telegram, Discord, and X — gets ingested the moment it's posted, hashed so it can't be silently
+      altered, tracked against live exchange prices until it resolves, and scored on a composite IQ that
+      blends win rate, risk-adjusted return, consistency, and sample size.
+    </p>
+    <p>
+      The result is a ranking of signal providers ordered by something that's usually invisible: what their
+      calls actually did. If you've ever subscribed to a Telegram signal group based on cherry-picked
+      screenshots and regretted it, this is the page you wish had existed first.
+    </p>
+    <p>
+      Full methodology is published at <a href="/methodology.html">/methodology.html</a>. No black boxes,
+      no proprietary magic — every formula, rejection rule, and judgment call is documented so you can
+      push back on anything that looks wrong.
+    </p>
+  </section>
+
+  <section class="sec">
+    <div class="sec-num">Why it exists</div>
+    <h2>The signal economy needs a receipts layer.</h2>
+    <p>
+      A typical Telegram signal group operates like this: post every call publicly, screenshot the
+      winners for the sales funnel, delete or quietly forget the losers, and charge subscribers based on
+      what looks like a 90% win rate. It works because there's no neutral record of what was actually
+      called. Each group is a self-contained propaganda channel.
+    </p>
+    <p>
+      AgoraIQ exists because signals are a <strong>data problem, not a trust problem</strong>. Once you
+      capture every call at source and hash it, the arguments about who performed stop being arguments.
+      Either the hash chain says the signal was called at 09:14 UTC at entry $67,240, or it doesn't.
+      Either the exchange candle hit TP1, or it didn't. The math either says +1.4R average, or it says
+      −0.3R.
+    </p>
+  </section>
+
+  <section class="sec">
+    <div class="sec-num">How we operate</div>
+    <h2>Four principles we won't bend.</h2>
+    <div class="principles">
+      <div class="principle">
+        <div class="principle-num">01</div>
+        <h4>Public methodology</h4>
+        <p>Every formula, weight, and edge-case judgment is documented on the methodology page. Versioned, dated, open to criticism.</p>
+      </div>
+      <div class="principle">
+        <div class="principle-num">02</div>
+        <h4>No editorial curation</h4>
+        <p>We don't hide losing signals, downrank providers we dislike, or upweight friends. If a signal was called publicly, it's on the chain.</p>
+      </div>
+      <div class="principle">
+        <div class="principle-num">03</div>
+        <h4>Tamper-evident chain</h4>
+        <p>Every signal is SHA-256 hashed with the previous record. Modifying a single historical record invalidates everything after it.</p>
+      </div>
+      <div class="principle">
+        <div class="principle-num">04</div>
+        <h4>No custody, no execution</h4>
+        <p>We never hold user funds, never execute trades, never ask for exchange API keys. AgoraIQ is pure intelligence.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-num">Who we are</div>
+    <h2>Built by a solo founder.</h2>
+    <p>
+      AgoraIQ is built and operated by one person. That's deliberate. The crypto signal space has more
+      than enough teams selling dreams — what it needs is someone willing to publish the math and let
+      the data argue for itself.
+    </p>
+    <p>
+      The platform is engineered, maintained, and supported end-to-end without a marketing department or
+      investor pressure. If you want to reach the person who writes the code, it's
+      <a href="/contact.html">/contact.html</a> — there's no middle layer.
+    </p>
+  </section>
+
+  <section class="sec">
+    <div class="sec-num">Company</div>
+    <h2>The legal entity.</h2>
+    <div class="spec">
+      <div class="spec-row">
+        <div class="spec-k">Operator</div>
+        <div class="spec-v">ChatLogic Insights LTD</div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-k">Registered</div>
+        <div class="spec-v">England &amp; Wales · London</div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-k">Product</div>
+        <div class="spec-v">AgoraIQ Signals — crypto signal intelligence platform</div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-k">Website</div>
+        <div class="spec-v"><a href="https://bot.agoraiq.net">bot.agoraiq.net</a></div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-k">Contact</div>
+        <div class="spec-v"><a href="/contact.html">contact page</a></div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-k">Not available to</div>
+        <div class="spec-v">UK persons (see <a href="/risk-disclosure.html">risk disclosure</a>)</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-num">What we will never do</div>
+    <h2>Five explicit commitments.</h2>
+    <ul>
+      <li><strong>We will never hold or manage user funds.</strong> AgoraIQ is not a custodian.</li>
+      <li><strong>We will never execute trades on your behalf.</strong> We don't want your API keys.</li>
+      <li><strong>We will never retroactively edit a signal record.</strong> The chain is append-only by design.</li>
+      <li><strong>We will never downrank a provider because of a payment dispute, complaint, or relationship issue.</strong> Rankings are strictly algorithmic.</li>
+      <li><strong>We will never sell or share your account email, subscription status, or payment details</strong> with third parties for marketing. Ever.</li>
+    </ul>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-band">
+    <h3>See the rankings for yourself.</h3>
+    <p>Yesterday's leaderboard is free. Today's is live for Pro subscribers.</p>
+    <div class="cta-row">
+      <a href="/methodology.html" class="btn btn-secondary">Read the methodology</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-brand">
+    <div class="logo">
+      <span class="logo-mark"></span>
+      <span class="brand-text">Agora<span class="brand-iq">IQ</span></span>
+    </div>
+    <p>The proof layer for crypto signals. Operated by ChatLogic Insights LTD, London. Not investment advice. Not available to UK persons.</p>
+  </div>
+  <div>
+    <h4>Product</h4>
+    <ul>
+      <li><a href="/proof.html">Live Proof</a></li>
+      <li><a href="/providers.html">Providers</a></li>
+      <li><a href="/scanner.html">Scanner</a></li>
+      <li><a href="/methodology.html">Methodology</a></li>
+      <li><a href="/pricing.html">Pricing</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Company</h4>
+    <ul>
+      <li><a href="/about.html">About</a></li>
+      <li><a href="/contact.html">Contact</a></li>
+      <li><a href="/faq.html">FAQ</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Legal</h4>
+    <ul>
+      <li><a href="/terms.html">Terms of Use</a></li>
+      <li><a href="/privacy.html">Privacy Policy</a></li>
+      <li><a href="/cookies.html">Cookie Policy</a></li>
+      <li><a href="/risk-disclosure.html">Risk Disclosure</a></li>
+      <li><a href="/disclaimer.html">Disclaimer</a></li>
+      <li><a href="/no-financial-advice.html">No Financial Advice</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span>© 2026 ChatLogic Insights LTD</span>
+  <span class="risk">Trading crypto derivatives involves substantial risk of loss. Past performance of any provider is not indicative of future results. AgoraIQ is not a regulated financial service and does not provide investment advice. See <a href="/risk-disclosure.html" style="color:var(--text-dim);text-decoration:underline">full risk disclosure</a>.</span>
+</div>
+
+<script src="/assets/agoraiq-mobile.js" defer></script>
+</body>
+</html>

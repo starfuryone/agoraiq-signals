@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+
+<title>Contact — AgoraIQ</title>
+<meta name="description" content="Contact AgoraIQ — email addresses for support, audit disputes, privacy requests, and press. Operated by ChatLogic Insights LTD, London." />
+<meta name="keywords" content="contact agoraiq, signal audit dispute, crypto signal support, ChatLogic contact" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://bot.agoraiq.net/contact.html" />
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://bot.agoraiq.net/contact.html" />
+<meta property="og:title" content="Contact AgoraIQ" />
+<meta property="og:description" content="Direct contact — no middle layer." />
+<meta property="og:image" content="https://bot.agoraiq.net/og-image.png" />
+
+<meta name="theme-color" content="#0a0b0d" />
+<meta name="color-scheme" content="dark" />
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="mask-icon" href="/favicon.svg" color="#00d084" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&display=block">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Albert+Sans:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0b0d; --bg-elev: #111318; --bg-elev-2: #181b22;
+  --border: #23272f; --border-soft: #1a1d23;
+  --text: #e7e9ee; --text-dim: #9098a4; --text-mute: #646a76;
+  --accent: #00d084; --accent-dim: #0a3d2a;
+  --loss: #ff5260; --warn: #f5a623;
+  --radius: 8px; --radius-sm: 4px;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  --sans: "Inter", -apple-system, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: var(--sans); font-size: 15px; line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+
+/* Nav — same as other pages */
+.nav { position: sticky; top: 0; z-index: 50;
+  background: rgba(10,11,13,0.92); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-soft); }
+.nav-inner { max-width: 1200px; margin: 0 auto; padding: 14px 24px;
+  display: flex; align-items: center; gap: 24px; }
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-mark { width: 24px; height: 24px; flex-shrink: 0;
+  background: linear-gradient(135deg, #00e892 0%, #00a66a 100%);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  box-shadow: 0 0 14px rgba(0,208,132,0.22); }
+.brand-text { font-family: "Syne", sans-serif;
+  font-weight: 800; font-size: 18px; line-height: 1;
+  letter-spacing: -0.02em; color: var(--text); }
+.brand-iq { color: var(--accent); }
+.nav-links { display: flex; gap: 22px; margin-left: auto;
+  font-size: 14px; color: var(--text-dim); }
+.nav-links a:hover { color: var(--text); }
+.nav-cta { display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px; font-size: 13px; font-weight: 600;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  color: var(--text); }
+.nav-cta:hover { background: var(--bg-elev); }
+@media (max-width: 720px) { .nav-links { display: none; } }
+
+/* Hero */
+.hero { max-width: 900px; margin: 0 auto;
+  padding: 72px 24px 40px; border-bottom: 1px solid var(--border-soft); }
+.hero-eyebrow { display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 11px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 14px; }
+.hero-eyebrow::before { content: ""; width: 18px; height: 1px; background: var(--accent); }
+.hero h1 { font-size: 42px; line-height: 1.1; letter-spacing: -0.025em;
+  font-weight: 700; margin: 0 0 18px; }
+.hero-sub { font-size: 17px; color: var(--text-dim); margin: 0; max-width: 680px; }
+@media (max-width: 720px) { .hero { padding: 48px 20px 28px; } .hero h1 { font-size: 30px; } }
+
+/* Content */
+.content { max-width: 900px; margin: 0 auto; padding: 48px 24px 48px; }
+
+/* Contact card grid */
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 48px; }
+.contact-card { background: var(--bg-elev); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 22px 22px 20px;
+  display: flex; flex-direction: column; gap: 8px; transition: border-color 0.15s; }
+.contact-card:hover { border-color: #2c3038; }
+.contact-kind { font-family: var(--mono); font-size: 11px;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--accent); }
+.contact-card h3 { font-size: 16px; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+.contact-card p { font-size: 13px; color: var(--text-dim); margin: 0 0 6px; line-height: 1.55; }
+.contact-email { font-family: var(--mono); font-size: 14px;
+  color: var(--text); display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; }
+.contact-email:hover { color: var(--accent); }
+.contact-email::before { content: "→"; color: var(--accent); }
+.contact-sla { margin-top: auto; padding-top: 10px;
+  border-top: 1px solid var(--border-soft);
+  font-family: var(--mono); font-size: 11px; color: var(--text-mute); }
+@media (max-width: 680px) { .contact-grid { grid-template-columns: 1fr; } }
+
+/* Section */
+.sec { margin-bottom: 48px; scroll-margin-top: 80px; }
+.sec-num { font-family: var(--mono); font-size: 12px;
+  color: var(--accent); letter-spacing: 0.1em; margin-bottom: 10px; }
+.sec h2 { font-size: 24px; line-height: 1.2;
+  letter-spacing: -0.015em; font-weight: 700; margin: 0 0 14px; }
+.sec p { color: var(--text-dim); margin: 0 0 14px; line-height: 1.7; }
+.sec a:not(.btn) { color: var(--accent); text-decoration: underline;
+  text-underline-offset: 2px; text-decoration-color: rgba(0,208,132,0.35); }
+.sec a:not(.btn):hover { text-decoration-color: var(--accent); }
+.sec strong { color: var(--text); font-weight: 600; }
+.sec code { font-family: var(--mono); font-size: 13px;
+  background: var(--bg-elev); border: 1px solid var(--border-soft);
+  padding: 1px 6px; border-radius: 3px; color: var(--accent); }
+
+/* Spec */
+.spec { background: var(--bg-elev); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden; margin: 16px 0 20px; }
+.spec-row { display: grid; grid-template-columns: 180px 1fr;
+  padding: 14px 18px; border-bottom: 1px solid var(--border-soft);
+  gap: 20px; font-size: 13px; }
+.spec-row:last-child { border-bottom: none; }
+.spec-k { font-family: var(--mono); color: var(--text-mute);
+  font-size: 12px; letter-spacing: 0.03em; }
+.spec-v { color: var(--text-dim); line-height: 1.55; }
+@media (max-width: 600px) { .spec-row { grid-template-columns: 1fr; gap: 4px; } }
+
+/* Callout */
+.callout { background: var(--bg-elev); border-left: 2px solid var(--warn);
+  padding: 16px 20px; margin: 16px 0; border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 14px; }
+.callout-label { font-family: var(--mono); font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--warn); margin-bottom: 6px; }
+.callout p { margin: 0; color: var(--text-dim); line-height: 1.6; }
+.callout.info { border-left-color: var(--accent); }
+.callout.info .callout-label { color: var(--accent); }
+
+/* Footer — same as other pages */
+.footer { max-width: 1200px; margin: 48px auto 0;
+  padding: 40px 24px; border-top: 1px solid var(--border-soft);
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px;
+  font-size: 13px; color: var(--text-dim); }
+.footer-brand p { margin: 12px 0 0; max-width: 360px;
+  color: var(--text-mute); line-height: 1.55; }
+.footer h4 { font-size: 12px; font-family: var(--mono);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-mute); margin: 0 0 14px; font-weight: 600; }
+.footer ul { list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 8px; }
+.footer a:hover { color: var(--text); }
+.footer-bottom { max-width: 1200px; margin: 0 auto;
+  padding: 24px; border-top: 1px solid var(--border-soft);
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 12px; color: var(--text-mute); font-family: var(--mono);
+  flex-wrap: wrap; gap: 16px; }
+.footer-bottom .risk { max-width: 720px; line-height: 1.5; }
+@media (max-width: 720px) { .footer { grid-template-columns: 1fr 1fr; } }
+</style>
+<link rel="stylesheet" href="/assets/agoraiq-mobile.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+      <a href="signals.html">Signals</a>
+      <a href="signals-feed.html">Feed</a>
+      <a href="scanner.html">Scanner</a>
+      <a href="chart.html">Chart</a>
+      <a href="track.html">Track</a>
+      <a href="watchlist.html">Watchlist</a>
+      <a href="providers.html">Providers</a>
+      <a href="https://signals.agoraiq.net">Calls</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="help.html">Help</a>
+      <a href="#" onclick="localStorage.removeItem('iq_token');window.location.href='/login.html'" style="color:var(--red)">Sign Out</a>
+    </nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Contact</div>
+  <h1>Direct email. No tickets. No middle layer.</h1>
+  <p class="hero-sub">
+    Five inboxes, four of them routed to a real human within one business day. Pick the one that matches
+    what you need — it speeds up the response.
+  </p>
+</section>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- CONTACT CARDS -->
+  <div class="contact-grid">
+
+    <div class="contact-card">
+      <span class="contact-kind">General · Support</span>
+      <h3>Product questions &amp; support</h3>
+      <p>Subscription issues, Telegram bot access, anything you'd normally call "support." Include your account email so we can find you quickly.</p>
+      <a href="mailto:support@agoraiq.net" class="contact-email">support@agoraiq.net</a>
+      <div class="contact-sla">Response: within 24 hours · Mon–Fri</div>
+    </div>
+
+    <div class="contact-card">
+      <span class="contact-kind">Audit · Disputes</span>
+      <h3>Dispute a signal or score</h3>
+      <p>Believe we mis-resolved a signal? Include the SHA-256 hash and the exchange trade ticks you believe support the correction.</p>
+      <a href="mailto:audit@agoraiq.net" class="contact-email">audit@agoraiq.net</a>
+      <div class="contact-sla">Response: within 48 hours · Public resolution</div>
+    </div>
+
+    <div class="contact-card">
+      <span class="contact-kind">Privacy · Data</span>
+      <h3>Data deletion &amp; privacy requests</h3>
+      <p>GDPR, CCPA, or any other data-subject request. Export, correction, or deletion of your account data within 30 days of a verified request.</p>
+      <a href="mailto:privacy@agoraiq.net" class="contact-email">privacy@agoraiq.net</a>
+      <div class="contact-sla">Response: within 7 days · Action: ≤30 days</div>
+    </div>
+
+    <div class="contact-card">
+      <span class="contact-kind">Press · Partnerships</span>
+      <h3>Press, research, partnerships</h3>
+      <p>Journalists, researchers, and integration partners. Data access for academic use is free — just ask.</p>
+      <a href="mailto:press@agoraiq.net" class="contact-email">press@agoraiq.net</a>
+      <div class="contact-sla">Response: within 3 business days</div>
+    </div>
+
+    <div class="contact-card">
+      <span class="contact-kind">Legal · Abuse</span>
+      <h3>Legal, abuse, or security</h3>
+      <p>DMCA, court orders, responsible vulnerability disclosure, abuse reports. PGP on request.</p>
+      <a href="mailto:legal@agoraiq.net" class="contact-email">legal@agoraiq.net</a>
+      <div class="contact-sla">Response: within 5 business days · Security: 24h</div>
+    </div>
+
+    <div class="contact-card">
+      <span class="contact-kind">Providers · Listing</span>
+      <h3>Are you a signal provider?</h3>
+      <p>If you run a public Telegram, Discord, or X signal channel and want to be tracked on the leaderboard, we'll add you — free. Public calls only.</p>
+      <a href="mailto:providers@agoraiq.net" class="contact-email">providers@agoraiq.net</a>
+      <div class="contact-sla">Listing decision: within 7 days</div>
+    </div>
+
+  </div>
+
+  <!-- COMPANY DETAILS -->
+  <section class="sec">
+    <div class="sec-num">Company</div>
+    <h2>ChatLogic Insights LTD.</h2>
+    <div class="spec">
+      <div class="spec-row">
+        <div class="spec-k">Registered name</div>
+        <div class="spec-v">ChatLogic Insights LTD</div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-k">Jurisdiction</div>
+        <div class="spec-v">England &amp; Wales</div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-k">Registered office</div>
+        <div class="spec-v">London, United Kingdom</div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-k">Product</div>
+        <div class="spec-v">AgoraIQ Signals — <a href="https://bot.agoraiq.net">bot.agoraiq.net</a></div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-k">General inbox</div>
+        <div class="spec-v"><a href="mailto:hello@agoraiq.net">hello@agoraiq.net</a></div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-k">Office hours</div>
+        <div class="spec-v">Monday–Friday · We triage daily</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT NOT TO EMAIL ABOUT -->
+  <section class="sec">
+    <div class="sec-num">What we won't help with</div>
+    <h2>Two things to expect a short reply to.</h2>
+    <div class="callout">
+      <div class="callout-label">We don't give trade advice</div>
+      <p>Please don't email asking whether to act on a specific signal, what leverage to use, or when to exit a position. We don't give trading advice under any circumstances, and we'll decline politely. See the <a href="/risk-disclosure.html">risk disclosure</a> for why.</p>
+    </div>
+    <div class="callout">
+      <div class="callout-label">We can't recover deleted signals from your own provider's channel</div>
+      <p>If a signal provider deleted a call we never saw (e.g. posted in a private channel or removed before our capture window), we have no record of it either. We can only speak to what we ingested.</p>
+    </div>
+  </section>
+
+  <!-- RESPONSE TIME INFO -->
+  <section class="sec">
+    <div class="sec-num">Response expectations</div>
+    <h2>How we prioritize.</h2>
+    <p>
+      One person reads these inboxes. That's a feature, not a bug — you get a technical response from
+      someone who can actually look at the code and the data, not a scripted reply.
+    </p>
+    <p>
+      Priority order when the queue is deep: (1) security vulnerabilities, (2) audit disputes with a hash
+      provided, (3) subscription/billing issues blocking access, (4) everything else. If you haven't heard
+      back within the SLA, forward your original email with <strong>"BUMP"</strong> in the subject —
+      it resurfaces the thread.
+    </p>
+  </section>
+
+  <!-- UK NOTICE -->
+  <section class="sec">
+    <div class="sec-num">Important notice for UK residents</div>
+    <h2>AgoraIQ is not available to UK persons.</h2>
+    <div class="callout info">
+      <div class="callout-label">FCA restriction</div>
+      <p>The UK's Financial Conduct Authority classifies crypto derivative signal services as a restricted activity. We don't currently hold the necessary permissions, so UK persons cannot subscribe to AgoraIQ. If you're a UK resident and you believe this applies incorrectly to your situation, email <a href="mailto:legal@agoraiq.net">legal@agoraiq.net</a>.</p>
+    </div>
+  </section>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-brand">
+    <div class="logo">
+      <span class="logo-mark"></span>
+      <span class="brand-text">Agora<span class="brand-iq">IQ</span></span>
+    </div>
+    <p>The proof layer for crypto signals. Operated by ChatLogic Insights LTD, London. Not investment advice. Not available to UK persons.</p>
+  </div>
+  <div>
+    <h4>Product</h4>
+    <ul>
+      <li><a href="/proof.html">Live Proof</a></li>
+      <li><a href="/providers.html">Providers</a></li>
+      <li><a href="/scanner.html">Scanner</a></li>
+      <li><a href="/methodology.html">Methodology</a></li>
+      <li><a href="/pricing.html">Pricing</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Company</h4>
+    <ul>
+      <li><a href="/about.html">About</a></li>
+      <li><a href="/contact.html">Contact</a></li>
+      <li><a href="/faq.html">FAQ</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Legal</h4>
+    <ul>
+      <li><a href="/terms.html">Terms of Use</a></li>
+      <li><a href="/privacy.html">Privacy Policy</a></li>
+      <li><a href="/cookies.html">Cookie Policy</a></li>
+      <li><a href="/risk-disclosure.html">Risk Disclosure</a></li>
+      <li><a href="/disclaimer.html">Disclaimer</a></li>
+      <li><a href="/no-financial-advice.html">No Financial Advice</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span>© 2026 ChatLogic Insights LTD</span>
+  <span class="risk">Trading crypto derivatives involves substantial risk of loss. Past performance of any provider is not indicative of future results. AgoraIQ is not a regulated financial service and does not provide investment advice. See <a href="/risk-disclosure.html" style="color:var(--text-dim);text-decoration:underline">full risk disclosure</a>.</span>
+</div>
+
+<script src="/assets/agoraiq-mobile.js" defer></script>
+</body>
+</html>

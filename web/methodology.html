@@ -1,0 +1,2430 @@
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+
+<!-- Primary SEO -->
+<title>Methodology — AgoraIQ | Crypto Signal Scoring &amp; Verification</title>
+<meta name="description" content="How AgoraIQ ingests, hashes, tracks, resolves, and scores every crypto signal. Full composite IQ formula, SHA-256 chain verification, audit trail. Open to review.">
+<meta name="keywords" content="crypto signal methodology, signal scoring, R-multiple, SHA-256 signal hashing, crypto signal verification, provider IQ score, win rate calculation, crypto signal audit, signal tracking algorithm">
+<meta name="author" content="AgoraIQ">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<link rel="canonical" href="https://bot.agoraiq.net/methodology.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://bot.agoraiq.net/methodology.html">
+<meta property="og:title" content="AgoraIQ Methodology — How We Score Crypto Signals">
+<meta property="og:description" content="The full pipeline: ingest, hash, track, resolve, score. With math. Open to audit.">
+<meta property="og:image" content="https://bot.agoraiq.net/og-methodology.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="AgoraIQ">
+<meta property="og:locale" content="en_US">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AgoraIQ Methodology — How We Score Crypto Signals">
+<meta name="twitter:description" content="The full pipeline: ingest, hash, track, resolve, score. With math. Open to audit.">
+<meta name="twitter:image" content="https://bot.agoraiq.net/og-methodology.png">
+<meta name="twitter:site" content="@agoraiq">
+
+<!-- Browser / theme -->
+<meta name="theme-color" content="#0a0b0d">
+<meta name="color-scheme" content="dark">
+<!-- Favicons -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="mask-icon" href="/favicon.svg" color="#00d084">
+
+<!-- Structured data: TechArticle -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "AgoraIQ Methodology — How We Score Crypto Signals",
+  "description": "The full five-stage pipeline AgoraIQ applies to every crypto signal: ingest, hash, track, resolve, score. Composite IQ formula and audit trail documented in full.",
+  "url": "https://bot.agoraiq.net/methodology.html",
+  "dateModified": "2026-04-12",
+  "author": {
+    "@type": "Organization",
+    "name": "AgoraIQ",
+    "url": "https://bot.agoraiq.net/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ChatLogic Insights LTD",
+    "url": "https://bot.agoraiq.net/",
+    "logo": "https://bot.agoraiq.net/logo.png"
+  },
+  "articleSection": "Methodology",
+  "about": "Crypto signal scoring and verification"
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&amp;display=block">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&amp;display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=Albert+Sans:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:            #0a0b0d;
+  --bg-elev:       #111318;
+  --bg-elev-2:     #181b22;
+  --border:        #23272f;
+  --border-soft:   #1a1d23;
+  --text:          #e7e9ee;
+  --text-dim:      #9098a4;
+  --text-mute:     #646a76;
+  --accent:        #00d084;
+  --accent-dim:    #0a3d2a;
+  --loss:          #ff5260;
+  --loss-dim:      #3a1519;
+  --warn:          #f5a623;
+  --brand:         #7c5cff;
+  --radius:        8px;
+  --radius-sm:     4px;
+  --mono:          "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sans:          "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+
+.mono { font-family: var(--mono); font-feature-settings: "tnum", "ss01"; }
+
+/* ---------- Hero ---------- */
+.hero {
+  max-width: 900px; margin: 0 auto;
+  padding: 72px 24px 40px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 11px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 16px;
+}
+.hero-eyebrow::before {
+  content: ""; width: 18px; height: 1px; background: var(--accent);
+}
+.hero h1 {
+  font-size: 44px; line-height: 1.1; letter-spacing: -0.025em;
+  font-weight: 700; margin: 0 0 18px;
+}
+.hero-sub {
+  font-size: 18px; color: var(--text-dim); margin: 0 0 28px;
+  max-width: 720px;
+}
+.hero-meta {
+  font-family: var(--mono); font-size: 12px; color: var(--text-mute);
+  display: flex; gap: 20px; flex-wrap: wrap;
+  padding-top: 20px; border-top: 1px solid var(--border-soft);
+}
+.hero-meta span strong { color: var(--text-dim); font-weight: 500; }
+
+@media (max-width: 720px) {
+  .hero { padding: 48px 20px 32px; }
+  .hero h1 { font-size: 32px; }
+}
+
+/* ---------- Layout with sidebar TOC ---------- */
+.doc {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 240px 1fr;
+  gap: 48px; padding: 48px 24px 96px;
+}
+.toc {
+  position: sticky; top: 80px;
+  align-self: start;
+  font-size: 13px;
+}
+.toc-label {
+  font-family: var(--mono); font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-mute); margin-bottom: 14px;
+}
+.toc ul {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 2px;
+  border-left: 1px solid var(--border-soft);
+}
+.toc li a {
+  display: block;
+  padding: 6px 14px;
+  color: var(--text-dim);
+  border-left: 2px solid transparent;
+  margin-left: -1px;
+  transition: all 0.15s;
+}
+.toc li a:hover { color: var(--text); border-left-color: var(--border); }
+.toc li a.active { color: var(--accent); border-left-color: var(--accent); }
+
+.content { max-width: 780px; min-width: 0; }
+
+@media (max-width: 900px) {
+  .doc { grid-template-columns: 1fr; padding: 32px 20px 64px; }
+  .toc { display: none; }
+}
+
+/* ---------- Section blocks ---------- */
+.sec { margin-bottom: 72px; scroll-margin-top: 80px; }
+.sec:last-child { margin-bottom: 0; }
+.sec-num {
+  font-family: var(--mono); font-size: 12px;
+  color: var(--accent); letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+.sec h2 {
+  font-size: 28px; line-height: 1.2;
+  letter-spacing: -0.02em; font-weight: 700;
+  margin: 0 0 18px;
+}
+.sec h3 {
+  font-size: 17px; font-weight: 600;
+  margin: 32px 0 10px; letter-spacing: -0.01em;
+}
+.sec p {
+  color: var(--text-dim); margin: 0 0 16px;
+  line-height: 1.7;
+}
+.sec ul, .sec ol {
+  color: var(--text-dim); padding-left: 22px;
+  margin: 0 0 16px; line-height: 1.7;
+}
+.sec li { margin-bottom: 6px; }
+.sec li::marker { color: var(--text-mute); }
+
+.sec code {
+  font-family: var(--mono);
+  font-size: 13px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border-soft);
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: var(--accent);
+}
+
+.sec strong { color: var(--text); font-weight: 600; }
+
+/* ---------- Method block (code-style) ---------- */
+.method {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  font-family: var(--mono);
+  margin: 20px 0 24px;
+}
+.method-head {
+  padding: 12px 18px;
+  background: var(--bg-elev-2);
+  border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 11px; color: var(--text-mute);
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+.method-body {
+  padding: 20px 24px;
+  color: var(--text-dim);
+  line-height: 1.85;
+  font-size: 13px;
+  overflow-x: auto;
+  margin: 0;
+}
+.method-body .k { color: #7fb3ff; }
+.method-body .v { color: var(--accent); }
+.method-body .s { color: var(--text); }
+.method-body .c { color: var(--text-mute); }
+.method-body .x { color: var(--loss); }
+
+/* ---------- Spec / definition list ---------- */
+.spec {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 16px 0 24px;
+}
+.spec-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-soft);
+  gap: 20px;
+  font-size: 13px;
+}
+.spec-row:last-child { border-bottom: none; }
+.spec-k {
+  font-family: var(--mono); color: var(--text-mute);
+  font-size: 12px; letter-spacing: 0.03em;
+}
+.spec-v {
+  color: var(--text-dim); line-height: 1.55;
+}
+.spec-v code { font-size: 12px; }
+@media (max-width: 600px) {
+  .spec-row { grid-template-columns: 1fr; gap: 4px; }
+}
+
+/* ---------- Score breakdown table ---------- */
+.weights {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 20px 0 24px;
+}
+.weights th {
+  text-align: left;
+  padding: 14px 18px;
+  background: var(--bg-elev-2);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
+.weights td {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-soft);
+  color: var(--text-dim);
+  font-size: 14px;
+}
+.weights tbody tr:last-child td { border-bottom: none; }
+.weights td:first-child { color: var(--text); font-weight: 500; }
+.weights td.num {
+  font-family: var(--mono);
+  color: var(--accent);
+  text-align: right;
+  font-weight: 600;
+}
+
+/* ---------- Callout ---------- */
+.callout {
+  background: var(--bg-elev);
+  border-left: 2px solid var(--accent);
+  padding: 18px 22px;
+  margin: 20px 0 24px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 14px;
+}
+.callout.warn { border-left-color: var(--warn); }
+.callout.loss { border-left-color: var(--loss); }
+.callout-label {
+  font-family: var(--mono); font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--accent); margin-bottom: 6px;
+}
+.callout.warn .callout-label { color: var(--warn); }
+.callout.loss .callout-label { color: var(--loss); }
+.callout p { margin: 0; color: var(--text-dim); line-height: 1.6; }
+.callout p + p { margin-top: 10px; }
+
+/* ---------- State diagram ---------- */
+.states {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 20px 0 24px;
+}
+.state {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  font-size: 12px;
+}
+.state-name {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+.state-desc { color: var(--text-dim); line-height: 1.5; }
+
+@media (max-width: 720px) {
+  .states { grid-template-columns: 1fr 1fr; }
+}
+
+/* ---------- Version history ---------- */
+.version {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 20px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 13px;
+}
+.version:last-child { border-bottom: none; }
+.version-tag {
+  font-family: var(--mono);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+}
+.version-tag .date { display: block; color: var(--text-mute); font-weight: 400; margin-top: 2px; }
+.version-desc { color: var(--text-dim); line-height: 1.6; }
+
+/* ---------- Logo (used in footer) ---------- */
+.logo {
+  display: flex; align-items: center; gap: 10px;
+}
+.brand-text {
+  font-family: "Syne", sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.brand-iq { color: var(--accent); }
+.logo-mark {
+  width: 24px; height: 24px;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #00e892 0%, #00a66a 100%);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  box-shadow: 0 0 14px rgba(0, 208, 132, 0.22);
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  max-width: 1200px; margin: 48px auto 0;
+  padding: 40px 24px; border-top: 1px solid var(--border-soft);
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px;
+  font-size: 13px; color: var(--text-dim);
+}
+.footer-brand p {
+  margin: 12px 0 0; max-width: 360px;
+  color: var(--text-mute); line-height: 1.55;
+}
+.footer h4 {
+  font-size: 12px; font-family: var(--mono);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-mute); margin: 0 0 14px; font-weight: 600;
+}
+.footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.footer a:hover { color: var(--text); }
+.footer-bottom {
+  max-width: 1200px; margin: 0 auto;
+  padding: 24px; border-top: 1px solid var(--border-soft);
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 12px; color: var(--text-mute);
+  font-family: var(--mono); flex-wrap: wrap; gap: 16px;
+}
+.footer-bottom .risk { max-width: 720px; line-height: 1.5; }
+@media (max-width: 720px) { .footer { grid-template-columns: 1fr 1fr; } }
+
+/* ====================================================================
+   DIAGRAMS & CHARTS
+   ==================================================================== */
+
+.diagram {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin: 24px 0 28px;
+  overflow: hidden;
+}
+.diagram-head {
+  padding: 11px 18px;
+  background: var(--bg-elev-2);
+  border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+}
+.diagram-head .tag { color: var(--accent); }
+.diagram-body { padding: 28px 24px; }
+.diagram-caption {
+  font-size: 12px;
+  color: var(--text-mute);
+  text-align: center;
+  margin-top: 14px;
+  font-style: italic;
+}
+
+/* ---------- 1 · Pipeline diagram ---------- */
+.pipeline {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  align-items: stretch;
+}
+.pipe-step {
+  position: relative;
+  text-align: center;
+  padding: 0 6px;
+}
+.pipe-step:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  top: 28px;
+  left: calc(50% + 28px);
+  right: calc(-50% + 28px);
+  height: 1px;
+  background: linear-gradient(to right, var(--accent) 0%, var(--border) 100%);
+  opacity: 0.5;
+}
+.pipe-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 24px;
+  right: -4px;
+  width: 7px; height: 7px;
+  border-top: 1.5px solid var(--border);
+  border-right: 1.5px solid var(--border);
+  transform: rotate(45deg);
+}
+.pipe-circle {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 14px;
+  position: relative;
+  z-index: 2;
+  transition: all 0.25s;
+}
+.pipe-step:hover .pipe-circle {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  box-shadow: 0 0 0 4px rgba(0, 208, 132, 0.08);
+}
+.pipe-circle svg {
+  width: 22px; height: 22px;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.pipe-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-mute);
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+.pipe-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.pipe-desc {
+  font-size: 11px;
+  color: var(--text-mute);
+  line-height: 1.4;
+  max-width: 110px;
+  margin: 0 auto;
+}
+@media (max-width: 720px) {
+  .pipeline { grid-template-columns: 1fr; gap: 16px; }
+  .pipe-step:not(:last-child)::before,
+  .pipe-step:not(:last-child)::after { display: none; }
+  .pipe-step { display: grid; grid-template-columns: 56px 1fr; gap: 14px; text-align: left; align-items: center; }
+  .pipe-circle { margin: 0; }
+  .pipe-desc { max-width: none; }
+}
+
+/* ---------- 2 · Hash chain ---------- */
+.chain {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow-x: auto;
+  padding: 4px 0 8px;
+  scrollbar-width: thin;
+}
+.chain-block {
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  min-width: 195px;
+  font-family: var(--mono);
+  font-size: 11px;
+  flex-shrink: 0;
+  position: relative;
+}
+.chain-block.head::before {
+  content: 'GENESIS';
+  position: absolute;
+  top: -8px; left: 12px;
+  background: var(--bg-elev);
+  padding: 0 6px;
+  font-size: 9px;
+  color: var(--text-mute);
+  letter-spacing: 0.1em;
+}
+.chain-block.tip {
+  border-color: var(--accent);
+  background: linear-gradient(180deg, rgba(0,208,132,0.05), var(--bg-elev-2));
+}
+.chain-block.tip::before {
+  content: 'LATEST';
+  position: absolute;
+  top: -8px; left: 12px;
+  background: var(--bg-elev);
+  padding: 0 6px;
+  font-size: 9px;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+}
+.chain-block .seq {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 9px;
+  letter-spacing: 0.04em;
+}
+.chain-block .row {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 8px;
+  margin-bottom: 3px;
+  font-size: 10.5px;
+}
+.chain-block .row .k { color: var(--text-mute); }
+.chain-block .row .v { color: var(--text-dim); }
+.chain-block .row .v.hash { color: var(--accent); }
+.chain-block .row .v.prev { color: #7fb3ff; }
+.chain-arrow {
+  flex-shrink: 0;
+  width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  opacity: 0.6;
+}
+.chain-arrow svg { width: 24px; height: 14px; }
+
+@media (max-width: 600px) {
+  .chain { flex-direction: column; align-items: stretch; }
+  .chain-arrow { width: 100%; height: 24px; transform: rotate(90deg); }
+}
+
+/* ---------- 3 · Candle / tracker chart ---------- */
+.candle-chart {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.candle-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-soft);
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--text-mute);
+  justify-content: center;
+}
+.candle-legend .item {
+  display: flex; align-items: center; gap: 6px;
+}
+.candle-legend .swatch {
+  width: 10px; height: 10px;
+  border-radius: 2px;
+}
+
+/* ---------- 4 · R-multiple distribution ---------- */
+.r-chart { padding: 8px 0 0; }
+.r-bars {
+  display: grid;
+  grid-template-columns: 90px 1fr 50px;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+.r-bars:last-child { margin-bottom: 0; }
+.r-label {
+  font-family: var(--mono);
+  color: var(--text-dim);
+  font-size: 11px;
+}
+.r-bar-track {
+  height: 22px;
+  background: var(--bg);
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+}
+.r-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s ease;
+  background: var(--accent);
+}
+.r-bar-fill.loss { background: var(--loss); }
+.r-bar-fill.partial { background: var(--warn); }
+.r-bar-fill.partial-be { background: #6a8e6a; }
+.r-bar-fill.tp1 { background: #4ab87a; }
+.r-bar-fill.tp2 { background: var(--accent); }
+.r-bar-fill.tp3 { background: #7fb3ff; }
+.r-count {
+  font-family: var(--mono);
+  color: var(--text-dim);
+  font-size: 12px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.r-axis {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-soft);
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-mute);
+  letter-spacing: 0.05em;
+}
+.r-summary {
+  margin-top: 18px;
+  padding: 14px 16px;
+  background: var(--bg-elev-2);
+  border-radius: var(--radius-sm);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  font-size: 11px;
+}
+.r-summary .item {
+  text-align: center;
+}
+.r-summary .v {
+  display: block;
+  font-family: var(--mono);
+  font-size: 16px;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.r-summary .v.neg { color: var(--loss); }
+.r-summary .k {
+  color: var(--text-mute);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+@media (max-width: 600px) {
+  .r-bars { grid-template-columns: 70px 1fr 40px; gap: 10px; }
+  .r-summary { grid-template-columns: 1fr 1fr; }
+}
+
+/* ---------- 5 · IQ donut + breakdown ---------- */
+.iq-viz {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 36px;
+  align-items: center;
+}
+.iq-donut-wrap {
+  position: relative;
+  width: 220px; height: 220px;
+}
+.iq-donut {
+  width: 220px; height: 220px;
+  transform: rotate(-90deg);
+}
+.iq-donut circle.bg { fill: none; stroke: var(--bg); stroke-width: 18; }
+.iq-donut circle.seg {
+  fill: none;
+  stroke-width: 18;
+  transition: stroke-width 0.2s;
+}
+.iq-center {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.iq-center .num {
+  font-family: var(--mono);
+  font-size: 36px;
+  color: var(--text);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.iq-center .label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-mute);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+.iq-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.iq-leg-item {
+  display: grid;
+  grid-template-columns: 14px 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+.iq-leg-swatch {
+  width: 14px; height: 14px;
+  border-radius: 3px;
+}
+.iq-leg-text { font-size: 13px; }
+.iq-leg-text .name {
+  color: var(--text);
+  font-weight: 500;
+  display: block;
+  margin-bottom: 2px;
+}
+.iq-leg-text .desc {
+  color: var(--text-mute);
+  font-size: 11px;
+}
+.iq-leg-weight {
+  font-family: var(--mono);
+  font-size: 16px;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+.iq-leg-weight .pct {
+  font-size: 11px;
+  color: var(--text-mute);
+}
+@media (max-width: 600px) {
+  .iq-viz { grid-template-columns: 1fr; gap: 28px; }
+  .iq-donut-wrap { margin: 0 auto; }
+}
+
+/* ---------- 6 · State machine ---------- */
+.state-machine {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.sm-box rect {
+  fill: var(--bg-elev-2);
+  stroke: var(--border);
+  stroke-width: 1;
+  rx: 4;
+}
+.sm-box.terminal rect {
+  stroke: var(--accent);
+  stroke-dasharray: 3 2;
+}
+.sm-box.error rect {
+  stroke: var(--loss);
+  stroke-opacity: 0.5;
+}
+.sm-box text {
+  font-family: var(--mono);
+  font-size: 10px;
+  fill: var(--text);
+  text-anchor: middle;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+.sm-box.error text { fill: var(--loss); }
+.sm-edge {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 1;
+}
+.sm-edge.active { stroke: var(--accent); stroke-opacity: 0.7; }
+.sm-edge.error { stroke: var(--loss); stroke-opacity: 0.5; }
+.sm-edge-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  fill: var(--text-mute);
+  letter-spacing: 0.03em;
+}
+
+/* ====================================================================
+   URGENCY & CTAs
+   ==================================================================== */
+
+/* Live pulse pill */
+.live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px 3px 8px;
+  background: rgba(0, 208, 132, 0.08);
+  border: 1px solid rgba(0, 208, 132, 0.3);
+  border-radius: 100px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.live-dot {
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: live-pulse 2s ease-in-out infinite;
+}
+@keyframes live-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0,208,132,0.7); }
+  60% { box-shadow: 0 0 0 6px rgba(0,208,132,0); }
+}
+
+/* Founding member strip */
+.founding {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.founding strong { color: var(--text); font-weight: 600; }
+.founding .deadline { color: var(--warn); }
+.founding-bar {
+  width: 140px;
+  height: 5px;
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border-soft);
+  border-radius: 3px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.founding-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 70%, var(--warn) 100%);
+  border-radius: 2px;
+  animation: bar-grow 1.2s ease-out;
+}
+@keyframes bar-grow {
+  from { width: 0; }
+}
+
+/* Buttons */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  background: var(--accent);
+  color: #000;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  transition: all 0.15s ease;
+  cursor: pointer;
+  white-space: nowrap;
+  letter-spacing: -0.005em;
+}
+.btn-primary:hover {
+  background: #00e892;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 208, 132, 0.28);
+}
+.btn-primary svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 18px;
+  background: transparent;
+  color: var(--text);
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  transition: all 0.15s;
+}
+.btn-secondary:hover { border-color: var(--text-mute); background: var(--bg-elev); }
+
+.hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0 0 28px;
+}
+
+/* Floating CTA (FAB) — appears after hero scrolls out */
+.fab {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 22px;
+  background: var(--accent);
+  color: #000;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 100px;
+  box-shadow: 0 10px 30px rgba(0, 208, 132, 0.30);
+  animation: fab-glow 2.6s ease-in-out infinite;
+  transition: transform 0.2s, opacity 0.3s;
+  border: 1px solid rgba(0, 208, 132, 0.7);
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+  letter-spacing: -0.005em;
+}
+.fab.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.fab:hover {
+  transform: translateY(-3px) scale(1.02);
+  background: #00e892;
+}
+.fab svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+.fab .fab-meta {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  opacity: 0.75;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-left: 1px solid rgba(0,0,0,0.3);
+  padding-left: 10px;
+  margin-left: 2px;
+}
+@keyframes fab-glow {
+  0%, 100% { box-shadow: 0 10px 30px rgba(0,208,132,0.25), 0 0 0 0 rgba(0,208,132,0.5); }
+  60%      { box-shadow: 0 10px 30px rgba(0,208,132,0.35), 0 0 0 14px rgba(0,208,132,0); }
+}
+@media (max-width: 600px) {
+  .fab { bottom: 14px; right: 14px; padding: 11px 16px; font-size: 13px; }
+  .fab .fab-meta { display: none; }
+}
+
+/* Mid-page CTA block */
+.cta-block {
+  margin: 56px 0 36px;
+  padding: 32px 36px;
+  background: linear-gradient(135deg, var(--bg-elev) 0%, var(--bg-elev-2) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+}
+.cta-block::before {
+  content: '';
+  position: absolute;
+  top: -50px; right: -50px;
+  width: 240px; height: 240px;
+  background: radial-gradient(circle, rgba(0,208,132,0.10) 0%, transparent 65%);
+  pointer-events: none;
+}
+.cta-block-inner { position: relative; z-index: 1; }
+.cta-block-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.cta-block h3 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 12px;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+.cta-block p {
+  color: var(--text-dim);
+  margin: 0 0 22px;
+  max-width: 560px;
+  line-height: 1.6;
+  font-size: 14px;
+}
+.cta-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  margin-bottom: 24px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.cta-stat {
+  font-size: 11px;
+  color: var(--text-mute);
+  font-family: var(--mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.cta-stat strong {
+  display: block;
+  font-size: 22px;
+  color: var(--accent);
+  font-weight: 700;
+  margin-bottom: 2px;
+  letter-spacing: -0.02em;
+  font-family: var(--mono);
+}
+.cta-stat.warn strong { color: var(--warn); }
+
+.cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Final CTA */
+.cta-final {
+  text-align: center;
+  margin: 56px 0 0;
+  padding: 48px 32px;
+  background:
+    radial-gradient(circle at 30% 0%, rgba(0,208,132,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 70% 100%, rgba(245,166,35,0.05) 0%, transparent 50%),
+    var(--bg-elev);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+}
+.cta-final-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--warn);
+  margin-bottom: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.cta-final-tag::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--warn);
+  border-radius: 50%;
+  animation: live-pulse-warn 2s ease-in-out infinite;
+}
+@keyframes live-pulse-warn {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245,166,35,0.6); }
+  60% { box-shadow: 0 0 0 6px rgba(245,166,35,0); }
+}
+.cta-final h2 {
+  font-size: 26px;
+  margin: 0 0 14px;
+  color: var(--text);
+  letter-spacing: -0.025em;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.cta-final p {
+  color: var(--text-dim);
+  margin: 0 auto 26px;
+  max-width: 480px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.cta-final .btn-primary {
+  font-size: 15px;
+  padding: 14px 28px;
+}
+.cta-final-meta {
+  margin-top: 18px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-mute);
+  letter-spacing: 0.05em;
+}
+
+/* ---------- 7 · Audit verification flow ---------- */
+.audit-flow {
+  display: grid;
+  grid-template-columns: 1fr 28px 1fr 28px 1fr;
+  gap: 0;
+  align-items: stretch;
+}
+.audit-step {
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 18px 16px;
+  position: relative;
+  transition: all 0.25s;
+}
+.audit-step:hover {
+  border-color: var(--accent);
+  background: linear-gradient(180deg, rgba(0,208,132,0.04), var(--bg-elev-2));
+}
+.audit-num {
+  position: absolute;
+  top: -11px; left: 16px;
+  width: 22px; height: 22px;
+  background: var(--bg-elev);
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+}
+.audit-icon {
+  width: 30px; height: 30px;
+  margin-bottom: 14px;
+  margin-top: 4px;
+  color: var(--accent);
+}
+.audit-icon svg {
+  width: 100%; height: 100%;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.audit-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+  letter-spacing: -0.005em;
+}
+.audit-desc {
+  font-size: 12px;
+  color: var(--text-mute);
+  line-height: 1.55;
+  margin-bottom: 14px;
+}
+.audit-code {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  background: var(--bg);
+  border: 1px solid var(--border-soft);
+  border-radius: 3px;
+  padding: 7px 9px;
+  color: var(--accent);
+  overflow-x: auto;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+.audit-arrow {
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent);
+  opacity: 0.4;
+}
+.audit-arrow svg { width: 24px; height: 12px; }
+
+@media (max-width: 720px) {
+  .audit-flow { grid-template-columns: 1fr; gap: 12px; }
+  .audit-arrow { transform: rotate(90deg); height: 20px; }
+}
+
+/* ---------- 8 · Version timeline ---------- */
+.timeline {
+  position: relative;
+  padding: 4px 0;
+  margin: 4px 0 0;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 14px; bottom: 14px;
+  left: 100px;
+  width: 1px;
+  background: var(--border);
+}
+.tl-item {
+  display: grid;
+  grid-template-columns: 86px 18px 1fr;
+  gap: 14px;
+  align-items: start;
+  padding: 12px 0;
+}
+.tl-item:first-child { padding-top: 0; }
+.tl-item:last-child { padding-bottom: 0; }
+.tl-date {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-mute);
+  text-align: right;
+  padding-top: 8px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.tl-marker {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  margin: 8px 2px 0;
+  position: relative;
+  z-index: 2;
+}
+.tl-item.current .tl-marker {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(0, 208, 132, 0.18);
+}
+.tl-item.minor .tl-marker {
+  background: var(--bg);
+  border-color: var(--text-mute);
+  width: 10px; height: 10px;
+  margin-left: 4px; margin-top: 10px;
+}
+.tl-content {
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+.tl-item.current .tl-content {
+  border-color: var(--accent);
+  background: linear-gradient(180deg, rgba(0,208,132,0.04), var(--bg-elev-2));
+}
+.tl-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+.tl-version {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+.tl-item.minor .tl-version { color: var(--text-mute); }
+.tl-tag {
+  padding: 2px 7px;
+  font-family: var(--mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: var(--accent-dim);
+  color: var(--accent);
+  border-radius: 2px;
+  font-weight: 600;
+}
+.tl-mobile-date {
+  display: none;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-mute);
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+}
+.tl-desc {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  .timeline::before { left: 7px; }
+  .tl-item { grid-template-columns: 18px 1fr; gap: 12px; }
+  .tl-date { display: none; }
+  .tl-mobile-date { display: block; }
+  .tl-marker { margin-top: 6px; }
+  .tl-item.minor .tl-marker { margin-top: 8px; }
+}
+</style>
+<link rel="stylesheet" href="/assets/agoraiq-mobile.css">
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Methodology v3.2</div>
+  <h1>How every signal gets ingested, hashed, tracked, resolved, and scored.</h1>
+  <p class="hero-sub">
+    No black boxes. Below is the full pipeline a signal travels through the moment it's posted anywhere we
+    monitor, right up to the point where it contributes to a provider's composite IQ. If anything here
+    doesn't make sense, that's on us. Open an issue.
+  </p>
+
+  <div class="founding">
+    <span class="live-pill"><span class="live-dot"></span> Live</span>
+    <span><strong>247 / 500</strong> founding seats claimed</span>
+    <div class="founding-bar"><div class="founding-bar-fill" style="width:49.4%"></div></div>
+    <span>· pricing locks in <span class="deadline">May 1</span></span>
+  </div>
+
+  <div class="hero-cta">
+    <a href="/pricing.html" class="btn-primary">
+      Join Now
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </a>
+    <a href="/proof.html" class="btn-secondary">See live proof →</a>
+  </div>
+
+  <div class="hero-meta">
+    <span>Version <strong>v3.2</strong></span>
+    <span>Last revised <strong>2026-04-12</strong></span>
+    <span>Providers tracked <strong>47</strong></span>
+    <span>Total signals indexed <strong>12,847</strong></span>
+  </div>
+</section>
+
+<!-- MAIN DOC -->
+<div class="doc">
+
+  <!-- SIDEBAR TOC -->
+  <aside class="toc">
+    <div class="toc-label">Contents</div>
+    <ul>
+      <li><a href="#overview" class="active">Overview</a></li>
+      <li><a href="#ingest" class="">1 · Ingest</a></li>
+      <li><a href="#hash" class="">2 · Hash</a></li>
+      <li><a href="#track" class="">3 · Track</a></li>
+      <li><a href="#resolve" class="">4 · Resolve</a></li>
+      <li><a href="#score" class="">5 · Score</a></li>
+      <li><a href="#states" class="">Signal states</a></li>
+      <li><a href="#limits" class="">What we don't do</a></li>
+      <li><a href="#audit" class="">Audit trail</a></li>
+      <li><a href="#versions" class="">Version history</a></li>
+    </ul>
+  </aside>
+
+  <div class="content">
+
+    <!-- OVERVIEW -->
+    <section class="sec" id="overview">
+      <div class="sec-num">Overview</div>
+      <h2>The five-stage pipeline</h2>
+      <p>
+        Every signal AgoraIQ knows about passes through the same five stages. The pipeline is deterministic
+        and fully automated — we don't curate, we don't editorialize, and we don't remove losing signals.
+      </p>
+      <ol>
+        <li><strong>Ingest</strong> — capture the raw post from a monitored public channel</li>
+        <li><strong>Hash</strong> — serialize the signal and commit it to an append-only chain</li>
+        <li><strong>Track</strong> — match against live exchange candles, minute by minute</li>
+        <li><strong>Resolve</strong> — compute the R-multiple outcome when TP/SL triggers</li>
+        <li><strong>Score</strong> — update the provider's rolling composite IQ</li>
+      </ol>
+
+      <div class="diagram">
+        <div class="diagram-head">
+          <span>Pipeline · end-to-end</span>
+          <span class="tag">deterministic · automated</span>
+        </div>
+        <div class="diagram-body">
+          <div class="pipeline">
+            <div class="pipe-step">
+              <div class="pipe-circle">
+                <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="20" cy="18" r="2"/></svg>
+              </div>
+              <div class="pipe-num">01</div>
+              <div class="pipe-name">Ingest</div>
+              <div class="pipe-desc">Capture raw post from public channel</div>
+            </div>
+            <div class="pipe-step">
+              <div class="pipe-circle">
+                <svg viewBox="0 0 24 24"><path d="M5 4h14v6l-7 8-7-8V4z"/><path d="M9 4v3M15 4v3"/></svg>
+              </div>
+              <div class="pipe-num">02</div>
+              <div class="pipe-name">Hash</div>
+              <div class="pipe-desc">SHA-256 commit to append-only chain</div>
+            </div>
+            <div class="pipe-step">
+              <div class="pipe-circle">
+                <svg viewBox="0 0 24 24"><path d="M3 17l5-5 4 4 8-8"/><path d="M14 8h6v6"/></svg>
+              </div>
+              <div class="pipe-num">03</div>
+              <div class="pipe-name">Track</div>
+              <div class="pipe-desc">1m candle match against exchange feed</div>
+            </div>
+            <div class="pipe-step">
+              <div class="pipe-circle">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>
+              </div>
+              <div class="pipe-num">04</div>
+              <div class="pipe-name">Resolve</div>
+              <div class="pipe-desc">R-multiple outcome on TP or SL hit</div>
+            </div>
+            <div class="pipe-step">
+              <div class="pipe-circle">
+                <svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+              </div>
+              <div class="pipe-num">05</div>
+              <div class="pipe-name">Score</div>
+              <div class="pipe-desc">Update rolling 30-day composite IQ</div>
+            </div>
+          </div>
+          <div class="diagram-caption">A signal advances through every stage exactly once. No stage is skipped, none are reversible.</div>
+        </div>
+      </div>
+
+      <p>
+        The rest of this page details each stage, including the edge cases we've had to decide on. Where we've
+        made a judgment call, we've marked it so you can disagree.
+      </p>
+    </section>
+
+    <!-- INGEST -->
+    <section class="sec" id="ingest">
+      <div class="sec-num">Stage 01 — Ingest</div>
+      <h2>Capture the raw post, exactly as published.</h2>
+      <p>
+        We monitor public channels on Telegram, Discord, and X for messages that match our signal-detection
+        grammar. The moment a matching message is posted, we record:
+      </p>
+
+      <div class="spec">
+        <div class="spec-row">
+          <div class="spec-k">source</div>
+          <div class="spec-v">channel ID, platform, message URL when available</div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-k">posted_at</div>
+          <div class="spec-v">timestamp from the platform, UTC, millisecond precision</div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-k">captured_at</div>
+          <div class="spec-v">our server time when the message was seen (latency audit)</div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-k">raw_text</div>
+          <div class="spec-v">full original message body</div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-k">parsed</div>
+          <div class="spec-v">pair, direction, entry, SL, TP1…TPn, leverage (if stated)</div>
+        </div>
+      </div>
+
+      <h3>What gets rejected at ingest</h3>
+      <p>A message is dropped before it reaches the hash stage if:</p>
+      <ul>
+        <li>The parser can't extract a pair, a direction, and at least one of SL or TP</li>
+        <li>The entry is more than 5% from the current spot price (likely a limit order already past)</li>
+        <li>The SL is on the wrong side of entry for the stated direction (malformed)</li>
+        <li>TP ≤ entry for a long, or TP ≥ entry for a short (inverted)</li>
+        <li>The same (channel, pair, entry, direction) was posted within the last 30 minutes (deduplication)</li>
+      </ul>
+
+      <div class="callout warn">
+        <div class="callout-label">Judgment call</div>
+        <p>We do not retroactively accept "updates" to an open signal. If a provider posts "move SL to breakeven", that's logged as a note but does not change the original hashed record. A signal is judged as it was originally called.</p>
+      </div>
+    </section>
+
+    <!-- HASH -->
+    <section class="sec" id="hash">
+      <div class="sec-num">Stage 02 — Hash</div>
+      <h2>Commit the signal to an append-only chain.</h2>
+      <p>
+        Once parsed, the signal is serialized into a canonical JSON form (keys sorted, no whitespace) and
+        hashed with SHA-256. The hash, together with the previous record's hash, forms a linked chain —
+        tampering with any historical record invalidates every record posted after it.
+      </p>
+
+      <div class="method">
+        <div class="method-head">
+          <span>canonical serialization</span>
+          <span>hash_v3.py</span>
+        </div>
+<pre class="method-body"><span class="c"># Input: parsed signal</span>
+signal <span class="k">=</span> {
+  <span class="s">"provider_id"</span>: <span class="s">"signalcity_pro"</span>,
+  <span class="s">"platform"</span>: <span class="s">"telegram"</span>,
+  <span class="s">"pair"</span>:        <span class="s">"BTCUSDT"</span>,
+  <span class="s">"direction"</span>:   <span class="s">"long"</span>,
+  <span class="s">"entry"</span>:       <span class="v">67240.00</span>,
+  <span class="s">"stop_loss"</span>:   <span class="v">65900.00</span>,
+  <span class="s">"take_profit"</span>: [<span class="v">68800.00</span>, <span class="v">70500.00</span>],
+  <span class="s">"leverage"</span>:    <span class="v">null</span>,
+  <span class="s">"posted_at"</span>:   <span class="s">"2026-04-19T11:32:07.412Z"</span>
+}
+
+<span class="c"># Canonical JSON (sorted keys, no whitespace)</span>
+canonical <span class="k">=</span> json.dumps(signal, sort_keys=<span class="v">True</span>, separators=(<span class="s">','</span>, <span class="s">':'</span>))
+
+<span class="c"># Chain link</span>
+record <span class="k">=</span> {
+  <span class="s">"seq"</span>:      prev_seq <span class="k">+</span> <span class="v">1</span>,
+  <span class="s">"signal"</span>:   canonical,
+  <span class="s">"prev_hash"</span>: prev_hash,
+  <span class="s">"hash"</span>:     sha256(canonical <span class="k">+</span> prev_hash).hexdigest()
+}
+
+<span class="c"># Committed to Postgres (signals_chain) + mirrored to DO Spaces hourly</span></pre>
+      </div>
+
+      <div class="diagram">
+        <div class="diagram-head">
+          <span>Append-only chain · live structure</span>
+          <span class="tag">tamper-evident</span>
+        </div>
+        <div class="diagram-body">
+          <div class="chain">
+            <div class="chain-block head">
+              <div class="seq">seq 12,844</div>
+              <div class="row"><span class="k">hash</span><span class="v hash">a3f8…c2d1</span></div>
+              <div class="row"><span class="k">prev</span><span class="v prev">9f2e…b71a</span></div>
+              <div class="row"><span class="k">pair</span><span class="v">SOLUSDT</span></div>
+              <div class="row"><span class="k">dir</span><span class="v">long</span></div>
+            </div>
+            <div class="chain-arrow">
+              <svg viewBox="0 0 24 14" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M2 7h18M16 3l4 4-4 4"/>
+              </svg>
+            </div>
+            <div class="chain-block">
+              <div class="seq">seq 12,845</div>
+              <div class="row"><span class="k">hash</span><span class="v hash">7b2c…e4f9</span></div>
+              <div class="row"><span class="k">prev</span><span class="v prev">a3f8…c2d1</span></div>
+              <div class="row"><span class="k">pair</span><span class="v">ETHUSDT</span></div>
+              <div class="row"><span class="k">dir</span><span class="v">short</span></div>
+            </div>
+            <div class="chain-arrow">
+              <svg viewBox="0 0 24 14" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M2 7h18M16 3l4 4-4 4"/>
+              </svg>
+            </div>
+            <div class="chain-block">
+              <div class="seq">seq 12,846</div>
+              <div class="row"><span class="k">hash</span><span class="v hash">d1e5…8b3a</span></div>
+              <div class="row"><span class="k">prev</span><span class="v prev">7b2c…e4f9</span></div>
+              <div class="row"><span class="k">pair</span><span class="v">BTCUSDT</span></div>
+              <div class="row"><span class="k">dir</span><span class="v">long</span></div>
+            </div>
+            <div class="chain-arrow">
+              <svg viewBox="0 0 24 14" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M2 7h18M16 3l4 4-4 4"/>
+              </svg>
+            </div>
+            <div class="chain-block tip">
+              <div class="seq">seq 12,847</div>
+              <div class="row"><span class="k">hash</span><span class="v hash">f4a9…2c6b</span></div>
+              <div class="row"><span class="k">prev</span><span class="v prev">d1e5…8b3a</span></div>
+              <div class="row"><span class="k">pair</span><span class="v">BNBUSDT</span></div>
+              <div class="row"><span class="k">dir</span><span class="v">long</span></div>
+            </div>
+          </div>
+          <div class="diagram-caption">Each block's <code style="font-family:var(--mono);background:var(--bg);padding:1px 5px;border-radius:3px;color:#7fb3ff;font-size:11px">prev</code> field equals the previous block's <code style="font-family:var(--mono);background:var(--bg);padding:1px 5px;border-radius:3px;color:var(--accent);font-size:11px">hash</code>. Tamper with any record and every downstream hash breaks.</div>
+        </div>
+      </div>
+
+      <h3>Why a linked chain and not just a hash per signal?</h3>
+      <p>
+        A standalone hash only proves that a specific record hasn't been altered. A linked chain proves that
+        the <em>entire ordering</em> hasn't been altered. If we wanted to quietly delete a losing signal, we'd
+        have to rehash every record after it — and the mirror copy on DigitalOcean Spaces would immediately
+        disagree with the live DB.
+      </p>
+
+      <div class="callout">
+        <div class="callout-label">Verify yourself</div>
+        <p>Every signal on the Live Proof page shows its <code>seq</code>, <code>hash</code>, and <code>prev_hash</code>. Concatenate the canonical form with the prev_hash, SHA-256 it, and confirm the hash we published matches. A small CLI verifier is on GitHub: <code>agoraiq/chain-verify</code>.</p>
+      </div>
+    </section>
+
+    <!-- TRACK -->
+    <section class="sec" id="track">
+      <div class="sec-num">Stage 03 — Track</div>
+      <h2>Match against live exchange candles.</h2>
+      <p>
+        Once hashed, the signal becomes active and enters the tracker. Every minute, the tracker pulls the
+        1m candle for the signal's pair from the exchange specified (or Binance as default), and checks
+        whether any of the signal's levels were touched during that candle's high/low range.
+      </p>
+
+      <div class="spec">
+        <div class="spec-row">
+          <div class="spec-k">poll interval</div>
+          <div class="spec-v">60 seconds, aligned to candle close</div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-k">candle source</div>
+          <div class="spec-v">exchange-native REST, cross-checked against a second source (Coinbase or Kraken)</div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-k">trigger rule</div>
+          <div class="spec-v">a level is "hit" if the candle high ≥ level (for longs reaching TP, or shorts hitting SL), or candle low ≤ level (for longs hitting SL, or shorts reaching TP)</div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-k">ambiguity</div>
+          <div class="spec-v">if both TP and SL fall inside the same 1m candle, we fetch the 1s trade ticks for that minute to determine order — SL-first is the default if ticks are unavailable</div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-k">timeout</div>
+          <div class="spec-v">signals with no resolution after 7 days are marked <code>expired</code> and excluded from scoring</div>
+        </div>
+      </div>
+
+      <div class="diagram">
+        <div class="diagram-head">
+          <span>Trigger logic · 1m candle scenarios</span>
+          <span class="tag">long signal · 4 cases</span>
+        </div>
+        <div class="diagram-body">
+          <svg class="candle-chart" viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+            <!-- Level lines -->
+            <g stroke-dasharray="4 4" stroke-width="1">
+              <line x1="40" y1="40" x2="600" y2="40" stroke="#00d084" stroke-opacity="0.5"/>
+              <line x1="40" y1="120" x2="600" y2="120" stroke="#9098a4" stroke-opacity="0.4"/>
+              <line x1="40" y1="200" x2="600" y2="200" stroke="#ff5260" stroke-opacity="0.5"/>
+            </g>
+            <!-- Level labels -->
+            <g font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="0.05em">
+              <text x="36" y="34" text-anchor="end" fill="#00d084">TP</text>
+              <text x="36" y="124" text-anchor="end" fill="#9098a4">ENTRY</text>
+              <text x="36" y="204" text-anchor="end" fill="#ff5260">SL</text>
+            </g>
+            <!-- X-axis time tick -->
+            <line x1="40" y1="220" x2="600" y2="220" stroke="#23272f"/>
+
+            <!-- Candle 1: tight, no resolution -->
+            <g>
+              <line x1="120" y1="100" x2="120" y2="150" stroke="#9098a4" stroke-width="1.2"/>
+              <rect x="113" y="115" width="14" height="22" fill="#00d084" stroke="#00d084" rx="1"/>
+              <text x="120" y="236" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#646a76">no hit</text>
+            </g>
+
+            <!-- Candle 2: bullish, hits TP -->
+            <g>
+              <line x1="240" y1="32" x2="240" y2="135" stroke="#9098a4" stroke-width="1.2"/>
+              <rect x="233" y="60" width="14" height="65" fill="#00d084" stroke="#00d084" rx="1"/>
+              <!-- Hit marker -->
+              <circle cx="240" cy="40" r="5" fill="#00d084" stroke="#0a0b0d" stroke-width="2"/>
+              <text x="240" y="22" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#00d084" font-weight="600">TP HIT</text>
+              <text x="240" y="236" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#646a76">win · +R</text>
+            </g>
+
+            <!-- Candle 3: bearish, hits SL -->
+            <g>
+              <line x1="360" y1="105" x2="360" y2="208" stroke="#9098a4" stroke-width="1.2"/>
+              <rect x="353" y="115" width="14" height="65" fill="#ff5260" stroke="#ff5260" rx="1" fill-opacity="0.7"/>
+              <circle cx="360" cy="200" r="5" fill="#ff5260" stroke="#0a0b0d" stroke-width="2"/>
+              <text x="360" y="222" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#ff5260" font-weight="600">SL HIT</text>
+              <text x="360" y="236" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#646a76">loss · −1R</text>
+            </g>
+
+            <!-- Candle 4: wide, both touched -->
+            <g>
+              <line x1="480" y1="32" x2="480" y2="208" stroke="#9098a4" stroke-width="1.2"/>
+              <rect x="473" y="100" width="14" height="40" fill="#f5a623" stroke="#f5a623" rx="1" fill-opacity="0.7"/>
+              <circle cx="480" cy="40" r="4" fill="#00d084" stroke="#0a0b0d" stroke-width="1.5"/>
+              <circle cx="480" cy="200" r="4" fill="#ff5260" stroke="#0a0b0d" stroke-width="1.5"/>
+              <text x="480" y="22" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#f5a623" font-weight="600">AMBIGUOUS</text>
+              <text x="480" y="236" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#646a76">→ 1s ticks</text>
+            </g>
+
+            <!-- Time arrow -->
+            <g>
+              <text x="600" y="216" font-family="JetBrains Mono, monospace" font-size="9" fill="#646a76" letter-spacing="0.1em">t →</text>
+            </g>
+          </svg>
+          <div class="candle-legend">
+            <div class="item"><span class="swatch" style="background:#00d084"></span> Bullish</div>
+            <div class="item"><span class="swatch" style="background:#ff5260;opacity:0.7"></span> Bearish</div>
+            <div class="item"><span class="swatch" style="background:#f5a623;opacity:0.7"></span> Ambiguous (TP+SL same bar)</div>
+            <div class="item"><span class="swatch" style="background:transparent;border:1px dashed #9098a4"></span> Level boundary</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout warn">
+        <div class="callout-label">Conservative tiebreak</div>
+        <p>The SL-first tiebreak is deliberately conservative — it assumes the worst outcome for the provider. Providers who believe a specific signal should have been judged differently can submit the exchange trade ticks for review.</p>
+      </div>
+    </section>
+
+    <!-- RESOLVE -->
+    <section class="sec" id="resolve">
+      <div class="sec-num">Stage 04 — Resolve</div>
+      <h2>Compute the R-multiple outcome.</h2>
+      <p>
+        R is the distance from entry to SL, expressed as the unit of risk. A <strong>+2R</strong> trade
+        returned twice the risked amount; a <strong>−1R</strong> trade lost the full risk. All outcomes are
+        reported in R so providers with tight stops and providers with wide stops are comparable.
+      </p>
+
+      <div class="diagram">
+        <div class="diagram-head">
+          <span>Outcome distribution · 30d sample (n=112)</span>
+          <span class="tag">SignalCity Pro</span>
+        </div>
+        <div class="diagram-body">
+          <div class="r-chart">
+            <div class="r-bars">
+              <div class="r-label">SL hit</div>
+              <div class="r-bar-track"><div class="r-bar-fill loss" style="width:60%"></div></div>
+              <div class="r-count">47 · −1R</div>
+            </div>
+            <div class="r-bars">
+              <div class="r-label">TP1 → BE</div>
+              <div class="r-bar-track"><div class="r-bar-fill partial" style="width:17%"></div></div>
+              <div class="r-count">13 · +0.5R</div>
+            </div>
+            <div class="r-bars">
+              <div class="r-label">TP1 partial</div>
+              <div class="r-bar-track"><div class="r-bar-fill tp1" style="width:27%"></div></div>
+              <div class="r-count">21 · +0.8R</div>
+            </div>
+            <div class="r-bars">
+              <div class="r-label">TP2 full</div>
+              <div class="r-bar-track"><div class="r-bar-fill tp2" style="width:40%"></div></div>
+              <div class="r-count">31 · +2.4R</div>
+            </div>
+            <div class="r-axis">
+              <span>−1R</span><span>0</span><span>+1R</span><span>+2R</span><span>+3R</span>
+            </div>
+          </div>
+
+          <div class="r-summary">
+            <div class="item">
+              <span class="v">52.2%</span>
+              <span class="k">Win rate</span>
+            </div>
+            <div class="item">
+              <span class="v">+1.41R</span>
+              <span class="k">Avg outcome</span>
+            </div>
+            <div class="item">
+              <span class="v neg">−1.0R</span>
+              <span class="k">Worst case</span>
+            </div>
+            <div class="item">
+              <span class="v">+2.4R</span>
+              <span class="k">Best case</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="method">
+        <div class="method-head">
+          <span>R-multiple computation</span>
+          <span>resolve_v3.py</span>
+        </div>
+<pre class="method-body"><span class="c"># For LONG (mirror logic for SHORT)</span>
+R_unit <span class="k">=</span> entry <span class="k">-</span> stop_loss
+
+<span class="c"># Full TP hits</span>
+<span class="k">if</span> tp2_hit_first:
+    outcome <span class="k">=</span> <span class="s">"win_tp2"</span>
+    R      <span class="k">=</span> (tp2 <span class="k">-</span> entry) <span class="k">/</span> R_unit          <span class="c"># e.g. +2.4R</span>
+
+<span class="k">if</span> tp1_hit_then_sl_be:                           <span class="c"># partial: TP1 closed 50%, remainder to BE</span>
+    outcome <span class="k">=</span> <span class="s">"partial_be"</span>
+    R      <span class="k">=</span> <span class="v">0.5</span> <span class="k">*</span> ((tp1 <span class="k">-</span> entry) <span class="k">/</span> R_unit) <span class="k">+</span> <span class="v">0.5</span> <span class="k">*</span> <span class="v">0</span>   <span class="c"># e.g. +0.5R</span>
+
+<span class="k">if</span> sl_hit_direct:
+    outcome <span class="k">=</span> <span class="s">"loss"</span>
+    R      <span class="k">=</span> <span class="v">-1.0</span>
+
+<span class="k">if</span> timeout:
+    outcome <span class="k">=</span> <span class="s">"expired"</span>
+    R      <span class="k">=</span> <span class="v">None</span>   <span class="c"># excluded from scoring</span></pre>
+      </div>
+
+      <h3>How we handle partial closes</h3>
+      <p>
+        Most signal providers explicitly or implicitly close a portion at TP1 and move SL to breakeven. We
+        model this with a fixed 50/50 assumption — 50% of position at TP1, 50% runs toward TP2 with SL at BE.
+        It's not perfect, but it's consistent across providers and matches the most common stated rule in
+        signal groups.
+      </p>
+
+      <div class="callout warn">
+        <div class="callout-label">Judgment call</div>
+        <p>If a provider explicitly states a different close schedule (e.g., "30% at TP1, 30% at TP2, 40% at TP3"), we'll honor it if declared <em>before</em> the signal resolves. Retroactive schedule changes are ignored.</p>
+      </div>
+
+      <h3>Fees and slippage</h3>
+      <p>
+        R is computed on mid-candle pricing without fee or slippage adjustments. This makes the number a pure
+        strategy metric, not an execution-cost estimate. If you act on these signals with a 10bp taker fee
+        and 5bp slippage, your realized return will be lower than the quoted R by roughly 0.05–0.15R per trade
+        depending on your SL distance.
+      </p>
+    </section>
+
+    <!-- SCORE -->
+    <section class="sec" id="score">
+      <div class="sec-num">Stage 05 — Score</div>
+      <h2>The composite IQ.</h2>
+      <p>
+        The IQ score blends four components. Each is normalized to a 0–1 range, weighted, and summed to a
+        0–100 composite. Scores are recomputed nightly on a rolling 30-day window.
+      </p>
+
+      <div class="diagram">
+        <div class="diagram-head">
+          <span>Composite IQ · weight breakdown</span>
+          <span class="tag">100 pts total</span>
+        </div>
+        <div class="diagram-body">
+          <div class="iq-viz">
+            <div class="iq-donut-wrap">
+              <!-- Donut: circumference = 2π × 80 = 502.65 -->
+              <!-- 35% = 175.93, 30% = 150.80, 20% = 100.53, 15% = 75.40 -->
+              <svg class="iq-donut" viewBox="0 0 200 200">
+                <circle class="bg" cx="100" cy="100" r="80"/>
+                <!-- Win rate: 35% — starts at 0 -->
+                <circle class="seg" cx="100" cy="100" r="80"
+                        stroke="#00d084"
+                        stroke-dasharray="175.93 502.65"
+                        stroke-dashoffset="0"/>
+                <!-- Avg R: 30% — starts at 35% -->
+                <circle class="seg" cx="100" cy="100" r="80"
+                        stroke="#7fb3ff"
+                        stroke-dasharray="150.80 502.65"
+                        stroke-dashoffset="-175.93"/>
+                <!-- Consistency: 20% — starts at 65% -->
+                <circle class="seg" cx="100" cy="100" r="80"
+                        stroke="#f5a623"
+                        stroke-dasharray="100.53 502.65"
+                        stroke-dashoffset="-326.73"/>
+                <!-- Sample weight: 15% — starts at 85% -->
+                <circle class="seg" cx="100" cy="100" r="80"
+                        stroke="#7c5cff"
+                        stroke-dasharray="75.40 502.65"
+                        stroke-dashoffset="-427.26"/>
+              </svg>
+              <div class="iq-center">
+                <div class="num">100</div>
+                <div class="label">max IQ</div>
+              </div>
+            </div>
+
+            <div class="iq-legend">
+              <div class="iq-leg-item">
+                <span class="iq-leg-swatch" style="background:#00d084"></span>
+                <div class="iq-leg-text">
+                  <span class="name">Win rate</span>
+                  <span class="desc">(wins + 0.5 × partials) / resolved</span>
+                </div>
+                <div class="iq-leg-weight">35<span class="pct"> pts</span></div>
+              </div>
+              <div class="iq-leg-item">
+                <span class="iq-leg-swatch" style="background:#7fb3ff"></span>
+                <div class="iq-leg-text">
+                  <span class="name">Avg R</span>
+                  <span class="desc">Mean R, normalized to [−2, +3]</span>
+                </div>
+                <div class="iq-leg-weight">30<span class="pct"> pts</span></div>
+              </div>
+              <div class="iq-leg-item">
+                <span class="iq-leg-swatch" style="background:#f5a623"></span>
+                <div class="iq-leg-text">
+                  <span class="name">Consistency</span>
+                  <span class="desc">1 − stddev(rolling 7d WR)</span>
+                </div>
+                <div class="iq-leg-weight">20<span class="pct"> pts</span></div>
+              </div>
+              <div class="iq-leg-item">
+                <span class="iq-leg-swatch" style="background:#7c5cff"></span>
+                <div class="iq-leg-text">
+                  <span class="name">Sample weight</span>
+                  <span class="desc">min(1.0, resolved / 50)</span>
+                </div>
+                <div class="iq-leg-weight">15<span class="pct"> pts</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <table class="weights">
+        <thead>
+          <tr>
+            <th>Component</th>
+            <th>Measures</th>
+            <th>Weight</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Win rate</td>
+            <td>(wins + 0.5 × partials) / total resolved</td>
+            <td class="num">35</td>
+          </tr>
+          <tr>
+            <td>Avg R</td>
+            <td>Mean R-multiple, normalized to [−2, +3] band</td>
+            <td class="num">30</td>
+          </tr>
+          <tr>
+            <td>Consistency</td>
+            <td>1 − stddev(rolling 7-day WR over the last 30 days)</td>
+            <td class="num">20</td>
+          </tr>
+          <tr>
+            <td>Sample weight</td>
+            <td>min(1.0, signals_resolved / 50)</td>
+            <td class="num">15</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="method">
+        <div class="method-head">
+          <span>composite_iq.py</span>
+          <span>SignalCity Pro · 30d · as of 2026-04-19 15:32 UTC</span>
+        </div>
+<pre class="method-body">signals_total   <span class="k">=</span> <span class="v">112</span>
+wins            <span class="k">=</span> <span class="v">52</span>   <span class="c"># TP2 hit: 31 · TP1+BE: 21</span>
+losses          <span class="k">=</span> <span class="v">47</span>   <span class="c"># SL direct: 47</span>
+partials        <span class="k">=</span> <span class="v">13</span>   <span class="c"># TP1 then SL (BE or partial)</span>
+
+win_rate        <span class="k">=</span> (wins <span class="k">+</span> <span class="v">0.5</span> <span class="k">*</span> partials) <span class="k">/</span> signals_total    <span class="c">#</span> <span class="v">0.522</span>
+avg_R           <span class="k">=</span> <span class="s">sum(R_i) / N_resolved</span>                         <span class="c">#</span> <span class="v">+1.41R</span>
+consistency     <span class="k">=</span> <span class="v">1.0</span> <span class="k">-</span> <span class="s">std(rolling_7d_WR)</span>                    <span class="c">#</span> <span class="v">0.72</span>
+sample_weight   <span class="k">=</span> <span class="s">min(1.0, signals_total / 50)</span>                  <span class="c">#</span> <span class="v">1.00</span>
+
+<span class="c"># Normalization for avg_R: clip to [-2, +3], then scale to [0, 1]</span>
+avg_R_norm      <span class="k">=</span> (clip(avg_R, <span class="v">-2</span>, <span class="v">3</span>) <span class="k">+</span> <span class="v">2</span>) <span class="k">/</span> <span class="v">5</span>              <span class="c">#</span> <span class="v">0.682</span>
+
+iq <span class="k">=</span> <span class="v">35</span> <span class="k">*</span> win_rate
+   <span class="k">+</span> <span class="v">30</span> <span class="k">*</span> avg_R_norm
+   <span class="k">+</span> <span class="v">20</span> <span class="k">*</span> consistency
+   <span class="k">+</span> <span class="v">15</span> <span class="k">*</span> sample_weight
+
+iq <span class="k">=</span> <span class="v">78.6</span>   <span class="c"># → rank #2 of 47 providers tracked</span></pre>
+      </div>
+
+      <h3>Why these weights?</h3>
+      <p>
+        The weighting is opinionated. The short answer: win rate and expectancy matter most; consistency
+        prevents a single home-run trade from dominating a score; and sample weight prevents a provider with
+        three lucky calls from topping the leaderboard.
+      </p>
+      <ul>
+        <li><strong>35 for win rate</strong> — it's what most subscribers actually experience emotionally</li>
+        <li><strong>30 for avg R</strong> — but a 40% WR at +2R is still better than 70% at +0.3R</li>
+        <li><strong>20 for consistency</strong> — steady is harder than lucky</li>
+        <li><strong>15 for sample weight</strong> — providers below 50 resolved signals in 30d are capped</li>
+      </ul>
+
+      <div class="callout loss">
+        <div class="callout-label">Known limitation</div>
+        <p>A provider who only posts signals in obviously favorable conditions can game consistency. We partially offset this with the sample-weight cap (you can't stay at full weight while only posting twice a week), but it's a real bias we're actively working on. The next revision will add a "market regime balance" penalty.</p>
+      </div>
+
+      <div class="cta-block">
+        <div class="cta-block-inner">
+          <div class="cta-block-eyebrow">
+            <span class="live-pill"><span class="live-dot"></span> Live</span>
+            You've seen the math
+          </div>
+          <h3>Now see the full leaderboard with every IQ broken down by component.</h3>
+          <p>
+            Every provider in the rankings exposes their full breakdown — win rate, avg R, consistency,
+            sample weight — plus the chain-verifiable signal log. Founding pricing closes once we hit 500 seats.
+          </p>
+          <div class="cta-stats">
+            <div class="cta-stat"><strong>47</strong>Providers ranked</div>
+            <div class="cta-stat"><strong>12,847</strong>Signals indexed</div>
+            <div class="cta-stat warn"><strong>253</strong>Seats remaining</div>
+          </div>
+          <div class="cta-actions">
+            <a href="/pricing.html" class="btn-primary">
+              Join Now
+              <svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </a>
+            <a href="/providers.html" class="btn-secondary">See providers →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATES -->
+    <section class="sec" id="states">
+      <div class="sec-num">Signal lifecycle</div>
+      <h2>Eight states a signal can be in.</h2>
+      <p>Every signal in the system is always in exactly one of these states. State transitions are logged and part of the audit trail.</p>
+
+      <div class="diagram">
+        <div class="diagram-head">
+          <span>State machine · transitions</span>
+          <span class="tag">8 states</span>
+        </div>
+        <div class="diagram-body">
+          <svg class="state-machine" viewBox="0 0 760 280" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0,0 L10,5 L0,10 z" fill="#23272f"/>
+              </marker>
+              <marker id="arrow-active" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0,0 L10,5 L0,10 z" fill="#00d084" fill-opacity="0.7"/>
+              </marker>
+              <marker id="arrow-error" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0,0 L10,5 L0,10 z" fill="#ff5260" fill-opacity="0.5"/>
+              </marker>
+            </defs>
+
+            <!-- Main happy path: y=80 -->
+            <!-- INGESTED -->
+            <g class="sm-box">
+              <rect x="20" y="60" width="100" height="40"/>
+              <text x="70" y="84">INGESTED</text>
+            </g>
+            <!-- PARSED -->
+            <g class="sm-box">
+              <rect x="150" y="60" width="100" height="40"/>
+              <text x="200" y="84">PARSED</text>
+            </g>
+            <!-- HASHED -->
+            <g class="sm-box">
+              <rect x="280" y="60" width="100" height="40"/>
+              <text x="330" y="84">HASHED</text>
+            </g>
+            <!-- ACTIVE -->
+            <g class="sm-box">
+              <rect x="410" y="60" width="100" height="40"/>
+              <text x="460" y="84">ACTIVE</text>
+            </g>
+            <!-- RESOLVED -->
+            <g class="sm-box terminal">
+              <rect x="540" y="60" width="100" height="40"/>
+              <text x="590" y="84">RESOLVED</text>
+            </g>
+            <!-- DISPUTED (offshoot) -->
+            <g class="sm-box">
+              <rect x="660" y="160" width="90" height="40"/>
+              <text x="705" y="184">DISPUTED</text>
+            </g>
+
+            <!-- Branches: y=200 -->
+            <!-- REJECTED -->
+            <g class="sm-box error">
+              <rect x="150" y="200" width="100" height="40"/>
+              <text x="200" y="224">REJECTED</text>
+            </g>
+            <!-- EXPIRED -->
+            <g class="sm-box terminal">
+              <rect x="410" y="200" width="100" height="40"/>
+              <text x="460" y="224">EXPIRED</text>
+            </g>
+
+            <!-- Edges: main path -->
+            <path class="sm-edge active" d="M 120 80 L 146 80" marker-end="url(#arrow-active)"/>
+            <path class="sm-edge active" d="M 250 80 L 276 80" marker-end="url(#arrow-active)"/>
+            <path class="sm-edge active" d="M 380 80 L 406 80" marker-end="url(#arrow-active)"/>
+            <path class="sm-edge active" d="M 510 80 L 536 80" marker-end="url(#arrow-active)"/>
+
+            <!-- Down branches -->
+            <path class="sm-edge error" d="M 200 100 L 200 196" marker-end="url(#arrow-error)"/>
+            <path class="sm-edge" d="M 460 100 L 460 196" marker-end="url(#arrow)"/>
+
+            <!-- RESOLVED ↔ DISPUTED -->
+            <path class="sm-edge" d="M 605 100 Q 660 130 685 156" marker-end="url(#arrow)"/>
+            <path class="sm-edge active" d="M 670 160 Q 620 130 605 102" marker-end="url(#arrow-active)"/>
+
+            <!-- Edge labels -->
+            <g>
+              <text class="sm-edge-label" x="135" y="74">parser ok</text>
+              <text class="sm-edge-label" x="265" y="74">canonical</text>
+              <text class="sm-edge-label" x="395" y="74">tracking</text>
+              <text class="sm-edge-label" x="525" y="74">TP/SL</text>
+
+              <text class="sm-edge-label" x="206" y="148" fill="#ff5260" fill-opacity="0.7">validation</text>
+              <text class="sm-edge-label" x="206" y="160" fill="#ff5260" fill-opacity="0.7">fails</text>
+
+              <text class="sm-edge-label" x="466" y="148">7d</text>
+              <text class="sm-edge-label" x="466" y="160">timeout</text>
+
+              <text class="sm-edge-label" x="640" y="128">flag</text>
+              <text class="sm-edge-label" x="640" y="142">⇄ resolve</text>
+            </g>
+
+            <!-- Legend dots -->
+            <g transform="translate(20, 250)">
+              <line x1="0" y1="6" x2="20" y2="6" class="sm-edge active"/>
+              <text class="sm-edge-label" x="26" y="9">scoring path</text>
+
+              <line x1="120" y1="6" x2="140" y2="6" class="sm-edge error"/>
+              <text class="sm-edge-label" x="146" y="9">excluded from score</text>
+
+              <line x1="290" y1="6" x2="310" y2="6" class="sm-edge"/>
+              <text class="sm-edge-label" x="316" y="9">manual / timeout</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <p>Only <code>RESOLVED</code> signals contribute to scoring. <code>EXPIRED</code>, <code>REJECTED</code>, and <code>DISPUTED</code> are visible on the provider's page but excluded from the IQ calculation.</p>
+    </section>
+
+    <!-- LIMITS -->
+    <section class="sec" id="limits">
+      <div class="sec-num">What we don't do</div>
+      <h2>The limits of this methodology.</h2>
+      <p>We've tried to be clear-eyed about what this scoring system does and doesn't tell you. Things we explicitly do not claim:</p>
+      <ul>
+        <li><strong>We don't claim signals are profitable for you.</strong> R-multiples ignore fees, funding, slippage, and your own execution latency. A +1.4R average can become −0.1R after real costs.</li>
+        <li><strong>We don't adjust for market regime.</strong> A provider who posted mostly longs during an uptrend will score higher than one who posted balanced signals through chop — by design, because that's what happened.</li>
+        <li><strong>We don't evaluate private signals.</strong> If a provider sends calls only to paid subscribers, we can't track them. The leaderboard is a ranking of <em>public-call</em> performance.</li>
+        <li><strong>We don't predict future performance.</strong> A provider at IQ 78 today may be at IQ 52 in six weeks. Past performance is not indicative of future results. This is statistically true of almost every signal provider we've tracked.</li>
+        <li><strong>We don't execute trades.</strong> AgoraIQ is an intelligence layer, not a trading bot. No custody, no API keys, no execution risk on our side.</li>
+      </ul>
+    </section>
+
+    <!-- AUDIT -->
+    <section class="sec" id="audit">
+      <div class="sec-num">Audit trail</div>
+      <h2>How to verify anything on this site.</h2>
+      <p>Three layers of verification are available to any user — subscribed or not:</p>
+
+      <div class="diagram">
+        <div class="diagram-head">
+          <span>Verification flow · 3 layers</span>
+          <span class="tag">no login required</span>
+        </div>
+        <div class="diagram-body">
+          <div class="audit-flow">
+            <div class="audit-step">
+              <div class="audit-num">1</div>
+              <div class="audit-icon">
+                <svg viewBox="0 0 24 24"><path d="M10 13a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1.5 1.5"/><path d="M14 11a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1.5-1.5"/></svg>
+              </div>
+              <div class="audit-title">Chain verification</div>
+              <div class="audit-desc">Re-derive every hash from the published chain. If any link breaks, the database has been tampered with — guaranteed.</div>
+              <div class="audit-code">$ chain-verify ./chain.json</div>
+            </div>
+            <div class="audit-arrow">
+              <svg viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 6h18M16 2l4 4-4 4"/></svg>
+            </div>
+            <div class="audit-step">
+              <div class="audit-num">2</div>
+              <div class="audit-icon">
+                <svg viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M14 13v7H4V10h7"/></svg>
+              </div>
+              <div class="audit-title">Source provenance</div>
+              <div class="audit-desc">Every signal links to its original Telegram, Discord, or X post. Click through and read the raw call yourself.</div>
+              <div class="audit-code">→ t.me/signalcity/12847</div>
+            </div>
+            <div class="audit-arrow">
+              <svg viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 6h18M16 2l4 4-4 4"/></svg>
+            </div>
+            <div class="audit-step">
+              <div class="audit-num">3</div>
+              <div class="audit-icon">
+                <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><line x1="9" y1="13" x2="9" y2="17"/><line x1="13" y1="10" x2="13" y2="17"/><line x1="17" y1="14" x2="17" y2="17"/></svg>
+              </div>
+              <div class="audit-title">Candle replay</div>
+              <div class="audit-desc">Pull the same minute-bar from the exchange API. Confirm our reported high and low match theirs.</div>
+              <div class="audit-code">GET /klines?symbol=BTCUSDT&amp;...</div>
+            </div>
+          </div>
+          <div class="diagram-caption">Each layer is independent — passing all three means the score, the source, and the price all agree.</div>
+        </div>
+      </div>
+
+      <h3>1. Chain verification</h3>
+      <p>The full hash chain is exportable as JSON. Point the open-source verifier at it and re-derive every hash. If it passes, no record has been altered or reordered.</p>
+
+      <h3>2. Per-signal source</h3>
+      <p>Each signal on the Live Proof page links to its source URL (the original Telegram/Discord/X post) where still public. Hover any signal to see the ingest timestamp, server latency, and candle source.</p>
+
+      <h3>3. Candle replay</h3>
+      <p>For any resolved signal, we publish the minute-bar that triggered resolution, plus the prev and next bars. Anyone can pull the same bars from the exchange API and confirm the outcome we reported.</p>
+
+      <div class="callout">
+        <div class="callout-label">Found an error?</div>
+        <p>If you believe a signal was mis-resolved, email <code>audit@agoraiq.net</code> with the signal hash. Every dispute goes into the <code>DISPUTED</code> state, is manually re-reviewed within 48 hours, and the outcome is published — whether we got it right or wrong.</p>
+      </div>
+    </section>
+
+    <!-- VERSIONS -->
+    <section class="sec" id="versions">
+      <div class="sec-num">Version history</div>
+      <h2>What changed, and when.</h2>
+      <p>Each methodology version is tagged. Historical scores are recomputed when a new version ships so that the leaderboard always reflects the current methodology. Per-version archives are available on request.</p>
+
+      <div class="diagram">
+        <div class="diagram-head">
+          <span>Methodology revisions · v1 → v3.2</span>
+          <span class="tag">live methodology</span>
+        </div>
+        <div class="diagram-body">
+          <div class="timeline">
+            <div class="tl-item current">
+              <div class="tl-date">2026-04-12</div>
+              <div class="tl-marker"></div>
+              <div class="tl-content">
+                <div class="tl-mobile-date">2026-04-12</div>
+                <div class="tl-head">
+                  <span class="tl-version">v3.2</span>
+                  <span class="tl-tag">current</span>
+                </div>
+                <div class="tl-desc">Tightened tiebreak rule for TP + SL in the same candle (now fetches 1s ticks when available). Published the open-source chain verifier on GitHub.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-date">2026-02-28</div>
+              <div class="tl-marker"></div>
+              <div class="tl-content">
+                <div class="tl-mobile-date">2026-02-28</div>
+                <div class="tl-head">
+                  <span class="tl-version">v3.1</span>
+                </div>
+                <div class="tl-desc">Added partial-close modeling at 50/50 TP1/TP2 with SL-to-BE. Introduced the <strong>consistency</strong> component (20 pts) into the composite IQ.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-date">2026-01-15</div>
+              <div class="tl-marker"></div>
+              <div class="tl-content">
+                <div class="tl-mobile-date">2026-01-15</div>
+                <div class="tl-head">
+                  <span class="tl-version">v3.0</span>
+                </div>
+                <div class="tl-desc">First publicly published methodology. SHA-256 chain hashing went live. Initial composite IQ formula: <code>WR × 45 + avg_R × 35 + sample × 20</code>.</div>
+              </div>
+            </div>
+            <div class="tl-item minor">
+              <div class="tl-date">pre-launch</div>
+              <div class="tl-marker"></div>
+              <div class="tl-content">
+                <div class="tl-mobile-date">pre-launch</div>
+                <div class="tl-head">
+                  <span class="tl-version">v2 / v1</span>
+                </div>
+                <div class="tl-desc">Internal iterations. Not used for any public leaderboard, scores, or claims.</div>
+              </div>
+            </div>
+          </div>
+          <div class="diagram-caption">When methodology ships a new minor or major version, every historical signal is re-scored. The leaderboard always reflects the current rules.</div>
+        </div>
+      </div>
+
+      <div class="cta-final">
+        <span class="cta-final-tag">Founding pricing closes May 1</span>
+        <h2>Ready to use a methodology you've actually read?</h2>
+        <p>
+          Founding members lock in their pricing for life — even when monthly rates apply to everyone else
+          starting May 1. <strong style="color:var(--text)">253 of 500</strong> seats remain.
+        </p>
+        <a href="/pricing.html" class="btn-primary">
+          Join Now
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+        <div class="cta-final-meta">No card to view pricing · Cancel anytime · 24h free trial</div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-brand">
+    <div class="logo"><span class="logo-mark"></span><span class="brand-text">Agora<span class="brand-iq">IQ</span></span></div>
+    <p>The proof layer for crypto signals. Operated by ChatLogic Insights LTD, London. Not investment advice. Not available to UK persons.</p>
+  </div>
+  <div>
+    <h4>Product</h4>
+    <ul>
+      <li><a href="/proof.html">Live Proof</a></li>
+      <li><a href="/providers.html">Providers</a></li>
+      <li><a href="/scanner.html">Scanner</a></li>
+      <li><a href="/methodology.html">Methodology</a></li>
+      <li><a href="/pricing.html">Pricing</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Company</h4>
+    <ul>
+      <li><a href="/about.html">About</a></li>
+      <li><a href="/contact.html">Contact</a></li>
+      <li><a href="/faq.html">FAQ</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Legal</h4>
+    <ul>
+      <li><a href="/terms.html">Terms of Use</a></li>
+      <li><a href="/privacy.html">Privacy Policy</a></li>
+      <li><a href="/cookies.html">Cookie Policy</a></li>
+      <li><a href="/risk-disclosure.html">Risk Disclosure</a></li>
+      <li><a href="/disclaimer.html">Disclaimer</a></li>
+      <li><a href="/no-financial-advice.html">No Financial Advice</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span>© 2026 ChatLogic Insights LTD</span>
+  <span class="risk">Trading crypto derivatives involves substantial risk of loss. Past performance of any provider is not indicative of future results. AgoraIQ is not a regulated financial service and does not provide investment advice. See <a href="/risk-disclosure.html" style="color:var(--text-dim);text-decoration:underline">full risk disclosure</a>.</span>
+</div>
+
+<!-- Floating Join CTA -->
+<a href="/pricing.html" class="fab" id="joinFab" aria-label="Join AgoraIQ">
+  Join Now
+  <svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+  <span class="fab-meta">253 seats left</span>
+</a>
+
+<script>
+// ---------- Scrollspy for TOC ----------
+const tocLinks = document.querySelectorAll('.toc a');
+const sections = Array.from(document.querySelectorAll('.sec[id]'));
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+    }
+  });
+}, { rootMargin: '-40% 0px -50% 0px' });
+sections.forEach(s => obs.observe(s));
+
+// ---------- FAB visibility (show after hero scrolls out) ----------
+const fab = document.getElementById('joinFab');
+const hero = document.querySelector('.hero');
+const finalCta = document.querySelector('.cta-final');
+const fabObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    // Hide FAB when hero or final-CTA is in view (no double-CTA stacking)
+    if (e.isIntersecting) {
+      fab.classList.remove('visible');
+    } else if (e.target === hero) {
+      fab.classList.add('visible');
+    }
+  });
+}, { rootMargin: '0px' });
+fabObs.observe(hero);
+if (finalCta) fabObs.observe(finalCta);
+</script>
+
+<script src="/assets/agoraiq-mobile.js" defer=""></script>
+
+
+</body></html>
