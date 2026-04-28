@@ -93,7 +93,7 @@ async function processIngestJob(job) {
         payload.provider_id || null,
         payload.source,
         payload.bot_user_id || null,
-        "INGESTED",
+        "OPEN",
         JSON.stringify(meta),
         payload.hash,
         SCHEMA_VERSION,
@@ -131,7 +131,7 @@ async function processIngestJob(job) {
   // Lifecycle audit. Failure here does not invalidate the ingestion.
   try {
     await events.logEvent(saved.id, "CREATED", {
-      newStatus: "INGESTED",
+      newStatus: "OPEN",
       priceAt: saved.entry,
       meta: {
         source: saved.source,
