@@ -48,6 +48,18 @@ function ingestQueue() {
   return getQueue("signal:ingest");
 }
 
+/**
+ * Signal enrichment queue — async AI scoring on freshly ingested rows.
+ *
+ * The ingest worker enqueues onto signal:enrich after a successful INSERT.
+ * The enrich worker is the only writer permitted to mutate `confidence` and
+ * the `ai_*` keys inside `meta`. It never changes `status` (the resolver
+ * owns lifecycle transitions).
+ */
+function enrichQueue() {
+  return getQueue("signal:enrich");
+}
+
 async function closeQueues() {
   for (const q of Object.values(_queues)) {
     await q.close();
@@ -55,4 +67,4 @@ async function closeQueues() {
   _queues = {};
 }
 
-module.exports = { pushQueue, resolverQueue, lifecycleQueue, ingestQueue, closeQueues };
+module.exports = { pushQueue, resolverQueue, lifecycleQueue, ingestQueue, enrichQueue, closeQueues };

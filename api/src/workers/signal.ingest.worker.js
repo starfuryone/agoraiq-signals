@@ -36,7 +36,7 @@ const db = require("../lib/db");
 const events = require("../lib/events");
 const { releaseReservation } = require("../lib/dedupe");
 const { SCHEMA_VERSION } = require("../lib/strategy");
-const { pushQueue } = require("./queues");
+const { pushQueue, enrichQueue } = require("./queues");
 
 const QUEUE_NAME = "signal:ingest";
 const CONCURRENCY = parseInt(process.env.INGEST_WORKER_CONCURRENCY || "4", 10);
@@ -152,6 +152,25 @@ async function processIngestJob(job) {
     } catch (err) {
       console.warn("[ingest] push enqueue failed:", err.message);
     }
+  }
+
+  // Async AI enrichment. The enrich worker is the only writer that mutates
+  // confidence/meta.ai_*. Idempotent — jobId = signal id, so a duplicate
+  // enqueue (e.g. if the ingest job is replayed) coalesces to one job.
+  try {
+    await enrichQueue().add(
+      "enrich",
+      { signal_id: saved.id },
+      {
+        jobId: `enrich-${saved.id}`,
+        attempts: 3,
+        backoff: { type: "exponential", delay: 2000 },
+        removeOnComplete: { count: 500 },
+        removeOnFail: { count: 500 },
+      }
+    );
+  } catch (err) {
+    console.warn("[ingest] enrich enqueue failed:", err.message);
   }
 
   return { ok: true, id: saved.id, hash: payload.hash };

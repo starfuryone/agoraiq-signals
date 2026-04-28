@@ -21,6 +21,7 @@ const { startResolverWorker } = require("./resolver");
 const { startScannerWatcher } = require("./scanner");
 const { startDailyWorker } = require("./daily");
 const { startIngestWorker } = require("./signal.ingest.worker");
+const { startEnrichWorker } = require("./signal.enrich.worker");
 const { closeQueues } = require("./queues");
 const { closeRedis } = require("../lib/redis");
 const db = require("../lib/db");
@@ -52,6 +53,7 @@ async function main() {
   // sole writer to signals_v2 — every other producer expects it to be live.
   const workers = [];
   workers.push(startIngestWorker());
+  workers.push(startEnrichWorker());
   workers.push(startPushWorker());
   workers.push(startResolverWorker());
   workers.push(startScannerWatcher());
@@ -59,6 +61,7 @@ async function main() {
 
   console.log(`\n[workers] ${workers.length} workers running`);
   console.log("  • signal-ingest:   Single-writer ingestion (signals_v2)");
+  console.log("  • signal-enrich:   Async AI scoring (confidence + meta.ai_*)");
   console.log("  • push-alerts:     Telegram push notifications");
   console.log("  • signal-resolver: Price checking + outcome resolution");
   console.log("  • scanner-watcher: Breakout detection + alerts");
