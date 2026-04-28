@@ -37,6 +37,7 @@ const events = require("../lib/events");
 const { releaseReservation } = require("../lib/dedupe");
 const { SCHEMA_VERSION } = require("../lib/strategy");
 const { pushQueue, enrichQueue } = require("./queues");
+const metrics = require("../lib/metrics");
 
 const QUEUE_NAME = "signal:ingest";
 const CONCURRENCY = parseInt(process.env.INGEST_WORKER_CONCURRENCY || "4", 10);
@@ -199,6 +200,7 @@ function startIngestWorker() {
 
   worker.on("completed", (job, result) => {
     if (result && result.ok) {
+      metrics.setGauge("agoraiq_ingest_last_success_unix", { worker: "ingest" }, Math.floor(Date.now() / 1000));
       const tag = result.idempotent ? " [idempotent]" : "";
       console.log(
         `[ingest] job ${job.id} → signal #${result.id}${tag} ` +

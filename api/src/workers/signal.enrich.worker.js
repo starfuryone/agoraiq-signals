@@ -33,6 +33,7 @@ const { Worker } = require("bullmq");
 const { getRedis } = require("../lib/redis");
 const db = require("../lib/db");
 const ai = require("../lib/ai");
+const metrics = require("../lib/metrics");
 
 const QUEUE_NAME = "signal:enrich";
 const CONCURRENCY = parseInt(process.env.ENRICH_WORKER_CONCURRENCY || "2", 10);
@@ -157,14 +158,19 @@ function startEnrichWorker() {
 
   worker.on("completed", (job, result) => {
     if (result && result.ok && !result.skipped) {
+      metrics.incCounter("agoraiq_enrich_total", { outcome: "scored" });
+      metrics.setGauge("agoraiq_enrich_last_success_unix", {}, Math.floor(Date.now() / 1000));
       console.log(
         `[enrich] #${result.signal_id} scored=${result.score} ` +
         `provider=${result.provider || "heuristic"}`
       );
+    } else if (result && result.skipped) {
+      metrics.incCounter("agoraiq_enrich_total", { outcome: "skipped" });
     }
   });
 
   worker.on("failed", (job, err) => {
+    metrics.incCounter("agoraiq_enrich_total", { outcome: "failed" });
     const sid = job && job.data && job.data.signal_id;
     console.error(`[enrich] job ${job && job.id} (signal #${sid}) failed: ${err.message}`);
   });

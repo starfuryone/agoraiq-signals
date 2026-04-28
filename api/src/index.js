@@ -38,6 +38,10 @@ app.use("/api/v1/auth", require("./routes/auth"));
 app.use("/api/v1/signals/ingest", require("./routes/ingest"));
 app.use("/api/v1/signals", require("./routes/signals"));
 app.use("/api/v1/signals", require("./routes/signals-ext"));
+
+// Observability: /metrics and /health/ingest. Mounted at root so scrapers
+// can hit /metrics without an /api prefix per Prometheus convention.
+app.use("/", require("./routes/health"));
 app.use("/api/v1/providers", require("./routes/providers"));
 app.use("/api/v1/scanner", require("./routes/scanner"));
 app.use("/api/v1/scanner", require("./routes/scanner-live"));

@@ -40,6 +40,7 @@ const { normalize, NormalizationError } = require("../lib/normalizer");
 const { validate } = require("../lib/validator");
 const { checkAndReserve } = require("../lib/dedupe");
 const { ingestQueue } = require("../workers/queues");
+const metrics = require("../lib/metrics");
 
 const router = Router();
 
@@ -181,6 +182,8 @@ router.post("/", optionalAuth, async (req, res) => {
     return res.status(500).json({ error: "ingest_worker_failed", details: result || null });
   }
 
+  if (!result.idempotent) recordAccepted(validated);
+
   return res.status(201).json({
     status: result.idempotent ? "already_ingested" : "ingested",
     id: result.id,
@@ -201,6 +204,14 @@ async function recordRejection({
   rawPayload,
   normalizedPayload,
 }) {
+  metrics.incCounter("agoraiq_ingest_total", {
+    stage,
+    source: source || "unknown",
+    strategy: (normalizedPayload && normalizedPayload.strategy) || "unknown",
+    outcome: "rejected",
+  });
+  metrics.incCounter("agoraiq_ingest_rejections_total", { stage, reason });
+
   try {
     await db.query(
       `INSERT INTO signals_rejected
@@ -221,6 +232,16 @@ async function recordRejection({
   } catch (err) {
     console.error("[ingest] rejection persist failed:", err.message);
   }
+}
+
+function recordAccepted(validated) {
+  metrics.incCounter("agoraiq_ingest_total", {
+    stage: "persisted",
+    source: validated.source || "unknown",
+    strategy: validated.strategy || "unknown",
+    outcome: "accepted",
+  });
+  metrics.setGauge("agoraiq_ingest_last_success_unix", { worker: "gateway" }, Math.floor(Date.now() / 1000));
 }
 
 function rawString(body) {
@@ -323,6 +344,8 @@ async function ingestInternal({ payload, botUserId }) {
   if (!result || !result.ok) {
     return { ok: false, http_status: 500, error: "ingest_worker_failed" };
   }
+
+  if (!result.idempotent) recordAccepted(validated);
 
   return { ok: true, http_status: 201, id: result.id, hash: result.hash, idempotent: !!result.idempotent };
 }

@@ -41,6 +41,7 @@ const { fetchPrice } = require("../lib/price");
 const Signal = require("../models/signal");
 const events = require("../lib/events");
 const { pushQueue } = require("./queues");
+const metrics = require("../lib/metrics");
 
 const INTERVAL = parseInt(process.env.RESOLVER_INTERVAL_MS) || 60_000;
 
@@ -169,6 +170,7 @@ async function processSignal(candidateId) {
         signal: { ...sig, status: "SL", result: pnl, duration_sec: dur },
       }).catch(() => {});
 
+      metrics.incCounter("agoraiq_resolver_transitions_total", { transition: "SL" });
       console.log(
         `[resolver] ${sig.symbol} #${sig.id} → SL (${(pnl * 100).toFixed(2)}%, ${formatDuration(dur)})`
       );
@@ -232,6 +234,7 @@ async function processSignal(candidateId) {
         }).catch(() => {});
       }
 
+      metrics.incCounter("agoraiq_resolver_transitions_total", { transition: highestTpHit });
       console.log(
         `[resolver] ${sig.symbol} #${sig.id} → ${highestTpHit}${isFinal ? " (FINAL)" : ""} ` +
         `(+${(pnl * 100).toFixed(2)}%, ${formatDuration(dur)})`
@@ -375,6 +378,13 @@ function startResolverWorker() {
   });
 
   worker.on("completed", (job, result) => {
+    metrics.setGauge("agoraiq_resolver_last_run_unix", {}, Math.floor(Date.now() / 1000));
+    if (result && result.skipped > 0) {
+      metrics.incCounter("agoraiq_resolver_transitions_total", { transition: "skipped" }, result.skipped);
+    }
+    if (result && result.expired > 0) {
+      metrics.incCounter("agoraiq_resolver_transitions_total", { transition: "EXPIRED" }, result.expired);
+    }
     if (result && (result.resolved > 0 || result.updates > 0 || result.skipped > 0)) {
       console.log(
         `[resolver] checked=${result.checked} resolved=${result.resolved} ` +
