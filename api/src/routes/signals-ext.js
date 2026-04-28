@@ -4,6 +4,8 @@ const { requireAuth } = require("../middleware/auth");
 const { attachPlan } = require("../middleware/subscription");
 const Signal = require("../models/signal");
 const events = require("../lib/events");
+const { ingestInternal } = require("./ingest");
+const { STRATEGIES } = require("../lib/strategy");
 
 const router = Router();
 
@@ -124,7 +126,12 @@ router.get("/user/stats", requireAuth, attachPlan, async (req, res) => {
 
 
 // ─────────────────────────────────────────────────────────────────
-// POST /signals/track — direct insert from scanner UI (bypasses parser)
+// POST /signals/track — track a symbol from the scanner UI.
+//
+// Forwards to the canonical ingestion pipeline. NO direct DB write.
+// Source is "user" (the user is opting in to track) with strategy
+// scanner_track_v1 so analytics can separate scanner-watcher signals
+// from user-initiated tracks.
 // ─────────────────────────────────────────────────────────────────
 router.post("/track", requireAuth, async (req, res) => {
   try {
@@ -134,70 +141,39 @@ router.post("/track", requireAuth, async (req, res) => {
       return res.status(400).json({ error: "Missing required fields: symbol, direction" });
     }
 
-    // Use Signal model for normalization + validation — same as /submit
-    const signal = Signal.normalize({
-      symbol,
-      direction,
-      entry: entry || null,
-      stop: sl || null,
-      targets: Array.isArray(targets) ? targets : [],
-      confidence: ai_score || null,
-      type: "manual",
-      source: "scanner",
-      provider: "scanner",
-      bot_user_id: req.userId,
-      status: "OPEN",
-      meta: Object.assign({}, meta || {}, {
-        exchange: exchange || null,
-        tracked_from: "scanner_ui",
-      }),
+    const result = await ingestInternal({
+      payload: {
+        structured: {
+          symbol,
+          direction,
+          entry: entry || null,
+          stop: sl || null,
+          targets: Array.isArray(targets) ? targets : [],
+        },
+        source: "user",
+        provider: "scanner",
+        strategy: STRATEGIES.SCANNER_TRACK_V1,
+        timeframe: "scanner",
+        confidence: typeof ai_score === "number" ? ai_score : null,
+        meta: Object.assign({}, meta || {}, {
+          exchange: exchange || null,
+          tracked_from: "scanner_ui",
+        }),
+      },
+      botUserId: req.userId,
     });
 
-    const check = Signal.validate(signal);
-    if (!check.valid) {
-      return res.status(422).json({ error: "Invalid signal", details: check.errors });
-    }
-
-    // Dedupe: reject if user already has an OPEN signal for this symbol
-    const existing = await db.query(
-      `SELECT id, direction, created_at FROM signals_v2
-       WHERE bot_user_id = $1 AND symbol = $2 AND status = 'OPEN'
-       LIMIT 1`,
-      [req.userId, signal.symbol]
-    );
-    if (existing.rows.length > 0) {
-      const ex = existing.rows[0];
-      return res.status(409).json({
-        error: "Already tracking " + signal.symbol,
-        existing_id: ex.id,
-        direction: ex.direction,
-        created_at: ex.created_at,
+    if (!result.ok) {
+      return res.status(result.http_status || 422).json({
+        error: result.error,
+        reason: result.reason,
+        details: result.details,
+        hash: result.hash,
+        existing_id: result.existing_id,
       });
     }
 
-    const row = Signal.toDbRow(signal);
-
-    const result = await db.query(
-      `INSERT INTO signals_v2
-        (symbol, type, direction, entry, stop, targets, leverage,
-         confidence, provider, provider_id, source, bot_user_id,
-         status, meta)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
-       RETURNING *`,
-      [row.symbol, row.type, row.direction, row.entry, row.stop,
-       row.targets, row.leverage, row.confidence, row.provider,
-       row.provider_id, row.source, row.bot_user_id, row.status, row.meta]
-    );
-
-    const saved = Signal.fromDbRow(result.rows[0]);
-
-    await events.logEvent(saved.id, "CREATED", {
-      newStatus: "OPEN",
-      priceAt: saved.entry,
-      meta: { source: "scanner_track", bot_user_id: req.userId },
-    });
-
-    res.json({ ok: true, id: saved.id, symbol: saved.symbol, direction: saved.direction });
+    return res.json({ ok: true, id: result.id, symbol, direction });
   } catch (err) {
     console.error("[signals/track]", err.message);
     res.status(500).json({ error: "Internal error" });

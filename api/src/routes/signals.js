@@ -1,21 +1,13 @@
-const crypto = require("crypto");
 const { Router } = require("express");
 const db = require("../lib/db");
 const { requireAuth, optionalAuth } = require("../middleware/auth");
 const { attachPlan } = require("../middleware/subscription");
 const { parseSignal } = require("../lib/parser");
 const { fetchPrice, fetchAllPrices } = require("../lib/price");
-const ai = require("../lib/ai");
 const Signal = require("../models/signal");
 const events = require("../lib/events");
-
-let _pushQueue = null;
-function getPushQueue() {
-  if (!_pushQueue) {
-    try { _pushQueue = require("../workers/queues").pushQueue(); } catch {}
-  }
-  return _pushQueue;
-}
+const { ingestInternal } = require("./ingest");
+const { STRATEGIES } = require("../lib/strategy");
 
 const router = Router();
 
@@ -25,20 +17,6 @@ function parseId(raw) {
   const n = parseInt(raw, 10);
   return (Number.isFinite(n) && n > 0) ? n : null;
 }
-
-/** SHA-256 dedupe fingerprint from normalized signal fields. */
-function dedupeKey(signal) {
-  const parts = [
-    signal.symbol,
-    signal.direction,
-    signal.entry,
-    signal.stop,
-    (signal.targets || []).join(","),
-  ].join("|");
-  return crypto.createHash("sha256").update(parts).digest("hex").slice(0, 16);
-}
-
-const DEDUPE_WINDOW_SEC = 300;
 
 const PUBLIC_SOURCES = ['scanner', 'provider'];
 
@@ -92,6 +70,15 @@ const SIGNAL_LIMITS = { free: 20, pro: 50, elite: 50 };
 
 // ─────────────────────────────────────────────────────────────────
 // POST /signals/submit
+//
+// Thin wrapper around the ingestion pipeline. NO direct DB write.
+// Forwards the raw Telegram-style text to the canonical pipeline:
+//   normalize → validate → dedupe → enqueue → ingest worker
+//
+// AI scoring used to run inline here. It now belongs downstream of
+// ingestion (an enrichment worker, not yet implemented). Inline AI
+// scoring is removed from this path so that ingestion stays
+// deterministic and free of external API dependencies.
 // ─────────────────────────────────────────────────────────────────
 router.post("/submit", requireAuth, async (req, res) => {
   try {
@@ -100,133 +87,29 @@ router.post("/submit", requireAuth, async (req, res) => {
       return res.status(400).json({ error: "raw_text is required" });
     }
 
-    const parsed = parseSignal(raw_text);
-    if (parsed.parseStatus === "not_signal") {
-      return res.status(422).json({
-        error: "Could not parse signal",
-        parse_status: parsed.parseStatus,
-      });
-    }
-
-    const signal = Signal.normalize({
-      symbol: parsed.symbol,
-      direction: parsed.action,
-      entry: parsed.price,
-      stop: parsed.stopLoss,
-      targets: parsed.targets,
-      leverage: parsed.leverage,
-      type: "manual",
-      source: "user",
-      bot_user_id: req.userId,
-      status: "OPEN",
-      raw_text: raw_text.trim(),
-      parse_status: parsed.parseStatus,
+    const result = await ingestInternal({
+      payload: {
+        raw_text: raw_text.trim(),
+        source: "user",
+        strategy: STRATEGIES.MANUAL_V1,
+      },
+      botUserId: req.userId,
     });
 
-    // Auto-generate TP/SL if missing but entry exists
-    if (signal.entry && signal.entry > 0) {
-      const e = signal.entry;
-      const risk = e * 0.03; // 3% default risk
-      if (!signal.stop) {
-        signal.stop = signal.direction === "LONG"
-          ? +(e - risk).toPrecision(6)
-          : +(e + risk).toPrecision(6);
-        signal.meta.auto_sl = true;
-      }
-      if (!signal.targets || signal.targets.length === 0) {
-        signal.targets = signal.direction === "LONG"
-          ? [+(e + risk * 1.5).toPrecision(6), +(e + risk * 3).toPrecision(6)]
-          : [+(e - risk * 1.5).toPrecision(6), +(e - risk * 3).toPrecision(6)];
-        signal.meta.auto_tp = true;
-      }
-    }
-
-    const check = Signal.validate(signal);
-    if (!check.valid) {
-      return res.status(422).json({ error: "Invalid signal", details: check.errors });
-    }
-
-    // Dedupe (parameterized interval, SHA-256 key)
-    const dkey = dedupeKey(signal);
-    signal.meta.dedupe_key = dkey;
-    try {
-      const dup = await db.query(
-        `SELECT id FROM signals_v2
-         WHERE bot_user_id = $1
-           AND meta->>'dedupe_key' = $2
-           AND created_at > NOW() - ($3 * INTERVAL '1 second')
-         LIMIT 1`,
-        [req.userId, dkey, DEDUPE_WINDOW_SEC]
-      );
-      if (dup.rows.length > 0) {
-        return res.status(409).json({
-          error: "Duplicate signal",
-          existing_id: dup.rows[0].id,
-          window_sec: DEDUPE_WINDOW_SEC,
-        });
-      }
-    } catch (err) {
-      console.warn("[signals/submit] Dedupe check failed:", err.message);
-    }
-
-    // AI scoring (inline — see note at bottom of file)
-    try {
-      const aiResult = await ai.scoreSignal({
-        symbol: signal.symbol,
-        direction: signal.direction,
-        entry: signal.entry,
-        stop: signal.stop,
-        targets: signal.targets,
-        volume_change: signal.meta?.volume_change,
-        oi_direction: signal.meta?.oi_direction,
-        funding_rate: signal.meta?.funding_rate,
-      });
-      if (aiResult) {
-        signal.confidence = aiResult.score;
-        signal.meta.ai_score = aiResult.score;
-        signal.meta.ai_regime = aiResult.regime;
-        signal.meta.ai_risk_flags = aiResult.risk_flags;
-        signal.meta.ai_reasoning = aiResult.reasoning;
-        signal.meta.ai_model = aiResult.model;
-        signal.meta.ai_provider = aiResult.provider;
-        if (aiResult.score_breakdown) signal.meta.ai_score_breakdown = aiResult.score_breakdown;
-        if (aiResult.thesis) signal.meta.ai_thesis = aiResult.thesis;
-        if (aiResult.tags && aiResult.tags.length) signal.meta.ai_tags = aiResult.tags;
-      }
-    } catch (err) {
-      console.warn("[signals/submit] AI scoring failed:", err.message);
-    }
-
-    const row = Signal.toDbRow(signal);
-
-    const result = await db.query(
-      `INSERT INTO signals_v2
-        (symbol, type, direction, entry, stop, targets, leverage,
-         confidence, provider, provider_id, source, bot_user_id,
-         status, meta)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
-       RETURNING *`,
-      [row.symbol, row.type, row.direction, row.entry, row.stop,
-       row.targets, row.leverage, row.confidence, row.provider,
-       row.provider_id, row.source, row.bot_user_id, row.status, row.meta]
-    );
-
-    const saved = Signal.fromDbRow(result.rows[0]);
-
-    await events.logEvent(saved.id, "CREATED", {
-      newStatus: "OPEN",
-      priceAt: saved.entry,
-      meta: { source: saved.source, parse_status: parsed.parseStatus },
-    });
-
-    const q = getPushQueue();
-    if (q && parsed.parseStatus === "parsed") {
-      q.add("breakout", saved).catch((err) => {
-        console.error(`[signals/submit] Push queue failed: signal_id=${saved.id} err=${err.message}`);
+    if (!result.ok) {
+      return res.status(result.http_status || 422).json({
+        error: result.error,
+        reason: result.reason,
+        details: result.details,
+        hash: result.hash,
+        existing_id: result.existing_id,
       });
     }
 
-    res.status(201).json(saved);
+    // Reload the persisted row so the response shape matches the legacy
+    // contract (full Signal object). The worker is the writer; we only read.
+    const row = await db.query("SELECT * FROM signals_v2 WHERE id = $1", [result.id]);
+    return res.status(201).json(row.rows[0] ? Signal.fromDbRow(row.rows[0]) : { id: result.id, hash: result.hash });
   } catch (err) {
     console.error("[signals/submit]", err.message);
     res.status(500).json({ error: "Internal error" });

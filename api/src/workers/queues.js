@@ -33,6 +33,21 @@ function lifecycleQueue() {
   return getQueue("agoraiq-signal-lifecycle");
 }
 
+/**
+ * Signal ingestion queue — the SOLE path into signals_v2.
+ *
+ * Producers (HTTP routes, scanner watcher, future external pushes) enqueue
+ * here; the ingest worker is the only consumer that writes to the database.
+ *
+ * Queue name uses a colon to match the system spec ("signal:ingest"). All
+ * other AgoraIQ queues use dashes — this is intentional: the colon name
+ * makes the single-source-of-truth queue impossible to confuse with the
+ * legacy push/resolver queues at a glance in monitoring.
+ */
+function ingestQueue() {
+  return getQueue("signal:ingest");
+}
+
 async function closeQueues() {
   for (const q of Object.values(_queues)) {
     await q.close();
@@ -40,4 +55,4 @@ async function closeQueues() {
   _queues = {};
 }
 
-module.exports = { pushQueue, resolverQueue, lifecycleQueue, closeQueues };
+module.exports = { pushQueue, resolverQueue, lifecycleQueue, ingestQueue, closeQueues };

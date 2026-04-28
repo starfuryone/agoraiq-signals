@@ -1,18 +1,23 @@
 /**
- * Scanner watcher — detects breakouts, PERSISTS to signals_v2, THEN pushes.
+ * Scanner watcher — detects breakouts and forwards them to the canonical
+ * ingestion pipeline.
  *
  * Flow:
  *   Binance 24h tickers → score → threshold check → cooldown check →
- *   INSERT signals_v2 → log CREATED event → emit push job
+ *   ingestInternal() → (normalize → validate → dedupe → enqueue → worker) →
+ *   signals_v2 + signal_events + push.
+ *
+ * The scanner does NOT write to signals_v2. Deduplication is now centralized
+ * in lib/dedupe (Redis + DB). The in-process cooldown remains as a cheap
+ * pre-filter that suppresses Binance noise before we even build a payload —
+ * but it is no longer the source of truth for dedupe.
  */
 
 const { Worker } = require("bullmq");
 const { getRedis } = require("../lib/redis");
 const { fetch24hTickers } = require("../lib/price");
-const db = require("../lib/db");
-const Signal = require("../models/signal");
-const events = require("../lib/events");
-const { pushQueue } = require("./queues");
+const { ingestInternal } = require("../routes/ingest");
+const { STRATEGIES } = require("../lib/strategy");
 
 const SCAN_INTERVAL = 300_000; // 5 min
 const BREAKOUT_THRESHOLD = 50;
@@ -76,54 +81,46 @@ async function scanOnce() {
       tp2  = +(ticker.price - risk * 3).toPrecision(6);
     }
 
-    const signal = Signal.normalize({
-      symbol: ticker.symbol,
-      type: "breakout",
-      direction: dir,
-      entry: ticker.price,
-      stop: stop,
-      targets: [tp1, tp2],
-      confidence: score,
-      source: "scanner",
-      status: "OPEN",
-      volume_change: Math.round((ticker.volume / avgVolume - 1) * 100),
+    const volumeChange = Math.round((ticker.volume / avgVolume - 1) * 100);
+
+    // ── Forward to ingestion pipeline (sole DB writer) ──────────
+    const result = await ingestInternal({
+      payload: {
+        structured: {
+          symbol: ticker.symbol,
+          direction: dir,
+          entry: ticker.price,
+          stop: stop,
+          targets: [tp1, tp2],
+        },
+        source: "scanner",
+        provider: "scanner",
+        strategy: STRATEGIES.BREAKOUT_V1,
+        timeframe: "scanner",
+        confidence: score,
+        signal_ts: Date.now(),
+        meta: { volume_change: volumeChange, breakout_score: score },
+      },
+      botUserId: null,
     });
 
-    // ── Persist to DB ───────────────────────────────────────────
-    const row = Signal.toDbRow(signal);
-    let savedId = null;
-    try {
-      const r = await db.query(
-        `INSERT INTO signals_v2
-          (symbol, type, direction, entry, stop, targets, leverage,
-           confidence, provider, provider_id, source, bot_user_id, status, meta)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
-         RETURNING id`,
-        [row.symbol, row.type, row.direction, row.entry, row.stop,
-         row.targets, row.leverage, row.confidence, row.provider,
-         row.provider_id, row.source, row.bot_user_id, row.status, row.meta]
-      );
-      savedId = r.rows[0].id;
-      signal.id = savedId;
-    } catch (err) {
-      console.error(`[scanner] DB insert failed for ${ticker.symbol}:`, err.message);
+    if (!result.ok) {
+      // Duplicates are expected (the dedupe window is 15 min, the scan
+      // cycle is 5 min). They're audited in signals_rejected by the
+      // pipeline itself; nothing further to do here.
+      if (result.http_status !== 409) {
+        console.warn(
+          `[scanner] ingest rejected for ${ticker.symbol}: ${result.error || "unknown"} ${result.reason || ""}`
+        );
+      }
       continue;
     }
 
-    // ── Log CREATED event ───────────────────────────────────────
-    await events.logEvent(savedId, "CREATED", {
-      newStatus: "OPEN",
-      priceAt: ticker.price,
-      meta: { score, volume_change: signal.meta.volume_change },
-    });
-
-    // ── Emit push job ───────────────────────────────────────────
-    await pushQueue().add("breakout", signal);
     alerts++;
 
     console.log(
       `[scanner] BREAKOUT: ${ticker.symbol} score=${score} ` +
-      `change=${ticker.priceChangePercent.toFixed(1)}% → signal #${savedId}`
+      `change=${ticker.priceChangePercent.toFixed(1)}% → signal #${result.id}`
     );
   }
 

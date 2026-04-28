@@ -20,6 +20,7 @@ const { startPushWorker } = require("./push");
 const { startResolverWorker } = require("./resolver");
 const { startScannerWatcher } = require("./scanner");
 const { startDailyWorker } = require("./daily");
+const { startIngestWorker } = require("./signal.ingest.worker");
 const { closeQueues } = require("./queues");
 const { closeRedis } = require("../lib/redis");
 const db = require("../lib/db");
@@ -47,14 +48,17 @@ async function main() {
     process.exit(1);
   }
 
-  // Start all workers
+  // Start all workers. The ingest worker comes first because it is the
+  // sole writer to signals_v2 — every other producer expects it to be live.
   const workers = [];
+  workers.push(startIngestWorker());
   workers.push(startPushWorker());
   workers.push(startResolverWorker());
   workers.push(startScannerWatcher());
   workers.push(startDailyWorker());
 
   console.log(`\n[workers] ${workers.length} workers running`);
+  console.log("  • signal-ingest:   Single-writer ingestion (signals_v2)");
   console.log("  • push-alerts:     Telegram push notifications");
   console.log("  • signal-resolver: Price checking + outcome resolution");
   console.log("  • scanner-watcher: Breakout detection + alerts");
