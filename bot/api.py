@@ -216,6 +216,20 @@ async def telegram_unlink(token: str) -> Any:
     return await _delete(f"{API_BASE}/telegram/link", token)
 
 
+async def telegram_force_unlink(telegram_id: int) -> Any:
+    """Bot-side escape hatch when the local token store has lost the session.
+
+    Calls the localhost-only force-unlink endpoint authenticated by
+    INTERNAL_API_SECRET. Use this only from the /disconnect command on
+    behalf of the message's telegram_id — Telegram's delivery guarantees
+    establish identity.
+    """
+    return await _post(
+        f"{API_BASE}/telegram/link/force-unlink",
+        {"telegram_id": telegram_id},
+    )
+
+
 async def telegram_status(token: str) -> Any:
     return await _get(f"{API_BASE}/telegram/status", token)
 

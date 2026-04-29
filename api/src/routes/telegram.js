@@ -158,6 +158,59 @@ router.delete("/link", requireAuth, async (req, res) => {
   }
 });
 
+// ── POST /telegram/link/force-unlink ─────────────────────────────
+// Bot-only escape hatch for the case where the server side knows the
+// telegram is linked but the bot's local token store has lost the
+// session — the user types /disconnect and otherwise gets stuck.
+//
+// Security: localhost only + shared internal secret (matches the same
+// trust model as POST /auth/telegram-auth). Telegram's own delivery
+// guarantees the bot is talking on behalf of the actual telegram_id.
+//
+// Body: { telegram_id }
+// Returns: { ok: true, unlinked_telegram_id, bot_user_id } or 404.
+router.post("/link/force-unlink", async (req, res) => {
+  try {
+    const ip = req.ip || (req.connection && req.connection.remoteAddress);
+    if (ip !== "127.0.0.1" && ip !== "::1" && ip !== "::ffff:127.0.0.1") {
+      return res.status(403).json({ error: "Localhost only" });
+    }
+
+    const internalSecret = process.env.INTERNAL_API_SECRET;
+    if (internalSecret) {
+      const provided = req.headers["x-internal-auth"];
+      if (provided !== internalSecret) {
+        return res.status(403).json({ error: "Invalid internal auth" });
+      }
+    }
+
+    const { telegram_id } = req.body || {};
+    if (!telegram_id) {
+      return res.status(400).json({ error: "telegram_id required" });
+    }
+
+    const result = await db.query(
+      `UPDATE bot_telegram_accounts SET unlinked_at = NOW()
+       WHERE telegram_id = $1 AND unlinked_at IS NULL
+       RETURNING telegram_id, bot_user_id`,
+      [parseInt(telegram_id, 10)]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "No linked Telegram account" });
+    }
+
+    res.json({
+      ok: true,
+      unlinked_telegram_id: result.rows[0].telegram_id,
+      bot_user_id: result.rows[0].bot_user_id,
+    });
+  } catch (err) {
+    console.error("[telegram/link/force-unlink]", err.message);
+    res.status(500).json({ error: "Internal error" });
+  }
+});
+
 // ── GET /telegram/status ─────────────────────────────────────────
 router.get("/status", requireAuth, async (req, res) => {
   try {

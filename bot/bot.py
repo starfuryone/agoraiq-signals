@@ -1269,14 +1269,39 @@ async def cmd_connect(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
 
 @rate_limited
 async def cmd_disconnect(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
-    token = store.get_token(update.effective_user.id)
-    removed = store.remove_link(update.effective_user.id)
-    if removed:
-        if token:
-            try:
-                await api.telegram_unlink(token)
-            except Exception:
-                pass
+    tg_id = update.effective_user.id
+    token = store.get_token(tg_id)
+    removed = store.remove_link(tg_id)
+
+    # Always attempt server-side unlink. The local store and the server's
+    # bot_telegram_accounts table can drift (token expiry, store reset, etc.),
+    # so /disconnect must clean both sides \u2014 otherwise /connect later 409s
+    # forever.
+    server_unlinked = False
+    server_status = None
+
+    if token:
+        try:
+            await api.telegram_unlink(token)
+            server_unlinked = True
+        except Exception as e:
+            server_status = getattr(getattr(e, "response", None), "status_code", 0)
+
+    # Token-authed unlink failed (or no token): fall through to the
+    # force-unlink escape hatch authenticated by INTERNAL_API_SECRET.
+    if not server_unlinked:
+        try:
+            await api.telegram_force_unlink(tg_id)
+            server_unlinked = True
+        except Exception as e:
+            code = getattr(getattr(e, "response", None), "status_code", 0)
+            if code == 404:
+                # Server says nothing was linked. Confirms there's nothing to do.
+                server_status = 404
+            else:
+                server_status = code or "error"
+
+    if removed or server_unlinked:
         await update.message.reply_text(
             "\U0001f513 Account unlinked\\. Use /connect to re\\-link\\.",
             parse_mode=ParseMode.MARKDOWN_V2,
