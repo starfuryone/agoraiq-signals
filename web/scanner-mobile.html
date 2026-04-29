@@ -289,17 +289,19 @@ select.f-input{padding-right:28px;cursor:pointer;background-image:url("data:imag
 <div class="nav-backdrop" id="navBackdrop"></div>
 
 <!-- Nav drawer -->
-<nav class="nav-drawer" id="navDrawer">
-  <a href="signals-mobile.html">Signals</a>
-  <a href="scanner-mobile.html" class="active">Scanner</a>
-  <a href="track-mobile.html">Track</a>
-  <a href="proof.html">Proof</a>
-  <a href="providers-mobile.html">Providers</a>
-  <a href="pricing.html">Pricing</a>
-  <a href="watchlist.html">Watchlist</a>
-  <a href="help.html">Help</a>
-  <a href="#" class="signout" onclick="localStorage.removeItem('iq_token');window.location.href='/login.html';return false">Sign Out</a>
-</nav>
+<nav>
+    <a href="signals.html">Signals</a>
+    <a href="signals-feed.html">Feed</a>
+    <a href="scanner.html" class="active">Scanner</a>
+    <a href="chart.html">Chart</a>
+    <a href="track.html">Track</a>
+    <a href="watchlist.html">Watchlist</a>
+    <a href="providers.html">Providers</a>
+    <a href="https://signals.agoraiq.net">Calls</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="help.html">Help</a>
+    <a href="#" onclick="localStorage.removeItem('iq_token');window.location.href='/login.html'" style="color:var(--red)">Sign Out</a>
+  </nav>
 
 <!-- Topbar -->
 <div class="topbar">

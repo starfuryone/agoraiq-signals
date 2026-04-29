@@ -537,19 +537,19 @@ input, textarea, select { font-family: inherit; }
 
 <!-- ═══ NAV DRAWER ═══════════════════════════════════ -->
 <div class="nav-overlay" id="navOverlay"></div>
-<nav class="nav-drawer" id="navDrawer">
-  <a class="nav-link" href="https://bot.agoraiq.net/signals.html"><span class="icon">📡</span> Signals</a>
-  <a class="nav-link" href="https://bot.agoraiq.net/scanner.html"><span class="icon">🔍</span> Scanner</a>
-  <a class="nav-link active" href="https://bot.agoraiq.net/track.html"><span class="icon">📊</span> Track</a>
-  <a class="nav-link" href="https://bot.agoraiq.net/proof.html"><span class="icon">✅</span> Proof</a>
-  <a class="nav-link" href="https://bot.agoraiq.net/providers.html"><span class="icon">👥</span> Providers</a>
-  <a class="nav-link" href="https://bot.agoraiq.net/watchlist.html"><span class="icon">⭐</span> Watchlist</a>
-  <div class="nav-divider"></div>
-  <a class="nav-link" href="https://bot.agoraiq.net/pricing.html"><span class="icon">💎</span> Pricing</a>
-  <a class="nav-link" href="https://bot.agoraiq.net/help.html"><span class="icon">❓</span> Help</a>
-  <div class="nav-divider"></div>
-  <a class="nav-link" href="#" id="signOutLink"><span class="icon">🚪</span> Sign Out</a>
-</nav>
+<nav>
+    <a href="signals.html">Signals</a>
+    <a href="signals-feed.html">Feed</a>
+    <a href="scanner.html">Scanner</a>
+    <a href="chart.html">Chart</a>
+    <a href="track.html" class="active">Track</a>
+    <a href="watchlist.html">Watchlist</a>
+    <a href="providers.html">Providers</a>
+    <a href="https://signals.agoraiq.net">Calls</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="help.html">Help</a>
+    <a href="#" onclick="localStorage.removeItem('iq_token');window.location.href='/login.html'" style="color:var(--red)">Sign Out</a>
+  </nav>
 
 <!-- ═══ PAGE TITLE ═══════════════════════════════════ -->
 <section class="page-title fade-up">

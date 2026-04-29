@@ -316,13 +316,19 @@ tailwind.config = {
 <header class="site-header">
   <div class="header-inner">
     <a href="/" class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">Agora<span class="brand-iq">IQ</span></span></a>
-    <nav class="header-nav">
-      <a href="/signals.html">Signals</a>
-      <a href="/proof.html">Proof</a>
-      <a href="/chart.html" class="active">Charts</a>
-      <a href="/pricing.html">Pricing</a>
-      <a href="/pricing.html" class="btn-upgrade">Upgrade</a>
-    </nav>
+    <nav>
+    <a href="signals.html">Signals</a>
+    <a href="signals-feed.html">Feed</a>
+    <a href="scanner.html">Scanner</a>
+    <a href="chart.html" class="active">Chart</a>
+    <a href="track.html">Track</a>
+    <a href="watchlist.html">Watchlist</a>
+    <a href="providers.html">Providers</a>
+    <a href="https://signals.agoraiq.net">Calls</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="help.html">Help</a>
+    <a href="#" onclick="localStorage.removeItem('iq_token');window.location.href='/login.html'" style="color:var(--red)">Sign Out</a>
+  </nav>
   </div>
 </header>
 

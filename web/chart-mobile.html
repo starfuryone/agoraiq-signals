@@ -389,12 +389,19 @@ body{
 </div>
 
 <!-- ═══ BOTTOM NAV ═══ -->
-<nav class="m-bottom-nav">
-  <a href="/signals.html" class="m-nav-item"><span class="m-nav-icon">📡</span>Signals</a>
-  <a href="/proof.html" class="m-nav-item"><span class="m-nav-icon">✓</span>Proof</a>
-  <a href="/chart-mobile.html" class="m-nav-item active"><span class="m-nav-icon">📊</span>Charts</a>
-  <a href="/pricing.html" class="m-nav-item"><span class="m-nav-icon">⚡</span>Pricing</a>
-</nav>
+<nav>
+    <a href="signals.html">Signals</a>
+    <a href="signals-feed.html">Feed</a>
+    <a href="scanner.html">Scanner</a>
+    <a href="chart.html" class="active">Chart</a>
+    <a href="track.html">Track</a>
+    <a href="watchlist.html">Watchlist</a>
+    <a href="providers.html">Providers</a>
+    <a href="https://signals.agoraiq.net">Calls</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="help.html">Help</a>
+    <a href="#" onclick="localStorage.removeItem('iq_token');window.location.href='/login.html'" style="color:var(--red)">Sign Out</a>
+  </nav>
 
 <!-- ═══ SIGNAL CARD MODAL ═══ -->
 <div id="signalModal" class="hidden" style="position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:16px" onclick="if(event.target===this)closeSignalCard()">
