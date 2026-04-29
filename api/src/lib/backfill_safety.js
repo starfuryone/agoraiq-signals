@@ -41,7 +41,7 @@
 const crypto = require("crypto");
 const db = require("./db");
 
-const LOCK_NAMESPACE = 0xb4c4f111; // distinct from resolver (0x51e1)
+const LOCK_NAMESPACE = 0x6BACF111; // signed int4-safe; distinct from resolver (0x51e1)
 
 function lockKey(name) {
   // pg_advisory_lock(int4, int4) — first int is namespace, second is the
