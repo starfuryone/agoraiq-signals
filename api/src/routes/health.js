@@ -27,8 +27,8 @@ router.get("/metrics", async (req, res) => {
   // This is cheap (Redis HLEN-style calls) and only runs at the scrape rate.
   try {
     await Promise.all([
-      pollQueueDepth("signal:ingest", ingestQueue()),
-      pollQueueDepth("signal:enrich", enrichQueue()),
+      pollQueueDepth("signal-ingest", ingestQueue()),
+      pollQueueDepth("signal-enrich", enrichQueue()),
       pollQueueDepth("agoraiq-push-alerts", pushQueue()),
       pollQueueDepth("agoraiq-signal-resolver", resolverQueue()),
     ]);
@@ -50,8 +50,8 @@ router.get("/health/ingest", async (req, res) => {
   let queueDepths = {};
   try {
     const queues = {
-      "signal:ingest": ingestQueue(),
-      "signal:enrich": enrichQueue(),
+      "signal-ingest": ingestQueue(),
+      "signal-enrich": enrichQueue(),
       "agoraiq-signal-resolver": resolverQueue(),
     };
     for (const [name, q] of Object.entries(queues)) {

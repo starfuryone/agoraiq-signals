@@ -39,25 +39,24 @@ function lifecycleQueue() {
  * Producers (HTTP routes, scanner watcher, future external pushes) enqueue
  * here; the ingest worker is the only consumer that writes to the database.
  *
- * Queue name uses a colon to match the system spec ("signal:ingest"). All
- * other AgoraIQ queues use dashes — this is intentional: the colon name
- * makes the single-source-of-truth queue impossible to confuse with the
- * legacy push/resolver queues at a glance in monitoring.
+ * Queue name uses dashes to satisfy BullMQ's name validation. The design
+ * spec referred to it as "signal:ingest" — the colon is a documentation
+ * convention, not a wire identifier.
  */
 function ingestQueue() {
-  return getQueue("signal:ingest");
+  return getQueue("signal-ingest");
 }
 
 /**
  * Signal enrichment queue — async AI scoring on freshly ingested rows.
  *
- * The ingest worker enqueues onto signal:enrich after a successful INSERT.
+ * The ingest worker enqueues onto signal-enrich after a successful INSERT.
  * The enrich worker is the only writer permitted to mutate `confidence` and
  * the `ai_*` keys inside `meta`. It never changes `status` (the resolver
  * owns lifecycle transitions).
  */
 function enrichQueue() {
-  return getQueue("signal:enrich");
+  return getQueue("signal-enrich");
 }
 
 async function closeQueues() {

@@ -35,7 +35,7 @@ const db = require("../lib/db");
 const ai = require("../lib/ai");
 const metrics = require("../lib/metrics");
 
-const QUEUE_NAME = "signal:enrich";
+const QUEUE_NAME = "signal-enrich";
 const CONCURRENCY = parseInt(process.env.ENRICH_WORKER_CONCURRENCY || "2", 10);
 
 async function processEnrichJob(job) {

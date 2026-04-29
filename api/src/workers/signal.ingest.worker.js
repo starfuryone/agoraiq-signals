@@ -39,7 +39,7 @@ const { SCHEMA_VERSION } = require("../lib/strategy");
 const { pushQueue, enrichQueue } = require("./queues");
 const metrics = require("../lib/metrics");
 
-const QUEUE_NAME = "signal:ingest";
+const QUEUE_NAME = "signal-ingest";
 const CONCURRENCY = parseInt(process.env.INGEST_WORKER_CONCURRENCY || "4", 10);
 
 async function processIngestJob(job) {
