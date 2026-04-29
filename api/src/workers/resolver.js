@@ -255,14 +255,33 @@ async function processSignal(candidateId) {
 }
 
 async function resolveAll() {
-  // Lightweight candidate scan — only the id is needed; the row is re-read
-  // under the per-signal lock to avoid stale-read transitions.
+  // Candidate scan returns id + symbol so we can pre-warm the price cache.
+  // The row itself is re-read under the per-signal lock inside processSignal()
+  // to avoid stale-read transitions; the symbol here is only for batching.
   const r = await db.query(
-    `SELECT id FROM signals_v2
+    `SELECT id, symbol FROM signals_v2
      WHERE status = ANY($1)
        AND symbol IS NOT NULL AND entry IS NOT NULL`,
     [TRACKABLE]
   );
+
+  // Pre-warm the price cache. Each processSignal() will call fetchPrice()
+  // again — with a hot cache that becomes a no-op, replacing N sequential
+  // network round-trips per tick with ~ceil(N/CONCURRENCY) parallel batches.
+  // Critical for ticks with thousands of OPEN signals.
+  if (r.rows.length > 0) {
+    const uniqueSymbols = [...new Set(r.rows.map((row) => row.symbol).filter(Boolean))];
+    const t0 = Date.now();
+    const PREWARM_CONCURRENCY = parseInt(process.env.RESOLVER_PREWARM_CONCURRENCY || "20", 10);
+    for (let i = 0; i < uniqueSymbols.length; i += PREWARM_CONCURRENCY) {
+      const batch = uniqueSymbols.slice(i, i + PREWARM_CONCURRENCY);
+      await Promise.all(batch.map((s) => fetchPrice(s).catch(() => null)));
+    }
+    console.log(
+      `[resolver] pre-fetched ${uniqueSymbols.length} unique symbols ` +
+      `in ${Date.now() - t0}ms (concurrency=${PREWARM_CONCURRENCY})`
+    );
+  }
 
   let checked = 0;
   let resolved = 0;
