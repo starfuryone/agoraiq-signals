@@ -35,7 +35,7 @@ app.use("/api/v1/auth", require("./routes/auth"));
 // Ingestion gateway must be registered BEFORE /signals so its routes resolve
 // first — it is the canonical write path. /signals routes remain for reads
 // and for legacy /submit and /track wrappers that delegate to ingestInternal.
-app.use("/api/v1/signals/ingest", require("./routes/ingest"));
+app.use("/api/v1/signals/ingest", require("./routes/ingest").router);
 app.use("/api/v1/signals", require("./routes/signals"));
 app.use("/api/v1/signals", require("./routes/signals-ext"));
 

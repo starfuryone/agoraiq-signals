@@ -15,6 +15,13 @@
  * Rejections (normalize / validate / dedupe failures) are persisted to
  * signals_rejected and returned as 4xx responses with a structured reason.
  *
+ * Auth model:
+ *   - Authenticated callers (Bearer JWT): bot_user_id MUST match req.userId.
+ *   - Unauthenticated machine-to-machine callers: must present a valid
+ *     X-Internal-Token (constant-time-compared against INGEST_SERVICE_TOKEN).
+ *     Without that header, the body's bot_user_id is dropped — no caller can
+ *     forge ownership of another user's signal.
+ *
  * Request body shape:
  *   {
  *     raw_text?:   string,            // Telegram free-text path
@@ -33,37 +40,65 @@
  *   }
  */
 
+const crypto = require("crypto");
 const { Router } = require("express");
 const db = require("../lib/db");
 const { optionalAuth } = require("../middleware/auth");
 const { normalize, NormalizationError } = require("../lib/normalizer");
 const { validate } = require("../lib/validator");
-const { checkAndReserve } = require("../lib/dedupe");
-const { ingestQueue } = require("../workers/queues");
+const { checkAndReserve, releaseReservation } = require("../lib/dedupe");
+const { ingestQueue, ingestQueueEvents } = require("../workers/queues");
 const metrics = require("../lib/metrics");
 
 const router = Router();
 
 const WAIT_TIMEOUT_MS = parseInt(process.env.INGEST_WAIT_TIMEOUT_MS || "10000", 10);
+const SERVICE_TOKEN = process.env.INGEST_SERVICE_TOKEN || "";
+
+function hasValidServiceToken(req) {
+  if (!SERVICE_TOKEN) return false;
+  const provided = req.headers["x-internal-token"];
+  if (!provided || typeof provided !== "string") return false;
+  const a = Buffer.from(provided);
+  const b = Buffer.from(SERVICE_TOKEN);
+  if (a.length !== b.length) return false;
+  return crypto.timingSafeEqual(a, b);
+}
+
+function toUserId(v) {
+  if (v == null || v === "") return null;
+  const n = Number(v);
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+
+/**
+ * Resolve which bot_user_id (if any) the caller is permitted to attribute
+ * the signal to. Returns either { userId } or { error: <403-message> }.
+ */
+function resolveBotUserId(req, body) {
+  const claimed = toUserId(body.bot_user_id);
+  const authed = toUserId(req.userId);
+
+  if (authed) {
+    if (claimed && claimed !== authed) {
+      return { error: "bot_user_id mismatch with authenticated user" };
+    }
+    return { userId: authed };
+  }
+
+  if (!claimed) return { userId: null };
+
+  // Unauthenticated caller claiming a user — only allowed with service token.
+  if (hasValidServiceToken(req)) return { userId: claimed };
+  return { error: "bot_user_id requires authentication or service token" };
+}
 
 router.post("/", optionalAuth, async (req, res) => {
   const body = req.body || {};
 
-  // The bot_user_id on the payload must equal the authenticated user, if any.
-  // External API callers (machine-to-machine) can pass bot_user_id explicitly
-  // only when no auth principal is present. This prevents one user from
-  // ingesting on behalf of another.
-  const claimedUserId = body.bot_user_id || null;
-  const authedUserId = req.userId || null;
-  let botUserId = null;
-  if (authedUserId) {
-    if (claimedUserId && claimedUserId !== authedUserId) {
-      return res.status(403).json({ error: "bot_user_id mismatch with authenticated user" });
-    }
-    botUserId = authedUserId;
-  } else if (claimedUserId) {
-    botUserId = claimedUserId;
-  }
+  const auth = resolveBotUserId(req, body);
+  if (auth.error) return res.status(403).json({ error: auth.error });
+  const botUserId = auth.userId;
 
   // ── 1. Normalize ─────────────────────────────────────────────────────────
   let canonical;
@@ -161,13 +196,15 @@ router.post("/", optionalAuth, async (req, res) => {
     });
   } catch (err) {
     console.error("[ingest] enqueue failed:", err.message);
+    // Reservation would otherwise hold the hash for 2× the dedupe window.
+    await releaseReservation(dedupe.hash);
     return res.status(503).json({ error: "ingest_queue_unavailable" });
   }
 
   // ── 5. Wait for the worker (bounded). The worker is the sole DB writer. ──
   let result;
   try {
-    result = await job.waitUntilFinished(ingestQueue().events || ingestQueue(), WAIT_TIMEOUT_MS);
+    result = await job.waitUntilFinished(ingestQueueEvents(), WAIT_TIMEOUT_MS);
   } catch (err) {
     // Job is queued; client can poll later via /signals/:id once persisted.
     return res.status(202).json({
@@ -181,8 +218,6 @@ router.post("/", optionalAuth, async (req, res) => {
   if (!result || !result.ok) {
     return res.status(500).json({ error: "ingest_worker_failed", details: result || null });
   }
-
-  if (!result.idempotent) recordAccepted(validated);
 
   return res.status(201).json({
     status: result.idempotent ? "already_ingested" : "ingested",
@@ -230,26 +265,17 @@ async function recordRejection({
       ]
     );
   } catch (err) {
+    // The audit trail is best-effort; surface the failure as a metric so
+    // operators can alert on it instead of silently losing rejections.
+    metrics.incCounter("agoraiq_ingest_rejection_persist_failed_total", { stage });
     console.error("[ingest] rejection persist failed:", err.message);
   }
-}
-
-function recordAccepted(validated) {
-  metrics.incCounter("agoraiq_ingest_total", {
-    stage: "persisted",
-    source: validated.source || "unknown",
-    strategy: validated.strategy || "unknown",
-    outcome: "accepted",
-  });
-  metrics.setGauge("agoraiq_ingest_last_success_unix", { worker: "gateway" }, Math.floor(Date.now() / 1000));
 }
 
 function rawString(body) {
   if (typeof body.raw_text === "string") return body.raw_text;
   try { return JSON.stringify(body); } catch { return null; }
 }
-
-module.exports = router;
 
 /**
  * Internal helper for in-process producers (HTTP routes, scanner worker)
@@ -326,17 +352,24 @@ async function ingestInternal({ payload, botUserId }) {
   }
 
   const jobPayload = { ...validated, hash: dedupe.hash };
-  const job = await ingestQueue().add("ingest", jobPayload, {
-    jobId: dedupe.hash,
-    removeOnComplete: { count: 1000 },
-    removeOnFail: { count: 1000 },
-    attempts: 3,
-    backoff: { type: "exponential", delay: 500 },
-  });
+  let job;
+  try {
+    job = await ingestQueue().add("ingest", jobPayload, {
+      jobId: dedupe.hash,
+      removeOnComplete: { count: 1000 },
+      removeOnFail: { count: 1000 },
+      attempts: 3,
+      backoff: { type: "exponential", delay: 500 },
+    });
+  } catch (err) {
+    console.error("[ingest:internal] enqueue failed:", err.message);
+    await releaseReservation(dedupe.hash);
+    return { ok: false, http_status: 503, error: "ingest_queue_unavailable" };
+  }
 
   let result;
   try {
-    result = await job.waitUntilFinished(ingestQueue().events || ingestQueue(), WAIT_TIMEOUT_MS);
+    result = await job.waitUntilFinished(ingestQueueEvents(), WAIT_TIMEOUT_MS);
   } catch (err) {
     return { ok: false, http_status: 202, status: "queued", hash: dedupe.hash, job_id: job.id };
   }
@@ -345,9 +378,7 @@ async function ingestInternal({ payload, botUserId }) {
     return { ok: false, http_status: 500, error: "ingest_worker_failed" };
   }
 
-  if (!result.idempotent) recordAccepted(validated);
-
   return { ok: true, http_status: 201, id: result.id, hash: result.hash, idempotent: !!result.idempotent };
 }
 
-module.exports.ingestInternal = ingestInternal;
+module.exports = { router, ingestInternal };

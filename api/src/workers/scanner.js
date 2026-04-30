@@ -18,6 +18,7 @@ const { getRedis } = require("../lib/redis");
 const { fetch24hTickers } = require("../lib/price");
 const { ingestInternal } = require("../routes/ingest");
 const { STRATEGIES } = require("../lib/strategy");
+const { scannerWatcherQueue } = require("./queues");
 
 const SCAN_INTERVAL = 300_000; // 5 min
 const BREAKOUT_THRESHOLD = 50;
@@ -139,9 +140,7 @@ function startScannerWatcher() {
     { connection: getRedis(), concurrency: 1 }
   );
 
-  const { Queue } = require("bullmq");
-  const queue = new Queue("agoraiq-scanner-watcher", { connection: getRedis() });
-  queue.add("scan-cycle", {}, {
+  scannerWatcherQueue().add("scan-cycle", {}, {
     repeat: { every: SCAN_INTERVAL },
     removeOnComplete: { count: 5 },
     removeOnFail: { count: 20 },

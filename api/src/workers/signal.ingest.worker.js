@@ -201,6 +201,17 @@ function startIngestWorker() {
   worker.on("completed", (job, result) => {
     if (result && result.ok) {
       metrics.setGauge("agoraiq_ingest_last_success_unix", { worker: "ingest" }, Math.floor(Date.now() / 1000));
+      // Counter lives here (not on the gateway) so the request path returning
+      // 202 on wait timeout still increments when the worker eventually
+      // finishes. Idempotent replays do not double-count.
+      if (!result.idempotent) {
+        metrics.incCounter("agoraiq_ingest_total", {
+          stage: "persisted",
+          source: job.data.source || "unknown",
+          strategy: job.data.strategy || "unknown",
+          outcome: "accepted",
+        });
+      }
       const tag = result.idempotent ? " [idempotent]" : "";
       console.log(
         `[ingest] job ${job.id} → signal #${result.id}${tag} ` +

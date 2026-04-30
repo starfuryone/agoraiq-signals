@@ -4,16 +4,24 @@
  * Queue names use dashes (not colons) per your BullMQ conventions.
  */
 
-const { Queue } = require("bullmq");
+const { Queue, QueueEvents } = require("bullmq");
 const { getRedis } = require("../lib/redis");
 
 let _queues = {};
+let _queueEvents = {};
 
 function getQueue(name) {
   if (!_queues[name]) {
     _queues[name] = new Queue(name, { connection: getRedis() });
   }
   return _queues[name];
+}
+
+function getQueueEvents(name) {
+  if (!_queueEvents[name]) {
+    _queueEvents[name] = new QueueEvents(name, { connection: getRedis() });
+  }
+  return _queueEvents[name];
 }
 
 // ── Queue accessors ──────────────────────────────────────────────
@@ -43,8 +51,26 @@ function lifecycleQueue() {
  * spec referred to it as "signal:ingest" — the colon is a documentation
  * convention, not a wire identifier.
  */
+/**
+ * Scanner watcher schedule queue: cron-like recurring trigger that wakes the
+ * scanner worker. Distinct from data queues — only carries a single repeating
+ * scan-cycle job.
+ */
+function scannerWatcherQueue() {
+  return getQueue("agoraiq-scanner-watcher");
+}
+
 function ingestQueue() {
   return getQueue("signal-ingest");
+}
+
+/**
+ * Shared QueueEvents instance for signal-ingest. BullMQ's
+ * Job#waitUntilFinished requires a QueueEvents — passing a Queue silently
+ * fails (the awaiter never resolves). Reuse one instance per process.
+ */
+function ingestQueueEvents() {
+  return getQueueEvents("signal-ingest");
 }
 
 /**
@@ -60,10 +86,23 @@ function enrichQueue() {
 }
 
 async function closeQueues() {
+  for (const qe of Object.values(_queueEvents)) {
+    await qe.close();
+  }
+  _queueEvents = {};
   for (const q of Object.values(_queues)) {
     await q.close();
   }
   _queues = {};
 }
 
-module.exports = { pushQueue, resolverQueue, lifecycleQueue, ingestQueue, enrichQueue, closeQueues };
+module.exports = {
+  pushQueue,
+  resolverQueue,
+  lifecycleQueue,
+  ingestQueue,
+  ingestQueueEvents,
+  enrichQueue,
+  scannerWatcherQueue,
+  closeQueues,
+};

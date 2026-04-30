@@ -51,18 +51,25 @@ function validate(signal) {
   }
 
   // Side-of-entry sanity. Catches LONG with stop above entry, etc. — these are
-  // almost always payload errors, not legitimate trades.
+  // almost always payload errors, not legitimate trades. Every target must be
+  // on the correct side of entry, not just targets[0].
   if (signal.direction === "LONG") {
     if (stop >= entry) return fail("long_stop_at_or_above_entry", { entry, stop });
-    if (signal.targets[0] <= entry) return fail("long_target_at_or_below_entry", { entry, t1: signal.targets[0] });
+    const badIdx = signal.targets.findIndex((t) => t <= entry);
+    if (badIdx >= 0) {
+      return fail("long_target_at_or_below_entry", { entry, target_index: badIdx, target: signal.targets[badIdx] });
+    }
   } else {
     if (stop <= entry) return fail("short_stop_at_or_below_entry", { entry, stop });
-    if (signal.targets[0] >= entry) return fail("short_target_at_or_above_entry", { entry, t1: signal.targets[0] });
+    const badIdx = signal.targets.findIndex((t) => t >= entry);
+    if (badIdx >= 0) {
+      return fail("short_target_at_or_above_entry", { entry, target_index: badIdx, target: signal.targets[badIdx] });
+    }
   }
 
+  // entry !== stop is checked above, so risk is always > 0 here.
   const risk = Math.abs(entry - stop);
   const reward = Math.abs(signal.targets[0] - entry);
-  if (!(risk > 0)) return fail("zero_risk");
   const rr = reward / risk;
 
   if (!(rr >= RR_MIN) || !(rr <= RR_MAX)) {

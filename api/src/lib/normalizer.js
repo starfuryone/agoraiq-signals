@@ -154,6 +154,8 @@ function fromFreeText(text) {
 // ── Structured path ────────────────────────────────────────────────────────
 
 function fromStructured(s) {
+  // strategy is left null here when the structured payload doesn't carry one;
+  // normalize() then falls back to payload.strategy → defaultStrategy(source).
   return {
     symbol: s.symbol || s.pair,
     direction: s.direction || s.action || s.side,

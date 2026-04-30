@@ -43,15 +43,16 @@ const REDIS_KEY_PREFIX = "agoraiq:ingest:dedupe:";
 const REDIS_TTL_SEC = WINDOW_MIN * 60 * 2;
 
 /**
- * Compute the deterministic hash for a normalized signal.
+ * Compute the deterministic hash for a normalized signal at a given bucket.
  *
  * @param {object} signal  output of normalizer.normalize
+ * @param {number} [bucketOffset=0]  -1 to compute the previous bucket's hash
  * @returns {string} 64-char hex sha256
  */
-function computeHash(signal) {
+function computeHash(signal, bucketOffset = 0) {
   const roundedEntry = round(signal.entry, ENTRY_ROUNDING_DIGITS);
   const ts = Number.isFinite(signal.signal_ts) ? signal.signal_ts : Date.now();
-  const bucket = Math.floor(ts / WINDOW_MS);
+  const bucket = Math.floor(ts / WINDOW_MS) + bucketOffset;
 
   const material = [
     signal.symbol,
@@ -67,11 +68,42 @@ function computeHash(signal) {
 /**
  * Check whether a signal would duplicate one already ingested in this window.
  *
+ * Two near-identical signals straddling a bucket boundary (e.g. one at
+ * bucket-end, one at bucket-start of the next slot) would otherwise hash
+ * differently and both ingest. Guard against that by also checking the
+ * previous bucket's hash before reserving.
+ *
  * @param {object} signal  output of normalizer.normalize
  * @returns {Promise<{duplicate: boolean, hash: string, existing_id?: number, source?: string}>}
  */
 async function checkAndReserve(signal) {
-  const hash = computeHash(signal);
+  const hash = computeHash(signal, 0);
+  const prevHash = computeHash(signal, -1);
+
+  // Previous-bucket lookahead: if a duplicate exists in the prior bucket,
+  // treat this one as a duplicate too (sliding-window protection).
+  if (prevHash !== hash) {
+    try {
+      const redis = getRedis();
+      const prevHit = await redis.get(REDIS_KEY_PREFIX + prevHash);
+      if (prevHit) {
+        return { duplicate: true, hash, source: "redis_prev_bucket" };
+      }
+    } catch (err) {
+      console.warn("[dedupe] redis prev-bucket check failed:", err.message);
+    }
+    try {
+      const r = await db.query(
+        "SELECT id FROM signals_v2 WHERE hash = $1 LIMIT 1",
+        [prevHash]
+      );
+      if (r.rows.length > 0) {
+        return { duplicate: true, hash, existing_id: r.rows[0].id, source: "db_prev_bucket" };
+      }
+    } catch (err) {
+      console.error("[dedupe] db prev-bucket check failed:", err.message);
+    }
+  }
 
   // Redis fast path: SET NX (atomic). Reservation lives until window expires.
   let reservedInRedis = false;

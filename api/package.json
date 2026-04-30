@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/index.js",
     "migrate": "node src/migrate.js",
-    "worker": "node src/workers/index.js"
+    "worker": "node src/workers/index.js",
+    "test": "node --test tests/*.test.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1021.0",
