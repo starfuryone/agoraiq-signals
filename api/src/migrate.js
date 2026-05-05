@@ -287,6 +287,43 @@ const MIGRATIONS = [
        FOR EACH ROW EXECUTE FUNCTION update_updated_at();
    EXCEPTION WHEN duplicate_object THEN NULL;
    END $$`,
+
+  // ═══════════════════════════════════════════════════════════════════
+  //  005 — Signal Ingestion Pipeline (single source of truth)
+  //  Mirror of api/migrations/005_signal_ingestion_pipeline.sql
+  // ═══════════════════════════════════════════════════════════════════
+  `ALTER TABLE signals_v2 ADD COLUMN IF NOT EXISTS hash           TEXT`,
+  `ALTER TABLE signals_v2 ADD COLUMN IF NOT EXISTS schema_version TEXT`,
+  `ALTER TABLE signals_v2 ADD COLUMN IF NOT EXISTS strategy       TEXT`,
+  `ALTER TABLE signals_v2 ADD COLUMN IF NOT EXISTS timeframe      TEXT`,
+  `ALTER TABLE signals_v2 ADD COLUMN IF NOT EXISTS signal_ts      TIMESTAMPTZ`,
+  `ALTER TABLE signals_v2 ADD COLUMN IF NOT EXISTS risk           NUMERIC`,
+  `ALTER TABLE signals_v2 ADD COLUMN IF NOT EXISTS reward         NUMERIC`,
+  `ALTER TABLE signals_v2 ADD COLUMN IF NOT EXISTS rr             NUMERIC`,
+  `ALTER TABLE signals_v2 ADD COLUMN IF NOT EXISTS raw_payload    TEXT`,
+
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_sv2_hash_unique
+     ON signals_v2(hash) WHERE hash IS NOT NULL`,
+  `CREATE INDEX IF NOT EXISTS idx_sv2_strategy ON signals_v2(strategy)`,
+  `CREATE INDEX IF NOT EXISTS idx_sv2_schema   ON signals_v2(schema_version)`,
+
+  `CREATE TABLE IF NOT EXISTS signals_rejected (
+     id                 BIGSERIAL PRIMARY KEY,
+     source             TEXT,
+     provider           TEXT,
+     bot_user_id        INTEGER,
+     raw_payload        TEXT,
+     normalized_payload JSONB,
+     rejection_stage    TEXT NOT NULL,
+     rejection_reason   TEXT NOT NULL,
+     rejection_meta     JSONB DEFAULT '{}'::jsonb,
+     created_at         TIMESTAMPTZ NOT NULL DEFAULT NOW()
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_srej_created ON signals_rejected(created_at DESC)`,
+  `CREATE INDEX IF NOT EXISTS idx_srej_source  ON signals_rejected(source)`,
+  `CREATE INDEX IF NOT EXISTS idx_srej_stage   ON signals_rejected(rejection_stage)`,
+  `CREATE INDEX IF NOT EXISTS idx_srej_user    ON signals_rejected(bot_user_id)
+     WHERE bot_user_id IS NOT NULL`,
 ];
 
 async function migrate() {

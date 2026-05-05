@@ -8,7 +8,7 @@ const { SocksProxyAgent } = require("socks-proxy-agent");
 const nodeFetch = require("node-fetch");
 
 const BINANCE_API = process.env.BINANCE_API || "https://api.binance.com/api/v3";
-const CACHE_TTL = 10_000; // 10 seconds
+const CACHE_TTL = 300_000; // 5 minutes (Binance is proxied — cache aggressively)
 const SOCKS_PROXY = process.env.SOCKS_PROXY || process.env.SOCKS_PROXY_URL || null;
 
 const agent = SOCKS_PROXY ? new SocksProxyAgent(SOCKS_PROXY) : null;

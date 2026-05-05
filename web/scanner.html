@@ -237,8 +237,19 @@ h1 .accent{color:var(--gold)!important;-webkit-text-fill-color:var(--gold)!impor
 
 <div class="topbar">
   <a href="/" class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">Agora<span class="brand-iq">IQ</span></span></a>
-  <nav><a href="signals.html">Signals</a><a href="scanner.html" class="active">Scanner</a><a href="track.html">Track</a><a href="proof.html">Proof</a><a href="providers.html">Providers</a><a href="pricing.html">Pricing</a><a href="watchlist.html">Watchlist</a><a href="help.html">Help</a>
-  <a href="#" onclick="localStorage.removeItem('iq_token');location.href='/login.html'" style="color:var(--red);font-size:13px;text-decoration:none;margin-left:4px;opacity:.7" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.7">Sign Out</a></nav>
+  <nav>
+    <a href="signals.html">Signals</a>
+    <a href="signals-feed.html">Feed</a>
+    <a href="scanner.html" class="active">Scanner</a>
+    <a href="chart.html">Chart</a>
+    <a href="track.html">Track</a>
+    <a href="watchlist.html">Watchlist</a>
+    <a href="providers.html">Providers</a>
+    <a href="https://signals.agoraiq.net">Calls</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="help.html">Help</a>
+    <a href="#" onclick="localStorage.removeItem('iq_token');window.location.href='/login.html'" style="color:var(--red)">Sign Out</a>
+  </nav>
 </div>
 <div class="container">
 <!-- Global conversion bar -->

@@ -1,24 +1,29 @@
 /**
- * Scanner watcher — detects breakouts, PERSISTS to signals_v2, THEN pushes.
+ * Scanner watcher — detects breakouts and forwards them to the canonical
+ * ingestion pipeline.
  *
  * Flow:
  *   Binance 24h tickers → score → threshold check → cooldown check →
- *   INSERT signals_v2 → log CREATED event → emit push job
+ *   ingestInternal() → (normalize → validate → dedupe → enqueue → worker) →
+ *   signals_v2 + signal_events + push.
+ *
+ * The scanner does NOT write to signals_v2. Deduplication is now centralized
+ * in lib/dedupe (Redis + DB). The in-process cooldown remains as a cheap
+ * pre-filter that suppresses Binance noise before we even build a payload —
+ * but it is no longer the source of truth for dedupe.
  */
 
 const { Worker } = require("bullmq");
 const { getRedis } = require("../lib/redis");
 const { fetch24hTickers } = require("../lib/price");
-const db = require("../lib/db");
-const Signal = require("../models/signal");
-const events = require("../lib/events");
-const { pushQueue } = require("./queues");
+const { ingestInternal } = require("../routes/ingest");
+const { STRATEGIES } = require("../lib/strategy");
 
 const SCAN_INTERVAL = 300_000; // 5 min
-const BREAKOUT_THRESHOLD = 50;
+const BREAKOUT_THRESHOLD = 80;
 const COOLDOWN_MS = 3_600_000; // 1 hour per symbol
 
-const _alerted = new Map();
+// Cooldown is Redis-backed so it survives process restarts
 
 function scoreBreakout(ticker, avgVolume) {
   const change = Math.abs(ticker.priceChangePercent);
@@ -26,7 +31,7 @@ function scoreBreakout(ticker, avgVolume) {
   let score = 0;
   score += Math.min(change * 8, 50);
   score += Math.min(volRatio * 10, 30);
-  score += ticker.priceChangePercent > 0 ? 10 : 5;
+  score += 10; // equal long/short bonus
   score += ticker.count > 50000 ? 10 : 0;
   return Math.round(Math.min(score, 100));
 }
@@ -56,9 +61,11 @@ async function scanOnce() {
     const score = scoreBreakout(ticker, avgVolume);
     if (score < BREAKOUT_THRESHOLD) continue;
 
-    const last = _alerted.get(ticker.symbol) || 0;
-    if (now - last < COOLDOWN_MS) continue;
-    _alerted.set(ticker.symbol, now);
+    const redis = getRedis();
+    const cooldownKey = `scanner:cooldown:${ticker.symbol}`;
+    const locked = await redis.get(cooldownKey);
+    if (locked) continue;
+    await redis.set(cooldownKey, '1', 'PX', COOLDOWN_MS);
 
     // ── Normalize through canonical schema ──────────────────────
     const dir = ticker.priceChangePercent > 0 ? "LONG" : "SHORT";
@@ -68,69 +75,60 @@ async function scanOnce() {
     let stop, tp1, tp2;
     if (dir === "LONG") {
       stop = +(ticker.price - risk).toPrecision(6);
-      tp1  = +(ticker.price + risk * 1.5).toPrecision(6);
+      tp1  = +(ticker.price + risk * 1.0).toPrecision(6);
       tp2  = +(ticker.price + risk * 3).toPrecision(6);
     } else {
       stop = +(ticker.price + risk).toPrecision(6);
-      tp1  = +(ticker.price - risk * 1.5).toPrecision(6);
+      tp1  = +(ticker.price - risk * 1.0).toPrecision(6);
       tp2  = +(ticker.price - risk * 3).toPrecision(6);
     }
 
-    const signal = Signal.normalize({
-      symbol: ticker.symbol,
-      type: "breakout",
-      direction: dir,
-      entry: ticker.price,
-      stop: stop,
-      targets: [tp1, tp2],
-      confidence: score,
-      source: "scanner",
-      status: "OPEN",
-      volume_change: Math.round((ticker.volume / avgVolume - 1) * 100),
+    const volumeChange = Math.round((ticker.volume / avgVolume - 1) * 100);
+
+    // ── Forward to ingestion pipeline (sole DB writer) ──────────
+    const result = await ingestInternal({
+      payload: {
+        structured: {
+          symbol: ticker.symbol,
+          direction: dir,
+          entry: ticker.price,
+          stop: stop,
+          targets: [tp1, tp2],
+        },
+        source: "scanner",
+        provider: "scanner",
+        strategy: STRATEGIES.BREAKOUT_V1,
+        timeframe: "scanner",
+        confidence: score,
+        signal_ts: Date.now(),
+        meta: { volume_change: volumeChange, breakout_score: score },
+      },
+      botUserId: null,
     });
 
-    // ── Persist to DB ───────────────────────────────────────────
-    const row = Signal.toDbRow(signal);
-    let savedId = null;
-    try {
-      const r = await db.query(
-        `INSERT INTO signals_v2
-          (symbol, type, direction, entry, stop, targets, leverage,
-           confidence, provider, provider_id, source, bot_user_id, status, meta)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
-         RETURNING id`,
-        [row.symbol, row.type, row.direction, row.entry, row.stop,
-         row.targets, row.leverage, row.confidence, row.provider,
-         row.provider_id, row.source, row.bot_user_id, row.status, row.meta]
-      );
-      savedId = r.rows[0].id;
-      signal.id = savedId;
-    } catch (err) {
-      console.error(`[scanner] DB insert failed for ${ticker.symbol}:`, err.message);
-      continue;
+    if (!result.ok) {
+      // 409 = duplicate (expected, dedupe window 15min vs 5min scan cycle).
+      // 202 = queued but worker did not finish within INGEST_WAIT_TIMEOUT_MS
+      //       (10s default). The job is still processing and will land in
+      //       signals_v2 — treat as success, do not warn.
+      if (result.http_status !== 409 && result.http_status !== 202) {
+        console.warn(
+          `[scanner] ingest rejected for ${ticker.symbol}: ${result.error || "unknown"} ${result.reason || ""}`
+        );
+        continue;
+      }
+      if (result.http_status === 409) continue;
+      // 202 falls through to the alerts++/log block below as success
     }
 
-    // ── Log CREATED event ───────────────────────────────────────
-    await events.logEvent(savedId, "CREATED", {
-      newStatus: "OPEN",
-      priceAt: ticker.price,
-      meta: { score, volume_change: signal.meta.volume_change },
-    });
-
-    // ── Emit push job ───────────────────────────────────────────
-    await pushQueue().add("breakout", signal);
     alerts++;
 
     console.log(
       `[scanner] BREAKOUT: ${ticker.symbol} score=${score} ` +
-      `change=${ticker.priceChangePercent.toFixed(1)}% → signal #${savedId}`
+      `change=${ticker.priceChangePercent.toFixed(1)}% → signal #${result.id}`
     );
   }
 
-  // Prune old cooldowns
-  for (const [sym, ts] of _alerted) {
-    if (now - ts > COOLDOWN_MS * 2) _alerted.delete(sym);
-  }
 
   return { scanned: tickers.length, alerts };
 }
