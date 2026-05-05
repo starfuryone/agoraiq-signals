@@ -20,10 +20,10 @@ const { ingestInternal } = require("../routes/ingest");
 const { STRATEGIES } = require("../lib/strategy");
 
 const SCAN_INTERVAL = 300_000; // 5 min
-const BREAKOUT_THRESHOLD = 50;
+const BREAKOUT_THRESHOLD = 80;
 const COOLDOWN_MS = 3_600_000; // 1 hour per symbol
 
-const _alerted = new Map();
+// Cooldown is Redis-backed so it survives process restarts
 
 function scoreBreakout(ticker, avgVolume) {
   const change = Math.abs(ticker.priceChangePercent);
@@ -31,7 +31,7 @@ function scoreBreakout(ticker, avgVolume) {
   let score = 0;
   score += Math.min(change * 8, 50);
   score += Math.min(volRatio * 10, 30);
-  score += ticker.priceChangePercent > 0 ? 10 : 5;
+  score += 10; // equal long/short bonus
   score += ticker.count > 50000 ? 10 : 0;
   return Math.round(Math.min(score, 100));
 }
@@ -61,9 +61,11 @@ async function scanOnce() {
     const score = scoreBreakout(ticker, avgVolume);
     if (score < BREAKOUT_THRESHOLD) continue;
 
-    const last = _alerted.get(ticker.symbol) || 0;
-    if (now - last < COOLDOWN_MS) continue;
-    _alerted.set(ticker.symbol, now);
+    const redis = getRedis();
+    const cooldownKey = `scanner:cooldown:${ticker.symbol}`;
+    const locked = await redis.get(cooldownKey);
+    if (locked) continue;
+    await redis.set(cooldownKey, '1', 'PX', COOLDOWN_MS);
 
     // ── Normalize through canonical schema ──────────────────────
     const dir = ticker.priceChangePercent > 0 ? "LONG" : "SHORT";
@@ -73,11 +75,11 @@ async function scanOnce() {
     let stop, tp1, tp2;
     if (dir === "LONG") {
       stop = +(ticker.price - risk).toPrecision(6);
-      tp1  = +(ticker.price + risk * 1.5).toPrecision(6);
+      tp1  = +(ticker.price + risk * 1.0).toPrecision(6);
       tp2  = +(ticker.price + risk * 3).toPrecision(6);
     } else {
       stop = +(ticker.price + risk).toPrecision(6);
-      tp1  = +(ticker.price - risk * 1.5).toPrecision(6);
+      tp1  = +(ticker.price - risk * 1.0).toPrecision(6);
       tp2  = +(ticker.price - risk * 3).toPrecision(6);
     }
 
@@ -105,15 +107,18 @@ async function scanOnce() {
     });
 
     if (!result.ok) {
-      // Duplicates are expected (the dedupe window is 15 min, the scan
-      // cycle is 5 min). They're audited in signals_rejected by the
-      // pipeline itself; nothing further to do here.
-      if (result.http_status !== 409) {
+      // 409 = duplicate (expected, dedupe window 15min vs 5min scan cycle).
+      // 202 = queued but worker did not finish within INGEST_WAIT_TIMEOUT_MS
+      //       (10s default). The job is still processing and will land in
+      //       signals_v2 — treat as success, do not warn.
+      if (result.http_status !== 409 && result.http_status !== 202) {
         console.warn(
           `[scanner] ingest rejected for ${ticker.symbol}: ${result.error || "unknown"} ${result.reason || ""}`
         );
+        continue;
       }
-      continue;
+      if (result.http_status === 409) continue;
+      // 202 falls through to the alerts++/log block below as success
     }
 
     alerts++;
@@ -124,10 +129,6 @@ async function scanOnce() {
     );
   }
 
-  // Prune old cooldowns
-  for (const [sym, ts] of _alerted) {
-    if (now - ts > COOLDOWN_MS * 2) _alerted.delete(sym);
-  }
 
   return { scanned: tickers.length, alerts };
 }

@@ -305,7 +305,51 @@ tailwind.config = {
   }
 
   @media print{.bg-glow,.gate{display:none!important}}
+  /* ═══ ELITE-ONLY PAYWALL GATE ═══ */
+  .elite-gate-wrap{position:relative}
+  .elite-gate-wrap.is-locked .elite-gate-content{filter:blur(10px) saturate(.7);pointer-events:none;user-select:none;-webkit-user-select:none;max-height:1400px;overflow:hidden}
+  .elite-paywall{display:none;position:absolute;inset:0;z-index:80;align-items:flex-start;justify-content:center;padding:80px 16px 40px;background:radial-gradient(ellipse at center top,rgba(15,17,25,.55) 0%,rgba(15,17,25,.92) 45%,rgba(15,17,25,.98) 80%);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+  .elite-gate-wrap.is-locked .elite-paywall{display:flex}
+  .elite-paywall-card{width:100%;max-width:680px;background:#0f1119;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:36px 28px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,193,7,.04);position:sticky;top:80px}
+  .elite-paywall-icon{width:56px;height:56px;margin:0 auto 20px;border-radius:14px;background:linear-gradient(180deg,#2a2b35 0%,#1a1c26 100%);border:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--gold)}
+  .elite-paywall-card h3{font-family:'Syne','Albert Sans',sans-serif;font-weight:800;font-size:26px;color:#fff;margin:0 0 12px;letter-spacing:-.01em;line-height:1.15}
+  .elite-paywall-card .lede{font-family:'JetBrains Mono','DM Mono',monospace;font-size:13px;color:rgba(255,255,255,.65);line-height:1.6;margin:0 auto 28px;max-width:520px}
+  .elite-paywall-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px;text-align:left}
+  .elite-paywall-tier{border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:18px 18px 16px;background:rgba(255,255,255,.015)}
+  .elite-paywall-tier.elite{border-color:rgba(255,193,7,.35);background:rgba(255,193,7,.04)}
+  .elite-paywall-tier h4{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.14em;margin:0 0 12px;color:rgba(255,255,255,.5)}
+  .elite-paywall-tier.elite h4{color:var(--gold)}
+  .elite-paywall-tier ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px}
+  .elite-paywall-tier li{font-size:13px;color:rgba(255,255,255,.85);line-height:1.4}
+  .elite-paywall-tier li.no{color:rgba(255,255,255,.4)}
+  .elite-paywall-tier li::before{content:'✓ ';color:var(--gold);font-weight:700;margin-right:4px}
+  .elite-paywall-tier li.no::before{content:'✗ ';color:rgba(255,255,255,.35)}
+  .elite-paywall-cta{display:inline-flex;align-items:center;gap:8px;padding:14px 36px;background:var(--gold);color:#0f1119;font-family:'Syne','Albert Sans',sans-serif;font-weight:800;font-size:14px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;border-radius:10px;border:none;cursor:pointer;transition:transform .15s ease,background .15s ease,box-shadow .15s ease;box-shadow:0 8px 24px rgba(255,193,7,.18)}
+  .elite-paywall-cta:hover{background:var(--gold-hover);transform:translateY(-1px);box-shadow:0 12px 32px rgba(255,193,7,.28)}
+  .elite-paywall-foot{margin-top:18px;font-size:11px;color:rgba(255,255,255,.4);font-family:'JetBrains Mono',monospace}
+  @media(max-width:560px){.elite-paywall-grid{grid-template-columns:1fr}.elite-paywall-card{padding:28px 20px}.elite-paywall-card h3{font-size:22px}.elite-paywall{padding:40px 12px 20px}}
+
 </style>
+<style id="aiq-topbar-css">
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--border,#232738);background:var(--surface,#13151f);position:relative;z-index:100}
+.topbar .brand{display:flex;align-items:center;gap:8px;text-decoration:none}
+.topbar .brand-mark{width:28px;height:28px;background:linear-gradient(135deg,#FCD535,#EFBF04);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);flex-shrink:0}
+.topbar .brand-text{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:#fff;letter-spacing:-.02em;line-height:1}
+.topbar .brand-iq{color:#FCD535}
+.topbar nav{display:flex;gap:20px;flex-wrap:wrap;align-items:center}
+.topbar nav a{color:var(--text2,#8b90b0);text-decoration:none;font-size:13px;font-family:'Albert Sans',sans-serif;font-weight:400;transition:color .2s;padding:0;border:none;border-radius:0;letter-spacing:normal;background:none}
+.topbar nav a:hover{color:var(--gold,#FFC107);background:none;border:none}
+.topbar nav a.active{color:var(--gold,#FFC107);font-weight:600;border:none;background:none}
+@media(max-width:768px){.topbar nav{gap:12px;overflow-x:auto}}
+@media(max-width:480px){.topbar{flex-direction:column;gap:12px;padding:12px 16px}.topbar nav{flex-wrap:wrap;justify-content:center}}
+</style>
+    <!-- AgoraIQ favicon (auto-generated) -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
 </head>
 <body class="min-h-screen">
 <div class="bg-glow"></div>
@@ -313,24 +357,25 @@ tailwind.config = {
 <!-- ═══════════════════════════════════════════════════════════════
      HEADER — site-wide pattern (matches all bot.agoraiq.net pages)
      ═══════════════════════════════════════════════════════════════ -->
-<header class="site-header">
-  <div class="header-inner">
-    <a href="/" class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">Agora<span class="brand-iq">IQ</span></span></a>
-    <nav>
-    <a href="signals.html">Signals</a>
-    <a href="signals-feed.html">Feed</a>
-    <a href="scanner.html">Scanner</a>
-    <a href="chart.html" class="active">Chart</a>
-    <a href="track.html">Track</a>
-    <a href="watchlist.html">Watchlist</a>
-    <a href="providers.html">Providers</a>
-    <a href="https://signals.agoraiq.net">Calls</a>
-    <a href="pricing.html">Pricing</a>
-    <a href="help.html">Help</a>
-    <a href="#" onclick="localStorage.removeItem('iq_token');window.location.href='/login.html'" style="color:var(--red)">Sign Out</a>
-  </nav>
-  </div>
-</header>
+<div class="topbar">
+  <a href="/" class="brand">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span class="brand-text">Agora<span class="brand-iq">IQ</span></span>
+  </a>
+  <nav>
+      <a href="signals.html">Signals</a>
+      <a href="signals-feed.html">Feed</a>
+      <a href="scanner.html">Scanner</a>
+      <a href="chart.html" class="active">Chart</a>
+      <a href="track.html">Track</a>
+      <a href="watchlist.html">Watchlist</a>
+      <a href="providers.html">Providers</a>
+      <a href="https://signals.agoraiq.net">Calls</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="help.html">Help</a>
+      <a href="#" onclick="localStorage.removeItem('iq_token');window.location.href='/login.html'" style="color:var(--red)">Sign Out</a>
+    </nav>
+</div>
 
 <!-- ═══ HERO BLURB ═══ -->
 <div class="relative z-10 max-w-[1440px] mx-auto px-4 md:px-6 pt-8 pb-2">
@@ -339,6 +384,8 @@ tailwind.config = {
 </div>
 
 <main class="relative z-10 max-w-[1440px] mx-auto px-4 md:px-6 py-4 space-y-4">
+<div class="elite-gate-wrap" id="eliteGateWrap">
+<div class="elite-gate-content">
 
   <section class="flex flex-col md:flex-row md:items-center justify-between gap-3 anim">
     <div>
@@ -531,7 +578,7 @@ tailwind.config = {
         <input id="fSearch" type="text" placeholder="Search pair…" class="inp text-xs min-w-[130px]">
         <select id="fDir" class="inp text-xs py-2"><option value="">All Directions</option><option value="LONG">Long Only</option><option value="SHORT">Short Only</option></select>
         <select id="fScore" class="inp text-xs py-2"><option value="0">All Scores</option><option value="60">Score 60+</option><option value="80">Score 80+</option></select>
-        <label class="flex items-center gap-1.5 text-[11px] text-slate-300 inp py-2 cursor-pointer"><input id="fSigOnly" type="checkbox" class="accent-gold-500 w-3.5 h-3.5"> Has Signal</label>
+        <label class="flex items-center gap-1.5 text-[11px] text-slate-300 inp py-2 cursor-pointer"><input id="fSigOnly" type="checkbox" checked class="accent-gold-500 w-3.5 h-3.5"> Has Signal</label>
       </div>
     </div>
     <div class="flex items-center justify-between text-[11px] text-slate-500 mb-3">
@@ -565,6 +612,44 @@ tailwind.config = {
     <div id="proofCards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-4"></div>
   </section>
 
+</div><!-- /.elite-gate-content -->
+
+<!-- ELITE PAYWALL -->
+<div class="elite-paywall" role="dialog" aria-label="Upgrade to Elite required">
+  <div class="elite-paywall-card">
+    <div class="elite-paywall-icon">⚡</div>
+    <h3>Live Trade Intelligence</h3>
+    <p class="lede">See every signal play out on live Binance charts with AI overlays, real-time PnL, and full lifecycle tracking — entry to outcome.</p>
+    <div class="elite-paywall-grid">
+      <div class="elite-paywall-tier">
+        <h4>PRO</h4>
+        <ul>
+          <li>Static signal cards</li>
+          <li>Entry / TP / SL prices</li>
+          <li class="no">No live charts</li>
+          <li class="no">No AI signal overlays</li>
+          <li class="no">No live PnL tracking</li>
+          <li class="no">No advanced indicators</li>
+        </ul>
+      </div>
+      <div class="elite-paywall-tier elite">
+        <h4>ELITE</h4>
+        <ul>
+          <li>Live Binance candles</li>
+          <li>AI signal overlays on chart</li>
+          <li>Live PnL + lifecycle replay</li>
+          <li>OI, Funding, Liquidation zones</li>
+          <li>Track + Alert actions</li>
+          <li>Watchlist sync across devices</li>
+        </ul>
+      </div>
+    </div>
+    <a href="/pricing.html?upgrade=elite&amp;src=chart" class="elite-paywall-cta">⚡ Upgrade to Elite</a>
+    <div class="elite-paywall-foot">Cancel anytime · 24-hour free trial</div>
+  </div>
+</div>
+
+</div><!-- /.elite-gate-wrap -->
 </main>
 
 <footer class="relative z-10 border-t border-white/5 mt-8">
@@ -1932,7 +2017,7 @@ function drawGrid(){
             <span class="text-[10px] ${a.direction==='LONG'?'text-green-400':'text-red-400'}">${a.direction==='LONG'?'↗':'↘'}</span>
             <span class="font-mono text-[10px] ${a.direction==='LONG'?'text-green-400':'text-red-400'}">${a.direction}</span>
           </div>
-          <span class="text-[10px] font-mono px-2 py-0.5 rounded border border-gold-500/20 text-gold-400${a.signal?' cursor-pointer hover:bg-gold-500/10':''}" ${a.signal?`onclick="event.stopPropagation();openSignalCard('${a.signal.id}')"`:''}>Analyze Setup</span>
+          ${a.signal?`<span class="text-[10px] font-mono px-2 py-0.5 rounded border border-gold-500/20 text-gold-400 cursor-pointer hover:bg-gold-500/10" onclick="event.stopPropagation();openSignalCard('${a.signal.id}')">Analyze Setup</span>`:`<span class="text-[10px] font-mono text-slate-600">Watching</span>`}
         </div>
       </div>`;
   }).join('');
@@ -2356,14 +2441,26 @@ function updStats(){
 // TIER GATING — UI-only, no backend
 // ═══════════════════════════════════════════════════════════════
 function applyGating(){
-  if(CFG.TIER==='ELITE'||CFG.TIER==='elite'){
+  const tier = (CFG.TIER||'').toUpperCase();
+  const isElite = tier === 'ELITE' || tier === 'TITAN';
+  const wrap = document.getElementById('eliteGateWrap');
+  if(isElite){
+    wrap?.classList.remove('is-locked');
     document.getElementById('eliteGate')?.remove();
     document.getElementById('advBox')?.classList.remove('tier-blur');
-    // Hide upgrade CTAs for ELITE users
     document.getElementById('verdictCTA')?.remove();
     document.querySelectorAll('.btn-upgrade').forEach(el=>{
       if(el.closest('.gate')) el.closest('.gate')?.remove();
     });
+  } else {
+    wrap?.classList.add('is-locked');
+    if(wrap){
+      wrap.addEventListener('click', e=>{
+        if(e.target.closest('.elite-paywall')) return;
+        e.preventDefault();
+        e.stopPropagation();
+      }, true);
+    }
   }
 }
 
@@ -2374,7 +2471,7 @@ async function detectTier(){
   const headers = { 'Authorization':'Bearer '+token, 'Content-Type':'application/json' };
 
   // Try known auth endpoints on bot.agoraiq.net (port 4300)
-  const endpoints = ['/api/v1/auth/me', '/api/v1/user/me', '/api/v1/me'];
+  const endpoints = ['/api/v1/auth/me'];
   for(const ep of endpoints){
     try {
       const res = await fetch(ep, { headers });
@@ -2450,6 +2547,8 @@ document.addEventListener('DOMContentLoaded', async()=>{
   // 3. Attach real signals to matching assets + weighted rank
   enrichGrid();
   S.filtered=[...S.mktAssets];
+  // Apply default filter (fSigOnly defaults checked — render only enriched cards)
+  if(typeof applyFilters === 'function') applyFilters();
 
   // 4. Bind filter inputs (debounced to prevent re-render spam)
   const debouncedFilter=debounce(applyFilters,200);
